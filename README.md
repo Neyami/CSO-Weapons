@@ -10,6 +10,8 @@ But the fixes should be simple.
 
 Some weapons have extra scripts that contain functions that several weapons use, and they'll be identical in some cases.
 
+It'll look really messy but should be relatively easy to use anyway.
+
 Hopefully I can make it better in the future when I can access my real files.
 <br>
 
