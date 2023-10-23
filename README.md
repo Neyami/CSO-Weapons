@@ -7,6 +7,10 @@ They might not be the latest versions that I've made, but they are working relea
 
 There might be changes made to the game that cause the scripts to fail and there's nothing I can do about it at this time. 
 But the fixes should be simple.
+
+Some weapons have extra scripts that contain functions that several weapons use, and they'll be identical in some cases.
+
+Hopefully I can make it better in the future when I can access my real files.
 <br>
 
 __MELEE__
