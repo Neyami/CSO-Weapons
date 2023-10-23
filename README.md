@@ -7,8 +7,14 @@ They might not be the latest versions that I've made, but they are working relea
 
 There might be changes made to the game that cause the scripts to fail and there's nothing I can do about it at this time. 
 But the fixes should be simple.
+<br>
 
-
-MELEE
+__MELEE__
 * weapon_balrog9 - BALROG-IX
-    * [Video](https://youtu.be/o5kG6LZiBlM) -- [Download](https://www.dropbox.com/s/8jlcoda7ocjezlq/weapon_balrog9-v1.0.zip?dl=0)
+    * [Video](https://youtu.be/o5kG6LZiBlM) -- [Quick Download](https://www.dropbox.com/s/8jlcoda7ocjezlq/weapon_balrog9-v1.0.zip?dl=0)
+
+<br>
+
+__MACHINE GUNS__
+* weapon_aeolis - Aeolis
+    * [Video](https://youtu.be/Komeh8zz1Jc)
