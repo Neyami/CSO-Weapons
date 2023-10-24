@@ -12,14 +12,18 @@ Some weapons have extra scripts that contain functions that several weapons use,
 
 It'll look really messy but should be relatively easy to use anyway.
 
-Hopefully I can make it better in the future when I can access my real files.
-<br>
+Hopefully I can make it better in the future, but health reasons and being busy IRL currently prevents me from doing so.
+<BR>
 
 __MELEE__
 * weapon_balrog9 - BALROG-IX
     * [Video](https://youtu.be/o5kG6LZiBlM) -- [Quick Download](https://www.dropbox.com/s/8jlcoda7ocjezlq/weapon_balrog9-v1.0.zip?dl=0)
 
-<br>
+<BR>
+
+__PISTOLS__
+
+<BR>
 
 __MACHINE GUNS__
 * weapon_aeolis - Aeolis
