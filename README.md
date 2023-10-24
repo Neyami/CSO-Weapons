@@ -22,6 +22,11 @@ __MELEE__
 <BR>
 
 __PISTOLS__
+* weapon_m950 - Calico M950
+    * [Video](https://youtu.be/unMsubpPTUQ)
+
+
+
 
 <BR>
 
