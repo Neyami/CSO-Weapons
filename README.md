@@ -19,6 +19,10 @@ __MELEE__
 * weapon_balrog9 - BALROG-IX
     * [Video](https://youtu.be/o5kG6LZiBlM) -- [Quick Download](https://www.dropbox.com/s/8jlcoda7ocjezlq/weapon_balrog9-v1.0.zip?dl=0)
 
+
+* weapon_dragonclaw - Dragon Claw
+    * [Video](https://youtu.be/yhOwNG_B25M?si=WRR-ZUeEjBnkgLVl)
+
 <BR>
 
 __PISTOLS__
