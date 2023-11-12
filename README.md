@@ -59,7 +59,8 @@ Hopefully I can make it better in the future, but health reasons and being busy 
     * [Video](https://youtu.be/Komeh8zz1Jc)
 
     * ENTITIES
-    * `weapon_aeolis`
+    * `weapon_aeolis` - Weapon
+    * `csoproj_flame` - Projectile
  
     * AMMO NAME
     * `556`
