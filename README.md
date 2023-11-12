@@ -28,15 +28,30 @@ Hopefully I can make it better in the future, but health reasons and being busy 
 
 <BR>
 
-* weapon_dragonclaw - Dragon Claw
+* Dragon Claw
     * [Video](https://youtu.be/yhOwNG_B25M?si=WRR-ZUeEjBnkgLVl)
+
+    * ENTITIES
+
+    * `weapon_dragonclaw`
+
+    * REGISTRATION FUNCTIONS
+
+    * `CSO_RegisterWeapon_DRAGONCLAW();`
 
 <BR>
 
 # PISTOLS
-* weapon_m950 - Calico M950
+* Calico M950
     * [Video](https://youtu.be/unMsubpPTUQ)
 
+    * ENTITIES
+
+    * `weapon_m950`
+
+    * REGISTRATION FUNCTIONS
+
+    * `CSO_RegisterWeapon_M950();`
 
 
 
