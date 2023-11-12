@@ -19,11 +19,9 @@ Hopefully I can make it better in the future, but health reasons and being busy 
     * [Video](https://youtu.be/o5kG6LZiBlM) -- [Quick Download](https://www.dropbox.com/s/8jlcoda7ocjezlq/weapon_balrog9-v1.0.zip?dl=0)
 
     * ENTITIES
-
     * `weapon_balrog9`
 
     * REGISTRATION FUNCTIONS
-
     * `CSO_RegisterWeapon_BALROG9();`
 
 <BR>
@@ -32,11 +30,9 @@ Hopefully I can make it better in the future, but health reasons and being busy 
     * [Video](https://youtu.be/yhOwNG_B25M?si=WRR-ZUeEjBnkgLVl)
 
     * ENTITIES
-
     * `weapon_dragonclaw`
 
     * REGISTRATION FUNCTIONS
-
     * `CSO_RegisterWeapon_DRAGONCLAW();`
 
 <BR>
@@ -46,11 +42,12 @@ Hopefully I can make it better in the future, but health reasons and being busy 
     * [Video](https://youtu.be/unMsubpPTUQ)
 
     * ENTITIES
-
     * `weapon_m950`
+ 
+    * AMMO NAME
+    * `9mm`
 
     * REGISTRATION FUNCTIONS
-
     * `CSO_RegisterWeapon_M950();`
 
 
@@ -58,5 +55,15 @@ Hopefully I can make it better in the future, but health reasons and being busy 
 <BR>
 
 # MACHINE GUNS
-* weapon_aeolis - Aeolis
+* Aeolis
     * [Video](https://youtu.be/Komeh8zz1Jc)
+
+    * ENTITIES
+    * `weapon_aeolis`
+ 
+    * AMMO NAME
+    * `556`
+
+    * REGISTRATION FUNCTIONS
+    * `CSO_RegisterWeapon_AEOLIS();`
+    * `CSO_RegisterProjectiles();`
