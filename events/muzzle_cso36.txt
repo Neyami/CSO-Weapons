@@ -1,0 +1,9 @@
+attachment 0 
+bone 3 
+spritename sprites/cso/muzzleflash36.spr
+scale  8
+colorR 255
+colorB 255
+colorG 255
+rendermode 5
+transparency 255
