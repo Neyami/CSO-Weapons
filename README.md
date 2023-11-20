@@ -49,6 +49,21 @@ Hopefully I can make it better in the future, but health reasons and being busy 
 
 <BR>
 
+# SHOTGUNS
+* Brick Piece M777
+    * [Video](https://youtu.be/7mOEY7KNsA0)
+
+    * ENTITIES
+    * `weapon_blockas` - Weapon
+    * `block_missile` - Projectile
+ 
+    * AMMO NAME
+    * `buckshot`
+    * `m777shot`
+
+
+<BR>
+
 # MACHINE GUNS
 * Aeolis
     * [Video](https://youtu.be/Komeh8zz1Jc)
