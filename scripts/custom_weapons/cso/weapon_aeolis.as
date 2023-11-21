@@ -1,3 +1,6 @@
+namespace cso_aeolis
+{
+
 const int AEOLIS_DEFAULT_GIVE			= 150;
 const int AEOLIS_MAX_AMMO				= 200;
 const int AEOLIS_MAX_AMMO2				= 89;
@@ -405,8 +408,10 @@ class weapon_aeolis : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
 	}
 }
 
-void CSO_RegisterWeapon_AEOLIS()
+void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "weapon_aeolis", "weapon_aeolis" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_aeolis::weapon_aeolis", "weapon_aeolis" );
 	g_ItemRegistry.RegisterWeapon( "weapon_aeolis", "custom_weapons/cso", "556", "semen" );
 }
+
+} //namespace cso_aeolis END
