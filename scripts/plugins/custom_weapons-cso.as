@@ -3,6 +3,7 @@
 #include "../custom_weapons/cso/weapon_blockas"
 #include "../custom_weapons/cso/weapon_desperado"
 #include "../custom_weapons/cso/weapon_janus9"
+#include "../custom_weapons/cso/weapon_balrog9"
 
 void PluginInit()
 {
@@ -15,4 +16,5 @@ void MapInit()
 	cso_blockas::Register();
 	cso_desperado::Register();
 	cso_janus9::Register();
+	cso_balrog9::Register();
 }
