@@ -33,13 +33,21 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 <BR>
 
 * Dragon Claw
-    * [Video](https://youtu.be/yhOwNG_B25M?si=WRR-ZUeEjBnkgLVl)
+    * [Video](https://youtu.be/yhOwNG_B25M)
 
     * ENTITIES
     * `weapon_dragonclaw`
 
     * REGISTRATION FUNCTIONS
     * `CSO_RegisterWeapon_DRAGONCLAW();`
+
+<BR>
+
+* JANUS-9
+    * [Video1](https://youtu.be/owMgJFILI-w) - [Video2](https://youtu.be/yf02rPy7KAo?si=wA5DHxNFZg-zDsrt)
+
+    * ENTITIES
+    * `weapon_janus9`
 
 <BR>
 
