@@ -497,7 +497,7 @@ class weapon_balrog9 : ScriptBasePlayerWeaponEntity
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "balrog9::weapon_balrog9", "weapon_balrog9" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_balrog9::weapon_balrog9", "weapon_balrog9" );
 	g_ItemRegistry.RegisterWeapon( "weapon_balrog9", "custom_weapons/cso" );
 }
 
