@@ -1,4 +1,5 @@
 #include "../custom_weapons/cso/weapon_blockas"
+#include "../custom_weapons/cso/weapon_desperado"
 
 void PluginInit()
 {
@@ -9,4 +10,5 @@ void PluginInit()
 void MapInit()
 {
 	cso_blockas::Register();
+	cso_desperado::Register();
 }
