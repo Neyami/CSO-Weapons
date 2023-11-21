@@ -1,9 +1,15 @@
 #include "../maps/hunger/weapons/baseweapon"
 
-#include "../custom_weapons/cso/weapon_blockas"
-#include "../custom_weapons/cso/weapon_desperado"
-#include "../custom_weapons/cso/weapon_janus9"
+//Melee
 #include "../custom_weapons/cso/weapon_balrog9"
+#include "../custom_weapons/cso/weapon_dragonclaw"
+#include "../custom_weapons/cso/weapon_janus9"
+
+//Pistols
+#include "../custom_weapons/cso/weapon_desperado"
+
+//Shotguns
+#include "../custom_weapons/cso/weapon_blockas"
 
 void PluginInit()
 {
@@ -13,8 +19,9 @@ void PluginInit()
 
 void MapInit()
 {
-	cso_blockas::Register();
-	cso_desperado::Register();
-	cso_janus9::Register();
 	cso_balrog9::Register();
+	cso_dragonclaw::Register();
+	cso_janus9::Register();
+	cso_desperado::Register();
+	cso_blockas::Register();
 }
