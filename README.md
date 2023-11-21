@@ -14,6 +14,10 @@ The plugin `custom_weapons-cso.as` can be used if you're not using a buymenu plu
 
 https://github.com/Zode/AFBase
 
+If you don't use my plugin, then you'll have to put this in another plugin that you've got, such as a buymenu.
+
+`#include "../maps/hunger/weapons/baseweapon"`
+
 <BR>
 
 # MELEE
