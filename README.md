@@ -35,9 +35,6 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
     * ENTITIES
     * `weapon_dragonclaw` - Weapon
 
-    * REGISTRATION FUNCTIONS
-    * `CSO_RegisterWeapon_DRAGONCLAW();`
-
 <BR>
 
 * JANUS-9
