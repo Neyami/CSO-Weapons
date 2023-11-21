@@ -1,3 +1,5 @@
+#include "../maps/hunger/weapons/baseweapon"
+
 #include "../custom_weapons/cso/weapon_blockas"
 #include "../custom_weapons/cso/weapon_desperado"
 
