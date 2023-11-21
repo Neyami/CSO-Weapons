@@ -11,6 +11,9 @@
 //Shotguns
 #include "../custom_weapons/cso/weapon_blockas"
 
+//Machine Guns
+#include "../custom_weapons/cso/weapon_aeolis"
+
 void PluginInit()
 {
 	g_Module.ScriptInfo.SetAuthor( "Nero" );
@@ -24,4 +27,5 @@ void MapInit()
 	cso_janus9::Register();
 	cso_desperado::Register();
 	cso_blockas::Register();
+	cso_aeolis::Register();
 }
