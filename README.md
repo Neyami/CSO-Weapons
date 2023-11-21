@@ -4,6 +4,8 @@ Weapons from Counter-Strike Online ported to Sven Co-op in Angelscript.
 There might be changes made to the game that cause the scripts to fail and there's nothing I can do about it at this time. 
 But the fixes should be simple.
 
+Some of the weapons aren't 100% finished but they're mostly tweaks such as muzzleflashes, animations, bulletspread, damage, and such.
+
 It'll look really messy but should be relatively easy to use anyway.
 
 Hopefully I can make it better in the future, but health reasons and being busy IRL currently prevents me from doing so.
@@ -49,6 +51,16 @@ https://github.com/Zode/AFBase
 
     * REGISTRATION FUNCTIONS
     * `CSO_RegisterWeapon_M950();`
+
+
+* Python Desperado
+    * [Video](https://youtu.be/Q2NYPb8EBTg?si=qQ1JgZLca-3g85fj)
+
+    * ENTITIES
+    * `weapon_desperado` - Weapon
+ 
+    * AMMO NAME
+    * `357`
 
 
 
