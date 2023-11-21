@@ -22,13 +22,10 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 
 # MELEE
 * BALROG-IX
-    * [Video](https://youtu.be/o5kG6LZiBlM) -- [Quick Download](https://www.dropbox.com/s/8jlcoda7ocjezlq/weapon_balrog9-v1.0.zip?dl=0)
+    * [Video](https://youtu.be/o5kG6LZiBlM)
 
     * ENTITIES
-    * `weapon_balrog9`
-
-    * REGISTRATION FUNCTIONS
-    * `CSO_RegisterWeapon_BALROG9();`
+    * `weapon_balrog9` - Weapon
 
 <BR>
 
@@ -36,7 +33,7 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
     * [Video](https://youtu.be/yhOwNG_B25M)
 
     * ENTITIES
-    * `weapon_dragonclaw`
+    * `weapon_dragonclaw` - Weapon
 
     * REGISTRATION FUNCTIONS
     * `CSO_RegisterWeapon_DRAGONCLAW();`
@@ -47,7 +44,7 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
     * [Video1](https://youtu.be/owMgJFILI-w) - [Video2](https://youtu.be/yf02rPy7KAo?si=wA5DHxNFZg-zDsrt)
 
     * ENTITIES
-    * `weapon_janus9`
+    * `weapon_janus9` - Weapon
 
 <BR>
 
