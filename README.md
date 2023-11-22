@@ -97,7 +97,3 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
  
     * AMMO NAME
     * `556`
-
-    * REGISTRATION FUNCTIONS
-    * `CSO_RegisterWeapon_AEOLIS();`
-    * `CSO_RegisterProjectiles();`
