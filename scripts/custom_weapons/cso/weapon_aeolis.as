@@ -408,8 +408,87 @@ class weapon_aeolis : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
 	}
 }
 
+//Thanks to Aperture for this one!
+class csoproj_flame : ScriptBaseEntity
+{
+	void Spawn()
+	{
+		g_EntityFuncs.SetModel( self, AEOLIS_SPRITE_FLAME );
+		g_EntityFuncs.SetSize( self.pev, Vector(-4, -4, -4), Vector(4, 4, 4) );
+		g_EntityFuncs.SetOrigin( self, self.pev.origin );
+
+		self.pev.movetype = MOVETYPE_FLY;
+		self.pev.solid    = SOLID_BBOX;
+		self.pev.rendermode = kRenderTransAdd;
+		self.pev.renderamt = 250;  
+		self.pev.scale = 0.3f;
+		self.pev.frame = 0;
+		self.pev.nextthink = g_Engine.time + 0.1f;
+		SetThink( ThinkFunction(this.FlameThink) );
+	}
+
+	void FlameThink()
+	{
+		self.pev.nextthink = g_Engine.time + 0.03f;
+
+		int r = 255, g = 200, b = 100;
+		
+		NetworkMessage glowdl( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
+			glowdl.WriteByte( TE_DLIGHT );
+			glowdl.WriteCoord( self.pev.origin.x );
+			glowdl.WriteCoord( self.pev.origin.y );
+			glowdl.WriteCoord( self.pev.origin.z );
+			glowdl.WriteByte( 16 );//radius
+			glowdl.WriteByte( int(r) );
+			glowdl.WriteByte( int(g) );
+			glowdl.WriteByte( int(b) );
+			glowdl.WriteByte( 4 );//life
+			glowdl.WriteByte( 128 );//decay
+		glowdl.End();
+
+		self.pev.frame += 1.0f;
+		self.pev.scale += 0.09f;
+		
+		if( self.pev.frame > 21 )
+		{
+			self.pev.frame = 0;
+			g_EntityFuncs.Remove( self );
+			return;
+		}
+	}
+
+	void Touch( CBaseEntity@ pOther )
+	{
+		entvars_t@ pevOwner = self.pev.owner.vars;
+
+		if( pOther.edict() is self.pev.owner )
+			return;
+
+		if( pOther.pev.classname == "csoproj_flame" )
+		{
+			self.pev.solid = SOLID_NOT;
+			self.pev.movetype = MOVETYPE_NONE;
+
+			return;
+		}
+
+		if( pOther.pev.takedamage != DAMAGE_NO && pOther.IsAlive() == true )
+		{
+			if( pOther.pev.classname == "monster_cleansuit_scientist" || pOther.IsMonster() == false )
+				pOther.TakeDamage( pevOwner, pevOwner, Math.RandomLong(AEOLIS_DAMAGE,AEOLIS_DAMAGE_FLAME), DMG_BURN | DMG_NEVERGIB );
+			else
+				pOther.TakeDamage( pevOwner, pevOwner, Math.RandomLong(AEOLIS_DAMAGE,AEOLIS_DAMAGE_FLAME), DMG_BURN | DMG_POISON | DMG_NEVERGIB );
+		}
+
+		self.pev.movetype = MOVETYPE_NONE;
+		self.pev.solid = SOLID_NOT;
+		SetTouch(null);
+	}
+}
+
 void Register()
 {
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_aeolis::csoproj_flame", "csoproj_flame" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_aeolis::weapon_aeolis", "weapon_aeolis" );
 	g_ItemRegistry.RegisterWeapon( "weapon_aeolis", "custom_weapons/cso", "556", "semen" );
 }
