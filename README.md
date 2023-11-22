@@ -38,10 +38,18 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 <BR>
 
 * JANUS-9
-    * [Video1](https://youtu.be/owMgJFILI-w) - [Video2](https://youtu.be/yf02rPy7KAo?si=wA5DHxNFZg-zDsrt)
+    * [Video1](https://youtu.be/owMgJFILI-w) - [Video2](https://youtu.be/yf02rPy7KAo)
 
     * ENTITIES
     * `weapon_janus9` - Weapon
+
+<BR>
+
+* THANATOS-9
+    * [Video1](https://youtu.be/OaEFiLME8LQ) - [Video2](https://youtu.be/rFWrYytDOpc)
+
+    * ENTITIES
+    * `weapon_thanatos9` - Weapon
 
 <BR>
 
