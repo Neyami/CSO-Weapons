@@ -50,7 +50,7 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
     * [Video](https://youtu.be/unMsubpPTUQ)
 
     * ENTITIES
-    * `weapon_m950`
+    * `weapon_m950` - Weapon
  
     * AMMO NAME
     * `9mm`
