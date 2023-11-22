@@ -55,9 +55,6 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
     * AMMO NAME
     * `9mm`
 
-    * REGISTRATION FUNCTIONS
-    * `CSO_RegisterWeapon_M950();`
-
 
 * Python Desperado
     * [Video](https://youtu.be/Q2NYPb8EBTg?si=qQ1JgZLca-3g85fj)
