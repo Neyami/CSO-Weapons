@@ -1,3 +1,6 @@
+namespace cso_m950
+{
+
 const int M950_DEFAULT_GIVE			= 50;
 const int M950_MAX_AMMO				= 120;
 const int M950_MAX_CLIP 			= 50;
@@ -285,8 +288,10 @@ class weapon_m950 : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
 	}
 }
 
-void CSO_RegisterWeapon_M950()
+void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "weapon_m950", "weapon_m950" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m950::weapon_m950", "weapon_m950" );
 	g_ItemRegistry.RegisterWeapon( "weapon_m950", "custom_weapons/cso", "9mm" );
 }
+
+} //namespace cso_m950 END
