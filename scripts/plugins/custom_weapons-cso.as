@@ -7,6 +7,7 @@
 
 //Pistols
 #include "../custom_weapons/cso/weapon_desperado"
+#include "../custom_weapons/cso/weapon_m950"
 
 //Shotguns
 #include "../custom_weapons/cso/weapon_blockas"
@@ -26,6 +27,7 @@ void MapInit()
 	cso_dragonclaw::Register();
 	cso_janus9::Register();
 	cso_desperado::Register();
+	cso_m950::Register();
 	cso_blockas::Register();
 	cso_aeolis::Register();
 }
