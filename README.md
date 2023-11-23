@@ -102,3 +102,15 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
  
     * AMMO NAME
     * `556`
+
+
+<BR>
+
+# SNIPER RIFLES
+* Savery
+
+    * ENTITIES
+    * `weapon_savery` - Weapon
+ 
+    * AMMO NAME
+    * `m40a1`
