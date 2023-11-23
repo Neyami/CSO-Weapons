@@ -1,4 +1,6 @@
 #include "../maps/hunger/weapons/baseweapon"
+#include "../custom_weapons/cso/csocommon"
+
 
 //Melee
 #include "../custom_weapons/cso/weapon_balrog9"
@@ -16,6 +18,9 @@
 //Machine Guns
 #include "../custom_weapons/cso/weapon_aeolis"
 
+//Sniper Rifles
+#include "../custom_weapons/cso/weapon_savery"
+
 void PluginInit()
 {
 	g_Module.ScriptInfo.SetAuthor( "Nero" );
@@ -32,4 +37,5 @@ void MapInit()
 	cso_m950::Register();
 	cso_blockas::Register();
 	cso_aeolis::Register();
+	cso_savery::Register();
 }
