@@ -94,6 +94,21 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 
 <BR>
 
+
+* BALROG-XI
+    * [Video](https://youtu.be/QV1UfLhlgrE)
+
+    * ENTITIES
+    * `weapon_balrog11` - Weapon
+    * `balrog11_fire` - Projectile
+ 
+    * AMMO NAME
+    * `buckshot`
+    * `b11shot`
+
+
+<BR>
+
 # MACHINE GUNS
 * Aeolis
     * [Video](https://youtu.be/Komeh8zz1Jc)
