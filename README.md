@@ -65,6 +65,7 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
     * AMMO NAME
     * `9mm`
 
+<BR>
 
 * Python Desperado
     * [Video](https://youtu.be/Q2NYPb8EBTg?si=qQ1JgZLca-3g85fj)
@@ -75,7 +76,16 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
     * AMMO NAME
     * `357`
 
+<BR>
 
+* SKULL-2
+    * [Video](https://youtu.be/z6jt6cxAdCo)
+
+    * ENTITIES
+    * `weapon_skull2` - Weapon
+ 
+    * AMMO NAME
+    * `357`
 
 <BR>
 
