@@ -11,6 +11,7 @@
 //Pistols
 #include "../custom_weapons/cso/weapon_desperado"
 #include "../custom_weapons/cso/weapon_m950"
+#include "../custom_weapons/cso/weapon_skull2"
 
 //Shotguns
 #include "../custom_weapons/cso/weapon_blockas"
@@ -37,6 +38,7 @@ void MapInit()
 	cso_thanatos9::Register();
 	cso_desperado::Register();
 	cso_m950::Register();
+	cso_skull2::Register();
 	cso_blockas::Register();
 	cso_balrog11::Register();
 	cso_aeolis::Register();
