@@ -1,4 +1,5 @@
-#include "../maps/hunger/weapons/baseweapon"
+//#include "../maps/hunger/weapons/baseweapon"
+#include "../custom_weapons/baseweapon"
 #include "../custom_weapons/cso/csocommon"
 
 
