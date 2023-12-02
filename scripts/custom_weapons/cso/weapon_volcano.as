@@ -1,4 +1,4 @@
-namespace cso_firevulcan
+namespace cso_volcano
 {
 
 const Vector CSOW_VECTOR_SPREAD( 0.03f, 0.03f, 0.0f );
@@ -60,7 +60,7 @@ const array<string> pCSOWSounds =
 	"custom_weapons/cs16/usas_draw.wav"
 };
 
-class weapon_firevulcan : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
+class weapon_volcano : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
 {
 	//private CBasePlayer@ m_pPlayer = null;
 
@@ -92,7 +92,7 @@ class weapon_firevulcan : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
 
 		g_Game.PrecacheGeneric( "events/muzzle_fvulcan1.txt" );
 		g_Game.PrecacheGeneric( "events/muzzle_fvulcan2.txt" );
-		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/weapon_firevulcan.txt" );
+		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/weapon_volcano.txt" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud7.spr" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud121.spr" );
 		g_Game.PrecacheGeneric( "sprites/cs16/mzcs1.spr" );
@@ -118,9 +118,9 @@ class weapon_firevulcan : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
 
 		@m_pPlayer = pPlayer;
 
-		NetworkMessage firevulcan( MSG_ONE, NetworkMessages::WeapPickup, pPlayer.edict() );
-			firevulcan.WriteLong( g_ItemRegistry.GetIdForName("weapon_firevulcan") );
-		firevulcan.End();
+		NetworkMessage volcano( MSG_ONE, NetworkMessages::WeapPickup, pPlayer.edict() );
+			volcano.WriteLong( g_ItemRegistry.GetIdForName("weapon_volcano") );
+		volcano.End();
 
 		return true;
 	}
@@ -225,8 +225,8 @@ class weapon_firevulcan : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_firevulcan::weapon_firevulcan", "weapon_firevulcan" );
-	g_ItemRegistry.RegisterWeapon( "weapon_firevulcan", "custom_weapons/cso", "buckshot", "", "ammo_buckshot" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_volcano::weapon_volcano", "weapon_volcano" );
+	g_ItemRegistry.RegisterWeapon( "weapon_volcano", "custom_weapons/cso", "buckshot", "", "ammo_buckshot" );
 }
 
-} //namespace cso_firevulcan END
+} //namespace cso_volcano END
