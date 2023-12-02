@@ -101,9 +101,7 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
     * `buckshot`
     * `m777shot`
 
-
 <BR>
-
 
 * BALROG-XI
     * [Video](https://youtu.be/QV1UfLhlgrE)
@@ -116,6 +114,15 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
     * `buckshot`
     * `b11shot`
 
+<BR>
+
+* Volcano
+
+    * ENTITIES
+    * `weapon_volcano` - Weapon
+ 
+    * AMMO NAME
+    * `buckshot`
 
 <BR>
 
