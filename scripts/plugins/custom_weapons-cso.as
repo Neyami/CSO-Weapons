@@ -18,6 +18,7 @@
 #include "../custom_weapons/cso/weapon_blockas"
 #include "../custom_weapons/cso/weapon_balrog11"
 //#include "../custom_weapons/cso/weapon_balrog11-wip"
+#include "../custom_weapons/cso/weapon_volcano"
 
 //Machine Guns
 #include "../custom_weapons/cso/weapon_aeolis"
@@ -42,6 +43,7 @@ void MapInit()
 	cso_skull2::Register();
 	cso_blockas::Register();
 	cso_balrog11::Register();
+	cso_volcano::Register();
 	cso_aeolis::Register();
 	cso_savery::Register();
 }
