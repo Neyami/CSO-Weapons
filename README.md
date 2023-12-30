@@ -126,6 +126,16 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 
 <BR>
 
+* Pancor Jackhammer MK3A1
+
+    * ENTITIES
+    * `weapon_mk3a1` - Weapon
+ 
+    * AMMO NAME
+    * `buckshot`
+
+<BR>
+
 # MACHINE GUNS
 * Aeolis
     * [Video](https://youtu.be/Komeh8zz1Jc)
