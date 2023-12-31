@@ -70,7 +70,6 @@ class weapon_desperado : CBaseCustomWeapon
 {
 	private uint8 m_iMode;
 	private uint8 m_iInRun;
-	private float m_flAnimDelay;
 	private bool m_bInfiniteAmmo = true; //The original has infinite ammo
 
 	void Spawn()
@@ -155,7 +154,6 @@ class weapon_desperado : CBaseCustomWeapon
 			FastReload();
 			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model((m_iMode == MODE_RIGHT ? MODEL_PLAYER_R : MODEL_PLAYER_L)), ANIM_DRAW_R + m_iMode, CSOW_ANIMEXT );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
-			m_flAnimDelay = 0;
 
 			return bResult;
 		}
@@ -165,7 +163,6 @@ class weapon_desperado : CBaseCustomWeapon
 	{
 		self.m_fInReload = false;
 		SetThink(null);
-		m_flAnimDelay = 0;
 		BaseClass.Holster( skipLocal );
 	}
 
@@ -345,7 +342,6 @@ class weapon_desperado : CBaseCustomWeapon
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE_RUN;
 			self.SendWeaponAnim( ANIM_RUN_END_R + m_iMode );
 			m_iInRun = 0;
-			m_flAnimDelay = 0;
 		}
 		else
 		{
