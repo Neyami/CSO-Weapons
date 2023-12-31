@@ -69,7 +69,6 @@ const array<string> pCSOWSounds =
 class weapon_desperado : CBaseCustomWeapon
 {
 	private uint8 m_iMode;
-	private int m_iShell;
 	private uint8 m_iInRun;
 	private float m_flAnimDelay;
 	private bool m_bInfiniteAmmo = true; //The original has infinite ammo
@@ -93,8 +92,6 @@ class weapon_desperado : CBaseCustomWeapon
 		g_Game.PrecacheModel( MODEL_PLAYER_R );
 		g_Game.PrecacheModel( MODEL_PLAYER_L );
 		g_Game.PrecacheModel( MODEL_WORLD );
-
-		m_iShell = g_Game.PrecacheModel( "models/shell.mdl" );
 
 		for( i = 0; i < pCSOWSounds.length(); ++i )
 			g_SoundSystem.PrecacheSound( pCSOWSounds[i] );
