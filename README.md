@@ -89,6 +89,19 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 
 <BR>
 
+* Desert Eagle Crimson Hunter
+    * [Video](https://youtu.be/sxIQScNbdJI)
+
+    * ENTITIES
+    * `weapon_bloodhunter` - Weapon
+    * `bloodgrenade` - Grenade
+    * `bloodhunter_effect` - Blood Siphon Effect
+ 
+    * AMMO NAME
+    * `357`
+
+<BR>
+
 # SHOTGUNS
 * Brick Piece M777
     * [Video](https://youtu.be/7mOEY7KNsA0)
