@@ -13,6 +13,7 @@
 #include "../custom_weapons/cso/weapon_desperado"
 #include "../custom_weapons/cso/weapon_m950"
 #include "../custom_weapons/cso/weapon_skull2"
+#include "../custom_weapons/cso/weapon_bloodhunter"
 
 //Shotguns
 #include "../custom_weapons/cso/weapon_blockas"
@@ -42,6 +43,7 @@ void MapInit()
 	cso_desperado::Register();
 	cso_m950::Register();
 	cso_skull2::Register();
+	cso_bloodhunter::Register();
 	cso_blockas::Register();
 	cso_balrog11::Register();
 	cso_volcano::Register();
