@@ -235,7 +235,7 @@ class weapon_bloodhunter : CBaseCustomWeapon
 
 		Vector vecShootCone;
 
-		if( (m_pPlayer.m_afButtonPressed & IN_ATTACK == 0) and self.m_flNextPrimaryAttack <= g_Engine.time ) //NEEDED??
+		if( (m_pPlayer.m_afButtonPressed & IN_ATTACK == 0) and self.m_flNextPrimaryAttack <= g_Engine.time ) //Makes the gun semi-automatic
 			return;
 
 		vecShootCone = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_CONE_DUCKING : CSOW_CONE_STANDING;
