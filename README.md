@@ -163,6 +163,19 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 
 <BR>
 
+* Plasma Gun
+
+    * ENTITIES
+    * `weapon_plasmagun` - Weapon
+    * `plasmaball` - Projectile
+    * `ammo_plasmashell` - Ammo
+ 
+    * AMMO NAME
+    * `plasma`
+
+
+<BR>
+
 # SNIPER RIFLES
 * Savery
 
