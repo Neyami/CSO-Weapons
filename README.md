@@ -55,6 +55,7 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 
 <BR>
 
+
 # PISTOLS
 * Calico M950
     * [Video](https://youtu.be/unMsubpPTUQ)
@@ -101,6 +102,7 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
     * `357`
 
 <BR>
+
 
 # SHOTGUNS
 * Brick Piece M777
@@ -149,6 +151,22 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 
 <BR>
 
+
+# ASSAULT RIFLES
+* Plasma Gun
+
+    * ENTITIES
+    * `weapon_plasmagun` - Weapon
+    * `plasmaball` - Projectile
+    * `ammo_plasmashell` - Ammo
+ 
+    * AMMO NAME
+    * `plasma`
+
+
+<BR>
+
+
 # MACHINE GUNS
 * Aeolis
     * [Video](https://youtu.be/Komeh8zz1Jc)
@@ -163,18 +181,6 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 
 <BR>
 
-* Plasma Gun
-
-    * ENTITIES
-    * `weapon_plasmagun` - Weapon
-    * `plasmaball` - Projectile
-    * `ammo_plasmashell` - Ammo
- 
-    * AMMO NAME
-    * `plasma`
-
-
-<BR>
 
 # SNIPER RIFLES
 * Savery
