@@ -63,6 +63,8 @@ const int V3_POSITION			= 10;
 //Assault Rifles
 const int ETHEREAL_SLOT			= 5;
 const int ETHEREAL_POSITION		= 10;
+const int PLASMAGUN_SLOT			= 5;
+const int PLASMAGUN_POSITION		= 11;
 //Sniper Rifles
 const int M82_SLOT				= 6;
 const int M82_POSITION			= 10;
