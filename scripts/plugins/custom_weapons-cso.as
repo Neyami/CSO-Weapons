@@ -24,6 +24,7 @@
 
 //Machine Guns
 #include "../custom_weapons/cso/weapon_aeolis"
+#include "../custom_weapons/cso/weapon_plasmagun"
 
 //Sniper Rifles
 #include "../custom_weapons/cso/weapon_savery"
@@ -49,5 +50,6 @@ void MapInit()
 	cso_volcano::Register();
 	cso_mk3a1::Register();
 	cso_aeolis::Register();
+	cso_plasmagun::Register();
 	cso_savery::Register();
 }
