@@ -22,9 +22,11 @@
 #include "../custom_weapons/cso/weapon_volcano"
 #include "../custom_weapons/cso/weapon_mk3a1"
 
+//Assault Rifles
+#include "../custom_weapons/cso/weapon_plasmagun"
+
 //Machine Guns
 #include "../custom_weapons/cso/weapon_aeolis"
-#include "../custom_weapons/cso/weapon_plasmagun"
 
 //Sniper Rifles
 #include "../custom_weapons/cso/weapon_savery"
@@ -49,7 +51,7 @@ void MapInit()
 	cso_balrog11::Register();
 	cso_volcano::Register();
 	cso_mk3a1::Register();
-	cso_aeolis::Register();
 	cso_plasmagun::Register();
+	cso_aeolis::Register();
 	cso_savery::Register();
 }
