@@ -1,3 +1,5 @@
+#include "pbullet"
+
 namespace CSO
 {
 
@@ -65,6 +67,8 @@ const int ETHEREAL_SLOT			= 5;
 const int ETHEREAL_POSITION		= 10;
 const int PLASMAGUN_SLOT			= 5;
 const int PLASMAGUN_POSITION		= 11;
+const int CSOBOW_SLOT			= 5;
+const int CSOBOW_POSITION		= 12;
 //Sniper Rifles
 const int M82_SLOT				= 6;
 const int M82_POSITION			= 10;
@@ -409,8 +413,10 @@ void fake_smoke( TraceResult tr, int spriteIndex )
 	msg.End();
 }
 
-CBaseEntity@ ShootCustomProjectile( string classname, string mdl, Vector origin, Vector velocity, Vector angles, CBasePlayer@ pOwner, float time = 0 )
+CBaseEntity@ ShootCustomProjectile( string classname, string mdl, Vector origin, Vector velocity, Vector angles, EHandle &in eOwner, float time = 0 )
 {
+	CBaseEntity@ pOwner = eOwner.GetEntity();
+
 	if( classname.Length() == 0 )
 		return null;
 
