@@ -167,6 +167,20 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 <BR>
 
 
+* Compound Bow
+
+    * ENTITIES
+    * `weapon_csobow` - Weapon
+    * `csoarrow` - Projectile
+    * `ammo_csoarrows` - Ammo
+ 
+    * AMMO NAME
+    * `csoarrows`
+
+
+<BR>
+
+
 # MACHINE GUNS
 * Aeolis
     * [Video](https://youtu.be/Komeh8zz1Jc)
