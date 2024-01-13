@@ -22,16 +22,14 @@ const Vector2D CSOW_RECOIL_DUCKING_X	= Vector2D(0, 0);
 const Vector2D CSOW_RECOIL_DUCKING_Y	= Vector2D(0, 0);
 const Vector CSOW_CONE							= VECTOR_CONE_2DEGREES;
 
-const string CSOW_ANIMEXT						= "m16";
+const string CSOW_ANIMEXT						= "egon";
 
 const string MODEL_VIEW							= "models/custom_weapons/cso/v_bow.mdl";
 const string MODEL_PLAYER						= "models/custom_weapons/cso/p_bow.mdl";
 const string MODEL_PLAYER_EMPTY			= "models/custom_weapons/cso/p_bow_empty.mdl";
 const string MODEL_WORLD						= "models/custom_weapons/cso/w_bow.mdl";
 const string MODEL_PROJ							= "models/custom_weapons/cso/arrow.mdl";
-const string MODEL_AMMO						= "models/w_weaponbox.mdl"; //w_crossbow_clip
-
-const string SPRITE_TRAIL							= "sprites/laserbeam.spr";
+const string MODEL_AMMO						= "models/w_crossbow_clip.mdl";
 
 enum csow_e
 {
@@ -94,7 +92,7 @@ class weapon_csobow : CBaseCustomWeapon
 	{
 		self.Precache();
 		g_EntityFuncs.SetModel( self, MODEL_WORLD );
-		self.m_iDefaultAmmo = CSOW_DEFAULT_GIVE;
+		self.m_iDefaultAmmo = CSOW_MAX_AMMO;
 		self.FallInit();
 	}
 
@@ -110,7 +108,7 @@ class weapon_csobow : CBaseCustomWeapon
 		g_Game.PrecacheModel( MODEL_WORLD );
 		g_Game.PrecacheModel( MODEL_AMMO );
 		g_Game.PrecacheModel( MODEL_PROJ );
-		g_Game.PrecacheModel( SPRITE_TRAIL );
+		g_Game.PrecacheModel( PENETRATE::SPRITE_TRAIL_CSOBOW );
 
 		for( i = 0; i < pCSOWSounds.length(); ++i )
 			g_SoundSystem.PrecacheSound( pCSOWSounds[i] );
@@ -185,6 +183,9 @@ class weapon_csobow : CBaseCustomWeapon
 
 	void PrimaryAttack()
 	{
+		if( m_iState > STATE_NONE )
+			return;
+
 		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 )
 		{
 			self.m_flNextPrimaryAttack = g_Engine.time + 0.15;
@@ -308,7 +309,7 @@ class weapon_csobow : CBaseCustomWeapon
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_CHARGE_SHOOT], VOL_NORM, ATTN_NORM );
 
-		ChargedShot();
+		PENETRATE::FirePenetratingBullets( m_pPlayer.GetGunPosition(), g_Engine.v_forward, 0, 4096, 2, PENETRATE::BULLET_PLAYER_CSOBOW, CSOW_DAMAGE2, 1.0, EHandle(m_pPlayer), false, m_pPlayer.random_seed ); //multiply CSOW_DAMAGE2 by 1.5 ??
 		Vector2D vec2dRecoilX = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_X : CSOW_RECOIL_STANDING_X;
 		Vector2D vec2dRecoilY = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_Y : CSOW_RECOIL_STANDING_Y;
 
@@ -318,63 +319,6 @@ class weapon_csobow : CBaseCustomWeapon
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD2;
 
 		m_iState = STATE_NONE;
-	}
-
-	void ChargedShot()
-	{
-		Vector vecStartOrigin, vecEndOrigin, vecEndOrigin2;
-	
-		get_position( 40.0, 0.0, 0.0, vecStartOrigin );
-		get_position( 4096.0, 0.0, 0.0, vecEndOrigin );
-
-		TraceResult tr;
-		g_Utility.TraceLine( vecStartOrigin, vecEndOrigin, ignore_monsters, m_pPlayer.edict(), tr );
-		vecEndOrigin2 = tr.vecEndPos;
-
-		NetworkMessage m1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
-			m1.WriteByte( TE_BEAMPOINTS );
-			m1.WriteCoord( vecStartOrigin.x );//start position
-			m1.WriteCoord( vecStartOrigin.y );
-			m1.WriteCoord( vecStartOrigin.z );
-			m1.WriteCoord( vecEndOrigin2.x );//end position
-			m1.WriteCoord( vecEndOrigin2.y );
-			m1.WriteCoord( vecEndOrigin2.z );
-			m1.WriteShort( g_EngineFuncs.ModelIndex(SPRITE_TRAIL) );//sprite index
-			m1.WriteByte( 0 );//starting frame
-			m1.WriteByte( 0 );//framerate in 0.1's
-			m1.WriteByte( 20 );//life in 0.1's
-			m1.WriteByte( 10 );//width in 0.1's
-			m1.WriteByte( 0 );//noise amplitude in 0.1's
-			m1.WriteByte( 255 );//red
-			m1.WriteByte( 127 );//green
-			m1.WriteByte( 127 );//blue
-			m1.WriteByte( 127 );//brightness
-			m1.WriteByte( 0 );//scroll speed
-		m1.End();
-
-		NetworkMessage m2( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
-			m2.WriteByte( TE_BEAMPOINTS );
-			m2.WriteCoord( vecStartOrigin.x );//start position
-			m2.WriteCoord( vecStartOrigin.y );
-			m2.WriteCoord( vecStartOrigin.z );
-			m2.WriteCoord( vecEndOrigin2.x );//end position
-			m2.WriteCoord( vecEndOrigin2.y );
-			m2.WriteCoord( vecEndOrigin2.z );
-			m2.WriteShort( g_EngineFuncs.ModelIndex(SPRITE_TRAIL) );//sprite index
-			m2.WriteByte( 0 );//starting frame
-			m2.WriteByte( 0 );//framerate in 0.1's
-			m2.WriteByte( 20 );//life in 0.1's
-			m2.WriteByte( 10 );//width in 0.1's
-			m2.WriteByte( 0 );//noise amplitude in 0.1's
-			m2.WriteByte( 255 );//red
-			m2.WriteByte( 255 );//green
-			m2.WriteByte( 255 );//blue
-			m2.WriteByte( 127 );//brightness
-			m2.WriteByte( 0 );//scroll speed
-		m2.End();
-
-		//FirePenetratingBullets( Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, float flDamage, float flRangeModifier, EHandle &in ePlayer, bool bPistol, int shared_rand )
-		PENETRATE::FirePenetratingBullets( m_pPlayer.GetGunPosition(), g_Engine.v_forward, 0, 4096, 2, BULLET_PLAYER_45ACP, CSOW_DAMAGE2, 1.0, EHandle(m_pPlayer), false, m_pPlayer.random_seed ); //multiply CSOW_DAMAGE2 by 1.5 ??
 	}
 
 	void WeaponIdle()
@@ -505,7 +449,7 @@ class csoarrow : ScriptBaseEntity
 			NetworkMessage m1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
 				m1.WriteByte( TE_BEAMFOLLOW );
 				m1.WriteShort( self.entindex() );
-				m1.WriteShort( g_EngineFuncs.ModelIndex(SPRITE_TRAIL) );
+				m1.WriteShort( g_EngineFuncs.ModelIndex(PENETRATE::SPRITE_TRAIL_CSOBOW) );
 				m1.WriteByte( 10 ); // life
 				m1.WriteByte( 2 );  // width
 				m1.WriteByte( 255 ); // r
@@ -517,7 +461,7 @@ class csoarrow : ScriptBaseEntity
 			NetworkMessage m2( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
 				m2.WriteByte( TE_BEAMFOLLOW );
 				m2.WriteShort( self.entindex() );
-				m2.WriteShort( g_EngineFuncs.ModelIndex(SPRITE_TRAIL) );
+				m2.WriteShort( g_EngineFuncs.ModelIndex(PENETRATE::SPRITE_TRAIL_CSOBOW) );
 				m2.WriteByte( 10 ); // life
 				m2.WriteByte( 2 );  // width
 				m2.WriteByte( 255 ); // r
@@ -543,6 +487,7 @@ class ammo_csoarrows : ScriptBasePlayerAmmoEntity
 	void Spawn()
 	{ 
 		g_EntityFuncs.SetModel( self, MODEL_AMMO );
+		pev.scale = 2.0;
 		BaseClass.Spawn();
 	}
 
@@ -571,3 +516,8 @@ void Register()
 }
 
 } //namespace cso_bow END
+
+/*
+TODO
+Make a proper ammo model?
+*/
