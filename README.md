@@ -181,6 +181,20 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 <BR>
 
 
+* Failnaught
+
+    * ENTITIES
+    * `weapon_failnaught` - Weapon
+    * `holyarrow` - Projectile
+    * `ammo_holyarrows` - Ammo
+ 
+    * AMMO NAME
+    * `holyarrows`
+
+
+<BR>
+
+
 # MACHINE GUNS
 * Aeolis
     * [Video](https://youtu.be/Komeh8zz1Jc)
