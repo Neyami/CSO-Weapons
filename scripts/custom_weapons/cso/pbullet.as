@@ -2,6 +2,10 @@
 namespace PENETRATE
 {
 
+const string SPRITE_TRAIL_CSOBOW					= "sprites/laserbeam.spr";
+const string SPRITE_TRAIL_FAILNAUGHT				= "sprites/custom_weapons/cso/ef_huntbow_trail.spr";
+const string SPRITE_TRAIL_FAILNAUGHT_EXPLODE	= "sprites/custom_weapons/cso/ef_huntbow_explo.spr";
+
 enum eBulletType
 {
 	BULLET_PLAYER_45ACP = 18,
@@ -10,7 +14,16 @@ enum eBulletType
 	BULLET_PLAYER_556MM,
 	BULLET_PLAYER_338MAG,
 	BULLET_PLAYER_57MM,
-	BULLET_PLAYER_357SIG
+	BULLET_PLAYER_357SIG,
+	BULLET_PLAYER_CSOBOW,
+	BULLET_PLAYER_FAILNAUGHT
+};
+
+enum eTrailType
+{
+	TRAIL_NONE = 0,
+	TRAIL_CSOBOW,
+	TRAIL_FAILNAUGHT
 };
 
 //Bullet-Proof Textures
@@ -37,6 +50,8 @@ Vector FirePenetratingBullets( Vector vecSrc, Vector vecDirShooting, float flSpr
 	CBaseEntity@ pEntity;
 	bool bHitMetal = false;
 	int iSparksAmount;
+	int iTrail = TRAIL_NONE;
+	Vector vecTrailOrigin = vecSrc;
 
 	switch( iBulletType )
 	{
@@ -109,6 +124,26 @@ Vector FirePenetratingBullets( Vector vecSrc, Vector vecDirShooting, float flSpr
 			flPenetrationDistance = 800;
 			iSparksAmount = 20;
 			flCurrentDamage += (-4 + Math.RandomLong(0, 10));
+			break;
+		}
+
+		case BULLET_PLAYER_CSOBOW:
+		{
+			flPenetrationPower = 30;
+			flPenetrationDistance = 1500;
+			iSparksAmount = 20;
+			flCurrentDamage += (-2 + Math.RandomLong(0, 4));
+			iTrail = TRAIL_CSOBOW;
+			break;
+		}
+
+		case BULLET_PLAYER_FAILNAUGHT:
+		{
+			flPenetrationPower = 35;
+			flPenetrationDistance = 2000;
+			iSparksAmount = 20;
+			flCurrentDamage += (-2 + Math.RandomLong(0, 4));
+			iTrail = TRAIL_FAILNAUGHT;
 			break;
 		}
 
@@ -197,6 +232,15 @@ Vector FirePenetratingBullets( Vector vecSrc, Vector vecDirShooting, float flSpr
 		{
 			@pEntity = g_EntityFuncs.Instance(tr.pHit);
 			iPenetration--;
+
+			if( iTrail > TRAIL_NONE )
+			{
+				if( iPenetration == 0 )
+					DoTrail( iTrail, vecTrailOrigin, tr.vecEndPos );
+
+				DoTrailExplosion( iTrail, tr.vecEndPos );
+			}
+
 			flCurrentDistance = tr.flFraction * flDistance;
 			flCurrentDamage *= pow(flRangeModifier, flCurrentDistance / 500);
 
@@ -243,7 +287,7 @@ Vector FirePenetratingBullets( Vector vecSrc, Vector vecDirShooting, float flSpr
 				vecEnd = vecSrc + (vecDir * flDistance);
 
 				pEntity.TraceAttack( pPlayer.pev, flCurrentDamage, vecDir, tr, (DMG_BULLET|DMG_NEVERGIB) );
-				g_Game.AlertMessage( at_console, "Hit SOLID_BSP: %1 with damage: %2\n", tr.pHit.vars.classname, flCurrentDamage );
+				//g_Game.AlertMessage( at_console, "Hit SOLID_BSP: %1 with damage: %2\n", tr.pHit.vars.classname, flCurrentDamage );
 
 				flCurrentDamage *= flDamageModifier;
 			}
@@ -259,7 +303,7 @@ Vector FirePenetratingBullets( Vector vecSrc, Vector vecDirShooting, float flSpr
 				vecEnd = vecSrc + (vecDir * flDistance);
 
 				pEntity.TraceAttack( pPlayer.pev, flCurrentDamage, vecDir, tr, (DMG_BULLET|DMG_NEVERGIB) );
-				g_Game.AlertMessage( at_console, "Hit entity: %1 with damage: %2\n", tr.pHit.vars.classname, flCurrentDamage );
+				//g_Game.AlertMessage( at_console, "Hit entity: %1 with damage: %2\n", tr.pHit.vars.classname, flCurrentDamage );
 
 				flCurrentDamage *= 0.75f;
 			}
@@ -271,6 +315,85 @@ Vector FirePenetratingBullets( Vector vecSrc, Vector vecDirShooting, float flSpr
 	}
 
 	return Vector(x * flSpread, y * flSpread, 0);
+}
+
+void DoTrail( int iTrail, Vector vecTrailstart, Vector vecTrailend )
+{
+	switch( iTrail )
+	{
+		case TRAIL_CSOBOW:
+		{
+			NetworkMessage m1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
+				m1.WriteByte( TE_BEAMPOINTS );
+				m1.WriteCoord( vecTrailstart.x );//start position
+				m1.WriteCoord( vecTrailstart.y );
+				m1.WriteCoord( vecTrailstart.z );
+				m1.WriteCoord( vecTrailend.x );//end position
+				m1.WriteCoord( vecTrailend.y );
+				m1.WriteCoord( vecTrailend.z );
+				m1.WriteShort( g_EngineFuncs.ModelIndex(SPRITE_TRAIL_CSOBOW) );//sprite index
+				m1.WriteByte( 0 );//starting frame
+				m1.WriteByte( 0 );//framerate in 0.1's
+				m1.WriteByte( 20 );//life in 0.1's
+				m1.WriteByte( 10 );//width in 0.1's
+				m1.WriteByte( 0 );//noise amplitude in 0.1's
+				m1.WriteByte( 255 );//red
+				m1.WriteByte( 127 );//green
+				m1.WriteByte( 127 );//blue
+				m1.WriteByte( 127 );//brightness
+				m1.WriteByte( 0 );//scroll speed
+			m1.End();
+
+			break;
+		}
+
+		case TRAIL_FAILNAUGHT:
+		{
+			NetworkMessage m1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
+				m1.WriteByte( TE_BEAMPOINTS );
+				m1.WriteCoord( vecTrailstart.x );//start position
+				m1.WriteCoord( vecTrailstart.y );
+				m1.WriteCoord( vecTrailstart.z );
+				m1.WriteCoord( vecTrailend.x );//end position
+				m1.WriteCoord( vecTrailend.y );
+				m1.WriteCoord( vecTrailend.z );
+				m1.WriteShort( g_EngineFuncs.ModelIndex(SPRITE_TRAIL_FAILNAUGHT) );//sprite index
+				m1.WriteByte( 0 );//starting frame
+				m1.WriteByte( 1);//framerate in 0.1's
+				m1.WriteByte( 20 );//life in 0.1's
+				m1.WriteByte( 84 );//width in 0.1's
+				m1.WriteByte( 0 );//noise amplitude in 0.1's
+				m1.WriteByte( 219 );//red
+				m1.WriteByte( 180 );//green
+				m1.WriteByte( 12 );//blue
+				m1.WriteByte( 127 );//brightness
+				m1.WriteByte( 1 );//scroll speed
+			m1.End();
+
+			break;
+		}
+	}
+}
+
+void DoTrailExplosion( int iTrail, Vector vecTrailend )
+{
+	switch( iTrail )
+	{
+		case TRAIL_FAILNAUGHT:
+		{
+			NetworkMessage m1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
+				m1.WriteByte( TE_SPRITE );
+				m1.WriteCoord( vecTrailend.x );
+				m1.WriteCoord( vecTrailend.y );
+				m1.WriteCoord( vecTrailend.z );
+				m1.WriteShort( g_EngineFuncs.ModelIndex(SPRITE_TRAIL_FAILNAUGHT_EXPLODE) );
+				m1.WriteByte( 5 ); // scale * 10
+				m1.WriteByte( 150 ); // brightness
+			m1.End();			
+
+			break;
+		}
+	}
 }
 
 } //namespace PENETRATE END
