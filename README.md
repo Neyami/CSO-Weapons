@@ -57,7 +57,7 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 
 * Dual Wakizashi	
 
-      * ENTITIES
+    * ENTITIES
     * `weapon_dualwaki` - Weapon
 
 <BR>
