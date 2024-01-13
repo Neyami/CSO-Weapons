@@ -69,6 +69,8 @@ const int PLASMAGUN_SLOT			= 5;
 const int PLASMAGUN_POSITION		= 11;
 const int CSOBOW_SLOT			= 5;
 const int CSOBOW_POSITION		= 12;
+const int FAILNAUGHT_SLOT			= 5;
+const int FAILNAUGHT_POSITION		= 13;
 //Sniper Rifles
 const int M82_SLOT				= 6;
 const int M82_POSITION			= 10;
