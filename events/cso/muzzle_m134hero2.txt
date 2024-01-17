@@ -1,0 +1,9 @@
+attachment 0
+bone 0
+spritename sprites/custom_weapons/cso/muzzleflash7.spr
+scale  8
+colorR 127
+colorB 127
+colorG 127
+rendermode 5
+transparency 127
