@@ -18,7 +18,9 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 
 `#include "../custom_weapons/baseweapon"`
 
-`#include "../custom_weapons/cso/csocommon"`
+`#include "../custom_weapons/cso/csocommon"`  
+
+Change bUseDroppedItemEffect to true in csocommon.as if you want to use CSO-like dropped weapons (experimental, only m134hero has it atm)
 
 <BR>
 
@@ -212,6 +214,20 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
  
     * AMMO NAME
     * `556`
+
+
+<BR>
+
+
+* M134 Vulcan
+    * [Video1](https://youtu.be/ilttN8HlO9A) - [Video2](https://youtu.be/dkn2-j5sAt0)
+
+    * ENTITIES
+    * `weapon_m134hero` - Weapon
+    * `ef_gundrop` - Dropped Item Effect
+ 
+    * AMMO NAME
+    * `762mg`
 
 
 <BR>
