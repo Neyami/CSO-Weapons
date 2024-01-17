@@ -81,6 +81,8 @@ const int DESTROYER_POSITION	= 12;
 //Machine Guns
 const int AEOLIS_SLOT			= 7;
 const int AEOLIS_POSITION		= 10;
+const int M134HERO_SLOT			= 7;
+const int M134HERO_POSITION		= 11;
 //const int LASERMINIGUN_SLOT		= 7;
 //const int LASERMINIGUN_POSITION	= 11;
 //Special/Miscellaneous (Equipment)
@@ -96,6 +98,9 @@ const int AT4_SLOT				= 8;
 const int AT4_POSITION			= 14;
 
 const float CSO_AZ_MULTIPLIER	= 1.2f; //Anti-Zombie
+
+const string CSO_ITEMDISPLAY_MODEL	= "models/custom_weapons/cso/ef_gundrop.mdl";
+const bool bUseDroppedItemEffect = false;
 
 enum SMOKETYPE
 {
@@ -130,7 +135,11 @@ const array<string> g_arrsZombies =
 
 const array<string> pSmokeSprites =
 {
-	"sprites/custom_weapons/cso/smoke_thanatos9.spr"
+	"sprites/custom_weapons/cso/smoke_thanatos9.spr",
+	"sprites/custom_weapons/cso/wall_puff1.spr",
+	"sprites/custom_weapons/cso/wall_puff2.spr",
+	"sprites/custom_weapons/cso/wall_puff3.spr",
+	"sprites/custom_weapons/cso/wall_puff4.spr"
 };
 
 void GetDefaultShellInfo( EHandle &in ePlayer, Vector &out ShellOrigin, Vector &out ShellVelocity, float forwardScale, float rightScale, float upScale )
@@ -154,15 +163,15 @@ void GetDefaultShellInfo( CBasePlayer@ pPlayer, Vector &out ShellOrigin, Vector 
 					+ g_Engine.v_forward * 25;
 }
 
-void DoDecalGunshot( Vector vecSrc, Vector vecAiming, float flConeX, float flConeY, int iBulletType, EHandle &in ePlayer )
+void DoDecalGunshot( Vector vecSrc, Vector vecAiming, float flConeX, float flConeY, int iBulletType, EHandle &in ePlayer, bool bSmokePuff = false )
 {
 	CBasePlayer@ pPlayer = null;
 
 	if( ePlayer.IsValid() ) @pPlayer = cast<CBasePlayer@>( ePlayer.GetEntity() );
-	if( pPlayer !is null ) DoDecalGunshot( vecSrc, vecAiming, flConeX, flConeY, iBulletType, pPlayer );
+	if( pPlayer !is null ) DoDecalGunshot( vecSrc, vecAiming, flConeX, flConeY, iBulletType, pPlayer, bSmokePuff );
 }
 
-void DoDecalGunshot( Vector vecSrc, Vector vecAiming, float flConeX, float flConeY, int iBulletType, CBasePlayer@ pPlayer )
+void DoDecalGunshot( Vector vecSrc, Vector vecAiming, float flConeX, float flConeY, int iBulletType, CBasePlayer@ pPlayer, bool bSmokePuff = false )
 {
 	TraceResult tr;
 	
@@ -187,6 +196,20 @@ void DoDecalGunshot( Vector vecSrc, Vector vecAiming, float flConeX, float flCon
 			if( pHit is null || pHit.IsBSPModel() == true )
 			{
 				g_WeaponFuncs.DecalGunshot( tr, iBulletType );
+
+				if( bSmokePuff )
+				{
+					NetworkMessage m1( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, tr.vecEndPos );
+						m1.WriteByte( TE_EXPLOSION );
+						m1.WriteCoord( tr.vecEndPos.x );
+						m1.WriteCoord( tr.vecEndPos.y );
+						m1.WriteCoord( tr.vecEndPos.z - 10.0 );
+						m1.WriteShort( g_EngineFuncs.ModelIndex(pSmokeSprites[Math.RandomLong(1, 4)]) );
+						m1.WriteByte( 2 );
+						m1.WriteByte( 50 );
+						m1.WriteByte( TE_EXPLFLAG_NODLIGHTS|TE_EXPLFLAG_NOSOUND|TE_EXPLFLAG_NOPARTICLES );
+					m1.End();
+				}
 			}
 		}
 	}
@@ -282,7 +305,7 @@ void CreateShotgunPelletDecals( CBasePlayer@ pPlayer, const Vector& in vecSrc, c
 					}
 
 					flTotalDamage += flDamage;
-					//g_Game.AlertMessage( at_console, "Shot Number %1 - flDamage: %2 - Total Damage: %3\n", uiPellet, flDamage, flTotalDamage );
+					//g_Game.AlertMessage( at_notice, "Shot Number %1 - flDamage: %2 - Total Damage: %3\n", uiPellet, flDamage, flTotalDamage );
 					g_WeaponFuncs.ClearMultiDamage();
 					pHit.TraceAttack( pPlayer.pev, flDamage, vecDir, tr, iDamageFlags );
 					g_WeaponFuncs.ApplyMultiDamage( pPlayer.pev, pPlayer.pev );
@@ -444,4 +467,46 @@ CBaseEntity@ ShootCustomProjectile( string classname, string mdl, Vector origin,
 	return shootEnt;
 }
 
+class ef_gundrop : ScriptBaseAnimating
+{
+	EHandle m_hOwner;
+
+	void Spawn()
+	{
+		Precache();
+
+		g_EntityFuncs.SetModel( self, CSO_ITEMDISPLAY_MODEL );
+		g_EntityFuncs.SetOrigin( self, self.pev.origin );
+		g_EntityFuncs.SetSize( self.pev, g_vecZero, g_vecZero );
+
+		pev.solid		= SOLID_NOT;
+		//pev.movetype	= MOVETYPE_NONE;
+		pev.framerate	= 1.0;
+
+		self.pev.frame = 0;
+		self.ResetSequenceInfo();
+
+		SetThink( ThinkFunction(this.IdleThink) );
+		pev.nextthink = g_Engine.time + 0.1;
+	}
+
+	void Precache()
+	{
+		g_Game.PrecacheModel( CSO::CSO_ITEMDISPLAY_MODEL );
+	}
+
+	void IdleThink()
+	{
+		if( m_hOwner.IsValid() )
+		{
+			self.StudioFrameAdvance();
+
+			if( m_hOwner.GetEntity().pev.owner !is null )
+				g_EntityFuncs.Remove( self );
+		}
+		else g_EntityFuncs.Remove( self );
+
+		pev.nextthink = g_Engine.time + 0.1;
+	}
+}
 } //namespace CSO END
