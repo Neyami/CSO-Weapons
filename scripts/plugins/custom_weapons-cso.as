@@ -30,6 +30,7 @@
 
 //Machine Guns
 #include "../custom_weapons/cso/weapon_aeolis"
+#include "../custom_weapons/cso/weapon_m134hero"
 
 //Sniper Rifles
 #include "../custom_weapons/cso/weapon_savery"
@@ -59,5 +60,6 @@ void MapInit()
 	cso_bow::Register();
 	cso_failnaught::Register();
 	cso_aeolis::Register();
+	cso_m134hero::Register();
 	cso_savery::Register();
 }
