@@ -5,102 +5,104 @@ namespace CSO
 
 //Weapon slots and positions.
 //Melee
-const int DCLAW_SLOT			= 1;
-const int DCLAW_POSITION		= 10;
-const int BEAMSWORD_SLOT		= 1;
-const int BEAMSWORD_POSITION	= 11;
-const int BALROG9_SLOT			= 1;
-const int BALROG9_POSITION		= 12;
-const int JANUS9_SLOT			= 1;
-const int JANUS9_POSITION		= 13;
-const int DWAKI_SLOT			= 1;
-const int DWAKI_POSITION		= 15;
-const int THANATOS9_SLOT		= 1;
-const int THANATOS9_POSITION	= 16;
-const int RUNEBLADE_SLOT		= 1;
-const int RUNEBLADE_POSITION	= 16;
-const int STORMGIANT_SLOT		= 1;
-const int STORMGIANT_POSITION	= 16;
-const int HZKNIFE_SLOT			= 1;
-const int HZKNIFE_POSITION		= 16;
-const int SCARECROW_SLOT		= 1;
-const int SCARECROW_POSITION	= 16;
-const int WARFAN_SLOT			= 1;
-const int WARFAN_POSITION		= 16;
+const int DCLAW_SLOT						= 1;
+const int DCLAW_POSITION				= 10;
+const int BEAMSWORD_SLOT				= 1;
+const int BEAMSWORD_POSITION		= 11;
+const int BALROG9_SLOT					= 1;
+const int BALROG9_POSITION				= 12;
+const int JANUS9_SLOT						= 1;
+const int JANUS9_POSITION				= 13;
+const int DWAKI_SLOT						= 1;
+const int DWAKI_POSITION				= 15;
+const int THANATOS9_SLOT				= 1;
+const int THANATOS9_POSITION		= 16;
+const int RUNEBLADE_SLOT				= 1;
+const int RUNEBLADE_POSITION			= 16;
+const int STORMGIANT_SLOT				= 1;
+const int STORMGIANT_POSITION		= 16;
+const int HZKNIFE_SLOT					= 1;
+const int HZKNIFE_POSITION				= 16;
+const int SCARECROW_SLOT				= 1;
+const int SCARECROW_POSITION		= 16;
+const int WARFAN_SLOT					= 1;
+const int WARFAN_POSITION				= 16;
 //Pistols
-const int M950_SLOT				= 2;
-const int M950_POSITION			= 10;
-const int SKULL1_SLOT			= 2;
-const int SKULL1_POSITION		= 11;
-const int SKULL2_SLOT			= 2;
-const int SKULL2_POSITION		= 12;
-const int BLOODHUNTER_SLOT		= 2;
-const int BLOODHUNTER_POSITION	= 13;
-const int DESPERADO_SLOT		= 2;
-const int DESPERADO_POSITION	= 14;
+const int M950_SLOT						= 2;
+const int M950_POSITION					= 10;
+const int SKULL1_SLOT						= 2;
+const int SKULL1_POSITION				= 11;
+const int SKULL2_SLOT						= 2;
+const int SKULL2_POSITION				= 12;
+const int BLOODHUNTER_SLOT			= 2;
+const int BLOODHUNTER_POSITION		= 13;
+const int DESPERADO_SLOT				= 2;
+const int DESPERADO_POSITION			= 14;
 //Shotguns
-const int QBARREL_SLOT			= 3;
-const int QBARREL_POSITION		= 10;
-const int BALROG11_SLOT			= 3;
-const int BALROG11_POSITION		= 11;
-const int RAILCANNON_SLOT		= 3;
-const int RAILCANNON_POSITION	= 10;
-const int SGDRILL_SLOT			= 3;
-const int SGDRILL_POSITION		= 12;
-const int BLOCKAS_SLOT			= 3;
-const int BLOCKAS_POSITION		= 10;
-const int MK3A1_SLOT			= 3;
-const int MK3A1_POSITION		= 10;
-const int FIREVULCAN_SLOT		= 3;
-const int FIREVULCAN_POSITION	= 13;
-const int LSG1_SLOT				= 3;
-const int LSG1_POSITION			= 14;
-const int SKULL11_SLOT			= 3;
-const int SKULL11_POSITION		= 15;
-const int KSG12_SLOT			= 3;
-const int KSG12_POSITION		= 16;
+const int QBARREL_SLOT					= 3;
+const int QBARREL_POSITION				= 10;
+const int BALROG11_SLOT					= 3;
+const int BALROG11_POSITION			= 11;
+const int RAILCANNON_SLOT				= 3;
+const int RAILCANNON_POSITION		= 10;
+const int SGDRILL_SLOT					= 3;
+const int SGDRILL_POSITION				= 12;
+const int BLOCKAS_SLOT					= 3;
+const int BLOCKAS_POSITION				= 10;
+const int MK3A1_SLOT						= 3;
+const int MK3A1_POSITION				= 10;
+const int FIREVULCAN_SLOT				= 3;
+const int FIREVULCAN_POSITION		= 13;
+const int LSG1_SLOT						= 3;
+const int LSG1_POSITION					= 14;
+const int SKULL11_SLOT					= 3;
+const int SKULL11_POSITION				= 15;
+const int KSG12_SLOT						= 3;
+const int KSG12_POSITION				= 16;
 //SMGs
-const int V3_SLOT				= 4;
-const int V3_POSITION			= 10;
+const int V3_SLOT							= 4;
+const int V3_POSITION						= 10;
+const int CROW3_SLOT						= 4;
+const int CROW3_POSITION				= 11;
 //Assault Rifles
-const int ETHEREAL_SLOT			= 5;
-const int ETHEREAL_POSITION		= 10;
-const int PLASMAGUN_SLOT			= 5;
-const int PLASMAGUN_POSITION		= 11;
-const int CSOBOW_SLOT			= 5;
-const int CSOBOW_POSITION		= 12;
-const int FAILNAUGHT_SLOT			= 5;
+const int ETHEREAL_SLOT					= 5;
+const int ETHEREAL_POSITION			= 10;
+const int PLASMAGUN_SLOT				= 5;
+const int PLASMAGUN_POSITION			= 11;
+const int CSOBOW_SLOT					= 5;
+const int CSOBOW_POSITION				= 12;
+const int FAILNAUGHT_SLOT				= 5;
 const int FAILNAUGHT_POSITION		= 13;
 //Sniper Rifles
-const int M82_SLOT				= 6;
-const int M82_POSITION			= 10;
-const int SAVERY_SLOT			= 6;
-const int SAVERY_POSITION		= 11;
-const int DESTROYER_SLOT		= 6;
-const int DESTROYER_POSITION	= 12;
+const int M82_SLOT							= 6;
+const int M82_POSITION					= 10;
+const int SAVERY_SLOT					= 6;
+const int SAVERY_POSITION				= 11;
+const int DESTROYER_SLOT				= 6;
+const int DESTROYER_POSITION			= 12;
 //Machine Guns
-const int AEOLIS_SLOT			= 7;
-const int AEOLIS_POSITION		= 10;
-const int M134HERO_SLOT			= 7;
-const int M134HERO_POSITION		= 11;
-//const int LASERMINIGUN_SLOT		= 7;
+const int AEOLIS_SLOT						= 7;
+const int AEOLIS_POSITION				= 10;
+const int M134HERO_SLOT					= 7;
+const int M134HERO_POSITION			= 11;
+//const int LASERMINIGUN_SLOT			= 7;
 //const int LASERMINIGUN_POSITION	= 11;
 //Special/Miscellaneous (Equipment)
-const int PB_SLOT				= 7;
-const int PB_POSITION			= 11;
-const int SPEARGUN_SLOT			= 7;
-const int SPEARGUN_POSITION		= 12;
-const int CSOCROSSBOW_SLOT		= 7;
+const int PB_SLOT							= 7;
+const int PB_POSITION						= 11;
+const int SPEARGUN_SLOT					= 7;
+const int SPEARGUN_POSITION			= 12;
+const int CSOCROSSBOW_SLOT			= 7;
 const int CSOCROSSBOW_POSITION	= 13;
-const int RAILBUSTER_SLOT		= 8;
-const int RAILBUSTER_POSITION	= 13;
-const int AT4_SLOT				= 8;
-const int AT4_POSITION			= 14;
+const int RAILBUSTER_SLOT				= 8;
+const int RAILBUSTER_POSITION			= 13;
+const int AT4_SLOT							= 8;
+const int AT4_POSITION					= 14;
 
 const float CSO_AZ_MULTIPLIER	= 1.2f; //Anti-Zombie
 
 const string CSO_ITEMDISPLAY_MODEL	= "models/custom_weapons/cso/ef_gundrop.mdl";
-const bool bUseDroppedItemEffect = false;
+const bool bUseDroppedItemEffect = true;
 
 enum SMOKETYPE
 {
@@ -480,7 +482,6 @@ class ef_gundrop : ScriptBaseAnimating
 		g_EntityFuncs.SetSize( self.pev, g_vecZero, g_vecZero );
 
 		pev.solid		= SOLID_NOT;
-		//pev.movetype	= MOVETYPE_NONE;
 		pev.framerate	= 1.0;
 
 		self.pev.frame = 0;
@@ -508,5 +509,10 @@ class ef_gundrop : ScriptBaseAnimating
 
 		pev.nextthink = g_Engine.time + 0.1;
 	}
+}
+
+void RegisterGunDrop()
+{
+	g_CustomEntityFuncs.RegisterCustomEntity( "CSO::ef_gundrop", "ef_gundrop" );
 }
 } //namespace CSO END
