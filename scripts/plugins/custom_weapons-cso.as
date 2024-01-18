@@ -23,6 +23,9 @@
 #include "../custom_weapons/cso/weapon_volcano"
 #include "../custom_weapons/cso/weapon_mk3a1"
 
+//Submachine Guns
+#include "../custom_weapons/cso/weapon_crow3"
+
 //Assault Rifles
 #include "../custom_weapons/cso/weapon_plasmagun"
 #include "../custom_weapons/cso/weapon_csobow"
@@ -56,6 +59,7 @@ void MapInit()
 	cso_balrog11::Register();
 	cso_volcano::Register();
 	cso_mk3a1::Register();
+	cso_crow3::Register();
 	cso_plasmagun::Register();
 	cso_bow::Register();
 	cso_failnaught::Register();
