@@ -161,6 +161,19 @@ Change bUseDroppedItemEffect to true in csocommon.as if you want to use CSO-like
 <BR>
 
 
+# SUBMACHINE GUNS  
+* CROW-3
+    * [Video](https://youtu.be/dIPY_jT4ArQ)
+
+    * ENTITIES
+    * `weapon_crow3` - Weapon
+ 
+    * AMMO NAME
+    * `9mm`
+
+<BR>
+
+
 # ASSAULT RIFLES
 * Plasma Gun
 
