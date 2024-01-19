@@ -171,8 +171,8 @@ class weapon_blockas : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO1;
 		info.iMaxAmmo2 	= CSOW_MAX_AMMO2;
 		info.iMaxClip 	= CSOW_MAX_CLIP;
-		info.iSlot 		= BLOCKAS_SLOT - 1;
-		info.iPosition 	= BLOCKAS_POSITION - 1;
+		info.iSlot 		= CSO::BLOCKAS_SLOT - 1;
+		info.iPosition 	= CSO::BLOCKAS_POSITION - 1;
 		info.iFlags 	= 0;
 		info.iWeight 	= CSOW_WEIGHT;
 
@@ -298,7 +298,7 @@ class weapon_blockas : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
 				flDamage = self.m_flCustomDmg;
 
 			m_pPlayer.FireBullets( CSOW_PELLETCOUNT, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 0, 0 );
-			CreateShotgunPelletDecals( m_pPlayer, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, CSOW_PELLETCOUNT, flDamage, (DMG_BULLET | DMG_LAUNCH | DMG_NEVERGIB) );
+			CSO::CreateShotgunPelletDecals( m_pPlayer, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, CSOW_PELLETCOUNT, flDamage, (DMG_BULLET | DMG_LAUNCH | DMG_NEVERGIB) );
 
 			if( self.m_iClip <= 0 and m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 )
 				m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
