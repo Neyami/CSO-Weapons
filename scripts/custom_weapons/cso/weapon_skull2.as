@@ -157,6 +157,18 @@ class weapon_skull2 : ScriptBasePlayerWeaponEntity
 		return true;
 	}
 
+	bool PlayEmptySound()
+	{
+		if( self.m_bPlayEmptySound )
+		{
+			self.m_bPlayEmptySound = false;
+
+			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
+		}
+
+		return false;
+	}
+
 	bool Deploy()
 	{
 		bool bResult;
