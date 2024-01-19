@@ -139,8 +139,8 @@ class weapon_thanatos9 : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
 		info.iMaxAmmo1		= -1;
 		info.iMaxAmmo2		= -1;
 		info.iMaxClip		= 0; //WEAPON_NOCLIP;
-		info.iSlot			= THANATOS9_SLOT - 1;
-		info.iPosition		= THANATOS9_POSITION - 1;
+		info.iSlot			= CSO::THANATOS9_SLOT - 1;
+		info.iPosition		= CSO::THANATOS9_POSITION - 1;
 		info.iWeight		= CSOW_WEIGHT;
 		return true;
 	}
