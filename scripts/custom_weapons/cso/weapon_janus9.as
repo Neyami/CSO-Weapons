@@ -129,8 +129,8 @@ class weapon_janus9 : CBaseCustomWeapon
 		info.iMaxAmmo1		= -1;
 		info.iMaxAmmo2		= -1;
 		info.iMaxClip		= WEAPON_NOCLIP;
-		info.iSlot			= JANUS9_SLOT - 1;
-		info.iPosition		= JANUS9_POSITION - 1;
+		info.iSlot			= CSO::JANUS9_SLOT - 1;
+		info.iPosition		= CSO::JANUS9_POSITION - 1;
 		info.iWeight		= CSOW_WEIGHT;
 
 		return true;
