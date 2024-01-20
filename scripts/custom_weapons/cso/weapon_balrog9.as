@@ -71,9 +71,8 @@ const array<string> pB9Sounds =
 };
 
 
-class weapon_balrog9 : ScriptBasePlayerWeaponEntity
+class weapon_balrog9 : CBaseCSOWeapon
 {
-	private CBasePlayer@ m_pPlayer = null;
 	TraceResult m_trHit;
 	int m_iInAttack, m_iCharge;
 	float m_flStartCharge, m_flAnimDelay;
