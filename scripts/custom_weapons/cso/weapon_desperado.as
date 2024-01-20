@@ -66,7 +66,7 @@ const array<string> pCSOWSounds =
 	"custom_weapons/cso/dprd_reload_m.wav"
 };
 
-class weapon_desperado : CBaseCustomWeapon
+class weapon_desperado : CBaseCSOWeapon
 {
 	private uint8 m_iMode;
 	private uint8 m_iInRun;
