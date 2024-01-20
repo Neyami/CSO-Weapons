@@ -39,9 +39,8 @@ enum dclaw_e
 	DCLAW_SLASH3MISS,
 };
 
-class weapon_dragonclaw : ScriptBasePlayerWeaponEntity
+class weapon_dragonclaw : CBaseCSOWeapon
 {
-	private CBasePlayer@ m_pPlayer = null;
 	int m_iSwing;
 	
 	void Spawn()
