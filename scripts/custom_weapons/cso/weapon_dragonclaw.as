@@ -92,8 +92,8 @@ class weapon_dragonclaw : CBaseCSOWeapon
 		info.iMaxAmmo1		= -1;
 		info.iMaxAmmo2		= -1;
 		info.iMaxClip		= WEAPON_NOCLIP;
-		info.iSlot			= DCLAW_SLOT - 1;
-		info.iPosition		= DCLAW_POSITION - 1;
+		info.iSlot			= CSO::DCLAW_SLOT - 1;
+		info.iPosition		= CSO::DCLAW_POSITION - 1;
 		info.iWeight		= DCLAW_WEIGHT;
 		return true;
 	}
