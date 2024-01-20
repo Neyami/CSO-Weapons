@@ -87,9 +87,8 @@ const array<string> pCSOWSounds =
 	"custom_weapons/cso/skull2-1.wav"
 };
 
-class weapon_skull2 : ScriptBasePlayerWeaponEntity
+class weapon_skull2 : CBaseCSOWeapon
 {
-	private CBasePlayer@ m_pPlayer = null;
 	private uint m_uiMode;
 	private bool leftright = false;
 
