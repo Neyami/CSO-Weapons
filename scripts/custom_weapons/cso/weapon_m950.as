@@ -36,9 +36,8 @@ enum M950Animation
 	M950_SHOOT3
 };
 
-class weapon_m950 : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
+class weapon_m950 : CBaseCSOWeapon
 {
-	//private CBasePlayer@ m_pPlayer = null;
 	int m_iDroppedClip, m_iShotsFired;
 
 	void Spawn()
