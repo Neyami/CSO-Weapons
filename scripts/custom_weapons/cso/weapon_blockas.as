@@ -107,9 +107,8 @@ enum modes_e
 	MODE_B
 };
 
-class weapon_blockas : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
+class weapon_blockas : CBaseCSOWeapon
 {
-	//private CBasePlayer@ m_pPlayer = null;
 	private float m_flShootRocketStage1, m_flShootRocketStage2, m_flShootRocketStage3;
 	private float m_flModeChangeStage1, m_flModeChangeStage2, m_flModeChangeStage3;
 	private int m_iShotgunReload;
