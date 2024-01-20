@@ -45,9 +45,8 @@ enum AeolisAnimation
 	AEOLIS_DRAW
 };
 
-class weapon_aeolis : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
+class weapon_aeolis : CBaseCSOWeapon
 {
-	//private CBasePlayer@ m_pPlayer = null;
 	private int m_iInAttack, m_iAnimate, m_iAmmoUse;
 	private int m_iDroppedClip;
 	private int m_iHeat, heatCount;
