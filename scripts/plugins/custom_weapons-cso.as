@@ -17,8 +17,6 @@
 
 //Shotguns
 #include "../custom_weapons/cso/weapon_blockas"
-#include "../custom_weapons/cso/weapon_balrog11"
-//#include "../custom_weapons/cso/weapon_balrog11-wip"
 #include "../custom_weapons/cso/weapon_volcano"
 #include "../custom_weapons/cso/weapon_mk3a1"
 
