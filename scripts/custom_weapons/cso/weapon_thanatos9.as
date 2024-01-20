@@ -84,9 +84,8 @@ enum t9states_e
 	STATE_MODEB_LOOP	= 8
 };
 
-class weapon_thanatos9 : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
+class weapon_thanatos9 : CBaseCSOWeapon
 {
-	//protected CBasePlayer@ m_pPlayer = null;
 	private int g_SmokePuff_SprId;
 	private int m_iWeaponState;
 	private int m_iSwing;
