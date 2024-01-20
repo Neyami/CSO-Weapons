@@ -60,10 +60,8 @@ const array<string> pCSOWSounds =
 	"custom_weapons/cs16/usas_draw.wav"
 };
 
-class weapon_volcano : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
+class weapon_volcano : CBaseCSOWeapon
 {
-	//private CBasePlayer@ m_pPlayer = null;
-
 	void Spawn()
 	{
 		g_EntityFuncs.SetModel( self, MODEL_WORLD );
