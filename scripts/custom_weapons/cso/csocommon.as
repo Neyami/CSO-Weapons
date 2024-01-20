@@ -17,16 +17,16 @@ const int DWAKI_SLOT						= 1;
 const int DWAKI_POSITION				= 15;
 const int THANATOS9_SLOT				= 1;
 const int THANATOS9_POSITION		= 16;
-const int RUNEBLADE_SLOT				= 1;
-const int RUNEBLADE_POSITION			= 16;
-const int STORMGIANT_SLOT				= 1;
-const int STORMGIANT_POSITION		= 16;
-const int HZKNIFE_SLOT					= 1;
-const int HZKNIFE_POSITION				= 16;
-const int SCARECROW_SLOT				= 1;
-const int SCARECROW_POSITION		= 16;
-const int WARFAN_SLOT					= 1;
-const int WARFAN_POSITION				= 16;
+//const int RUNEBLADE_SLOT				= 1;
+//const int RUNEBLADE_POSITION			= 16;
+//const int STORMGIANT_SLOT				= 1;
+//const int STORMGIANT_POSITION		= 16;
+//const int HZKNIFE_SLOT					= 1;
+//const int HZKNIFE_POSITION				= 16;
+//const int SCARECROW_SLOT				= 1;
+//const int SCARECROW_POSITION		= 16;
+//const int WARFAN_SLOT					= 1;
+//const int WARFAN_POSITION				= 16;
 //Pistols
 const int M950_SLOT						= 2;
 const int M950_POSITION					= 10;
@@ -39,34 +39,34 @@ const int BLOODHUNTER_POSITION		= 13;
 const int DESPERADO_SLOT				= 2;
 const int DESPERADO_POSITION			= 14;
 //Shotguns
-const int QBARREL_SLOT					= 3;
-const int QBARREL_POSITION				= 10;
+//const int QBARREL_SLOT					= 3;
+//const int QBARREL_POSITION				= 10;
 const int BALROG11_SLOT					= 3;
 const int BALROG11_POSITION			= 11;
-const int RAILCANNON_SLOT				= 3;
-const int RAILCANNON_POSITION		= 10;
-const int SGDRILL_SLOT					= 3;
-const int SGDRILL_POSITION				= 12;
+//const int RAILCANNON_SLOT				= 3;
+//const int RAILCANNON_POSITION		= 10;
+//const int SGDRILL_SLOT					= 3;
+//const int SGDRILL_POSITION				= 12;
 const int BLOCKAS_SLOT					= 3;
 const int BLOCKAS_POSITION				= 10;
 const int MK3A1_SLOT						= 3;
 const int MK3A1_POSITION				= 10;
 const int FIREVULCAN_SLOT				= 3;
 const int FIREVULCAN_POSITION		= 13;
-const int LSG1_SLOT						= 3;
-const int LSG1_POSITION					= 14;
-const int SKULL11_SLOT					= 3;
-const int SKULL11_POSITION				= 15;
-const int KSG12_SLOT						= 3;
-const int KSG12_POSITION				= 16;
+//const int LSG1_SLOT						= 3;
+//const int LSG1_POSITION					= 14;
+//const int SKULL11_SLOT					= 3;
+//const int SKULL11_POSITION				= 15;
+//const int KSG12_SLOT						= 3;
+//const int KSG12_POSITION				= 16;
 //SMGs
-const int V3_SLOT							= 4;
-const int V3_POSITION						= 10;
+//const int V3_SLOT							= 4;
+//const int V3_POSITION						= 10;
 const int CROW3_SLOT						= 4;
 const int CROW3_POSITION				= 11;
 //Assault Rifles
-const int ETHEREAL_SLOT					= 5;
-const int ETHEREAL_POSITION			= 10;
+//const int ETHEREAL_SLOT					= 5;
+//const int ETHEREAL_POSITION			= 10;
 const int PLASMAGUN_SLOT				= 5;
 const int PLASMAGUN_POSITION			= 11;
 const int CSOBOW_SLOT					= 5;
@@ -74,12 +74,12 @@ const int CSOBOW_POSITION				= 12;
 const int FAILNAUGHT_SLOT				= 5;
 const int FAILNAUGHT_POSITION		= 13;
 //Sniper Rifles
-const int M82_SLOT							= 6;
-const int M82_POSITION					= 10;
+//const int M82_SLOT							= 6;
+//const int M82_POSITION					= 10;
 const int SAVERY_SLOT					= 6;
 const int SAVERY_POSITION				= 11;
-const int DESTROYER_SLOT				= 6;
-const int DESTROYER_POSITION			= 12;
+//const int DESTROYER_SLOT				= 6;
+//const int DESTROYER_POSITION			= 12;
 //Machine Guns
 const int AEOLIS_SLOT						= 7;
 const int AEOLIS_POSITION				= 10;
@@ -88,16 +88,16 @@ const int M134HERO_POSITION			= 11;
 //const int LASERMINIGUN_SLOT			= 7;
 //const int LASERMINIGUN_POSITION	= 11;
 //Special/Miscellaneous (Equipment)
-const int PB_SLOT							= 7;
-const int PB_POSITION						= 11;
-const int SPEARGUN_SLOT					= 7;
-const int SPEARGUN_POSITION			= 12;
-const int CSOCROSSBOW_SLOT			= 7;
-const int CSOCROSSBOW_POSITION	= 13;
-const int RAILBUSTER_SLOT				= 8;
-const int RAILBUSTER_POSITION			= 13;
-const int AT4_SLOT							= 8;
-const int AT4_POSITION					= 14;
+//const int PB_SLOT							= 7;
+//const int PB_POSITION						= 11;
+//const int SPEARGUN_SLOT					= 7;
+//const int SPEARGUN_POSITION			= 12;
+//const int CSOCROSSBOW_SLOT			= 7;
+//const int CSOCROSSBOW_POSITION	= 13;
+//const int RAILBUSTER_SLOT				= 8;
+//const int RAILBUSTER_POSITION			= 13;
+//const int AT4_SLOT							= 8;
+//const int AT4_POSITION					= 14;
 
 const float CSO_AZ_MULTIPLIER	= 1.2f; //Anti-Zombie
 
@@ -143,79 +143,6 @@ const array<string> pSmokeSprites =
 	"sprites/custom_weapons/cso/wall_puff3.spr",
 	"sprites/custom_weapons/cso/wall_puff4.spr"
 };
-
-void GetDefaultShellInfo( EHandle &in ePlayer, Vector &out ShellOrigin, Vector &out ShellVelocity, float forwardScale, float rightScale, float upScale )
-{
-	CBasePlayer@ pPlayer = null;
-
-	if( ePlayer.IsValid() ) @pPlayer = cast<CBasePlayer@>( ePlayer.GetEntity() );
-	if( pPlayer !is null ) GetDefaultShellInfo( pPlayer, ShellOrigin, ShellVelocity, forwardScale, rightScale, upScale );
-	else ShellOrigin = ShellVelocity = g_vecZero;
-}
-
-void GetDefaultShellInfo( CBasePlayer@ pPlayer, Vector &out ShellOrigin, Vector &out ShellVelocity, float forwardScale, float rightScale, float upScale )
-{  
-	Math.MakeVectors( pPlayer.pev.v_angle + pPlayer.pev.punchangle );
-
-	ShellOrigin = pPlayer.pev.origin + pPlayer.pev.view_ofs + g_Engine.v_up * upScale + g_Engine.v_forward * forwardScale + g_Engine.v_right * rightScale;
-
-	ShellVelocity = pPlayer.pev.velocity 
-					+ g_Engine.v_right * Math.RandomFloat(50, 70) 
-					+ g_Engine.v_up * Math.RandomFloat(100, 150) 
-					+ g_Engine.v_forward * 25;
-}
-
-void DoDecalGunshot( Vector vecSrc, Vector vecAiming, float flConeX, float flConeY, int iBulletType, EHandle &in ePlayer, bool bSmokePuff = false )
-{
-	CBasePlayer@ pPlayer = null;
-
-	if( ePlayer.IsValid() ) @pPlayer = cast<CBasePlayer@>( ePlayer.GetEntity() );
-	if( pPlayer !is null ) DoDecalGunshot( vecSrc, vecAiming, flConeX, flConeY, iBulletType, pPlayer, bSmokePuff );
-}
-
-void DoDecalGunshot( Vector vecSrc, Vector vecAiming, float flConeX, float flConeY, int iBulletType, CBasePlayer@ pPlayer, bool bSmokePuff = false )
-{
-	TraceResult tr;
-	
-	float x, y;
-	
-	g_Utility.GetCircularGaussianSpread( x, y );
-	
-	Vector vecDir = vecAiming 
-					+ x * flConeX * g_Engine.v_right 
-					+ y * flConeY * g_Engine.v_up;
-
-	Vector vecEnd	= vecSrc + vecDir * 8192;
-
-	g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, pPlayer.edict(), tr );
-	
-	if( tr.flFraction < 1.0 )
-	{
-		if( tr.pHit !is null )
-		{
-			CBaseEntity@ pHit = g_EntityFuncs.Instance( tr.pHit );
-			
-			if( pHit is null || pHit.IsBSPModel() == true )
-			{
-				g_WeaponFuncs.DecalGunshot( tr, iBulletType );
-
-				if( bSmokePuff )
-				{
-					NetworkMessage m1( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, tr.vecEndPos );
-						m1.WriteByte( TE_EXPLOSION );
-						m1.WriteCoord( tr.vecEndPos.x );
-						m1.WriteCoord( tr.vecEndPos.y );
-						m1.WriteCoord( tr.vecEndPos.z - 10.0 );
-						m1.WriteShort( g_EngineFuncs.ModelIndex(pSmokeSprites[Math.RandomLong(1, 4)]) );
-						m1.WriteByte( 2 );
-						m1.WriteByte( 50 );
-						m1.WriteByte( TE_EXPLFLAG_NODLIGHTS|TE_EXPLFLAG_NOSOUND|TE_EXPLFLAG_NOPARTICLES );
-					m1.End();
-				}
-			}
-		}
-	}
-}
 
 void DoGunSmoke( Vector vecSrc, int iSmokeType )
 {

@@ -36,4 +36,56 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 			ShellOrigin[i]   = pPlayer.pev.origin[i] + pPlayer.pev.view_ofs[i] + vecUp[i] * upScale + vecForward[i] * forwardScale + vecRight[i] * rightScale;
 		}
 	}
+
+	void DoDecalGunshot( Vector vecSrc, Vector vecAiming, float flConeX, float flConeY, int iBulletType, EHandle &in ePlayer, bool bSmokePuff = false )
+	{
+		CBasePlayer@ pPlayer = null;
+
+		if( ePlayer.IsValid() ) @pPlayer = cast<CBasePlayer@>( ePlayer.GetEntity() );
+		if( pPlayer !is null ) DoDecalGunshot( vecSrc, vecAiming, flConeX, flConeY, iBulletType, pPlayer, bSmokePuff );
+	}
+
+	void DoDecalGunshot( Vector vecSrc, Vector vecAiming, float flConeX, float flConeY, int iBulletType, CBasePlayer@ pPlayer, bool bSmokePuff = false )
+	{
+		TraceResult tr;
+		
+		float x, y;
+		
+		g_Utility.GetCircularGaussianSpread( x, y );
+		
+		Vector vecDir = vecAiming 
+						+ x * flConeX * g_Engine.v_right 
+						+ y * flConeY * g_Engine.v_up;
+
+		Vector vecEnd	= vecSrc + vecDir * 8192;
+
+		g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, pPlayer.edict(), tr );
+		
+		if( tr.flFraction < 1.0 )
+		{
+			if( tr.pHit !is null )
+			{
+				CBaseEntity@ pHit = g_EntityFuncs.Instance( tr.pHit );
+				
+				if( pHit is null || pHit.IsBSPModel() == true )
+				{
+					g_WeaponFuncs.DecalGunshot( tr, iBulletType );
+
+					if( bSmokePuff )
+					{
+						NetworkMessage m1( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, tr.vecEndPos );
+							m1.WriteByte( TE_EXPLOSION );
+							m1.WriteCoord( tr.vecEndPos.x );
+							m1.WriteCoord( tr.vecEndPos.y );
+							m1.WriteCoord( tr.vecEndPos.z - 10.0 );
+							m1.WriteShort( g_EngineFuncs.ModelIndex(CSO::pSmokeSprites[Math.RandomLong(1, 4)]) );
+							m1.WriteByte( 2 );
+							m1.WriteByte( 50 );
+							m1.WriteByte( TE_EXPLFLAG_NODLIGHTS|TE_EXPLFLAG_NOSOUND|TE_EXPLFLAG_NOPARTICLES );
+						m1.End();
+					}
+				}
+			}
+		}
+	}
 }
