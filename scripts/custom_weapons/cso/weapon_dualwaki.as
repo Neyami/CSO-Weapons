@@ -76,7 +76,7 @@ const array<string> pCSOWSounds =
 	"custom_weapons/cso/dualwaki_stab_miss.wav"
 };
 
-class weapon_dualwaki : CBaseCustomWeapon
+class weapon_dualwaki : CBaseCSOWeapon
 {
 	private int m_iSlashingMode;
 	private int m_iAttackMode;
