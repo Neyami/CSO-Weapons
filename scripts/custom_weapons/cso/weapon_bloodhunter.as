@@ -113,7 +113,7 @@ const array<string> pCSOWSprites =
 	"sprites/custom_weapons/cso/ef_bloodhunter3.spr"
 };
 
-class weapon_bloodhunter : CBaseCustomWeapon
+class weapon_bloodhunter : CBaseCSOWeapon
 {
 	private uint m_uiLevel, m_uiShotsHit;
 	private float m_flRedrawTime;
