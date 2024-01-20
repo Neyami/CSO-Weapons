@@ -52,10 +52,8 @@ const array<string> pCSOWSounds =
 	"custom_weapons/cso/mk3a1-1.wav"
 };
 
-class weapon_mk3a1 : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
+class weapon_mk3a1 : CBaseCSOWeapon
 {
-	//private CBasePlayer@ m_pPlayer = null;
-
 	void Spawn()
 	{
 		g_EntityFuncs.SetModel( self, MODEL_WORLD );
