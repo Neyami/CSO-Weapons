@@ -91,7 +91,7 @@ enum csowstate_e
 	STATE_END
 };
 
-class weapon_m134hero : CBaseCustomWeapon
+class weapon_m134hero : CBaseCSOWeapon
 {
 	private int m_iState;
 	private float m_flFiringTime;
