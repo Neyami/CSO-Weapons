@@ -50,9 +50,8 @@ const array<string> pCSOWSounds =
 	"custom_weapons/cso/zoom.wav"
 };
 
-class weapon_savery : CBaseCustomWeapon //ScriptBasePlayerWeaponEntity
+class weapon_savery : CBaseCSOWeapon
 {
-	//private CBasePlayer@ m_pPlayer = null;
 	int m_iDroppedClip, m_iZoomMode;
 
 	void Spawn()
