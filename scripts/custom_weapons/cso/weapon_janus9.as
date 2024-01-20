@@ -79,10 +79,8 @@ const array<string> pCSOWSounds =
 	"custom_weapons/cso/janus9_wood2.wav"
 };
 
-class weapon_janus9 : CBaseCustomWeapon
+class weapon_janus9 : CBaseCSOWeapon
 {
-	//private CBasePlayer@ m_pPlayer = null;
-
 	private int m_iSwing;
 	private int m_iMode;
 	private float m_flResetMode;
