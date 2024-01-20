@@ -64,7 +64,7 @@ const array<string> pCSOWSounds =
 	"custom_weapons/cso/plasmagun-1.wav"
 };
 
-class weapon_plasmagun : CBaseCustomWeapon
+class weapon_plasmagun : CBaseCSOWeapon
 {
 	void Spawn()
 	{
