@@ -61,7 +61,7 @@ enum csowstate_e
 	STATE_RELOAD_END
 };
 
-class weapon_crow3 : CBaseCustomWeapon
+class weapon_crow3 : CBaseCSOWeapon
 {
 	private int m_iReloadState;
 	EHandle m_eDropEffect;
