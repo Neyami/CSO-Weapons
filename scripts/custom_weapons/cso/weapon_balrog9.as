@@ -116,8 +116,8 @@ class weapon_balrog9 : CBaseCSOWeapon
 		info.iMaxAmmo1		= -1;
 		info.iMaxAmmo2		= -1;
 		info.iMaxClip		= WEAPON_NOCLIP;
-		info.iSlot			= BALROG9_SLOT - 1;
-		info.iPosition		= BALROG9_POSITION - 1;
+		info.iSlot			= CSO::BALROG9_SLOT - 1;
+		info.iPosition		= CSO::BALROG9_POSITION - 1;
 		info.iWeight		= BALROG9_WEIGHT;
 		return true;
 	}
