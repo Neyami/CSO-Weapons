@@ -8,6 +8,7 @@
 #include "../custom_weapons/cso/weapon_janus9"
 #include "../custom_weapons/cso/weapon_thanatos9"
 #include "../custom_weapons/cso/weapon_dualwaki"
+#include "../custom_weapons/cso/weapon_beamsword"
 
 //Pistols
 #include "../custom_weapons/cso/weapon_desperado"
@@ -48,12 +49,12 @@ void MapInit()
 	cso_janus9::Register();
 	cso_thanatos9::Register();
 	cso_dualwaki::Register();
+	cso_beamsword::Register();
 	cso_desperado::Register();
 	cso_m950::Register();
 	cso_skull2::Register();
 	cso_bloodhunter::Register();
 	cso_blockas::Register();
-	cso_balrog11::Register();
 	cso_volcano::Register();
 	cso_mk3a1::Register();
 	cso_crow3::Register();
