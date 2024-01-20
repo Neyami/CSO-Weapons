@@ -127,7 +127,7 @@ Change bUseDroppedItemEffect to true in csocommon.as if you want to use CSO-like
 
 <BR>
 
-* BALROG-XI
+* BALROG-XI REMOVED FOR NOW
     * [Video](https://youtu.be/QV1UfLhlgrE)
 
     * ENTITIES
