@@ -92,7 +92,7 @@ enum csowmodes_e
 	STATE_CHARGE_FINISH
 };
 
-class weapon_failnaught : CBaseCustomWeapon
+class weapon_failnaught : CBaseCSOWeapon
 {
 	CBaseEntity@ m_pMonster;
 	int m_iArrowStack;
