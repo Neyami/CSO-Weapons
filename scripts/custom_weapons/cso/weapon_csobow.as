@@ -83,7 +83,7 @@ enum csowmodes_e
 	STATE_CHARGE_FINISH
 };
 
-class weapon_csobow : CBaseCustomWeapon
+class weapon_csobow : CBaseCSOWeapon
 {
 	private int m_iState;
 	private float m_flTimeCharge;
