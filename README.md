@@ -64,6 +64,14 @@ Change bUseDroppedItemEffect to true in csocommon.as if you want to use CSO-like
 
 <BR>
 
+* Beam Sword
+  * [Video](https://youtu.be/RDDUPTiOmNQ)
+
+    * ENTITIES
+    * `weapon_beamsword` - Weapon
+
+<BR>
+
 
 # PISTOLS
 * Calico M950
