@@ -1,9 +1,10 @@
 #include "pbullet"
+#include "csoenums"
 
 namespace CSO
 {
 
-//Weapon slots and positions.
+//Weapon slots, positions, and weights (Auto-switch priority).
 //Melee
 const int DCLAW_SLOT						= 1;
 const int DCLAW_POSITION				= 10;
@@ -14,90 +15,82 @@ const int BALROG9_POSITION				= 12;
 const int JANUS9_SLOT						= 1;
 const int JANUS9_POSITION				= 13;
 const int DWAKI_SLOT						= 1;
-const int DWAKI_POSITION				= 15;
+const int DWAKI_POSITION				= 14;
 const int THANATOS9_SLOT				= 1;
-const int THANATOS9_POSITION		= 16;
-//const int RUNEBLADE_SLOT				= 1;
-//const int RUNEBLADE_POSITION			= 16;
-//const int STORMGIANT_SLOT				= 1;
-//const int STORMGIANT_POSITION		= 16;
-//const int HZKNIFE_SLOT					= 1;
-//const int HZKNIFE_POSITION				= 16;
-//const int SCARECROW_SLOT				= 1;
-//const int SCARECROW_POSITION		= 16;
-//const int WARFAN_SLOT					= 1;
-//const int WARFAN_POSITION				= 16;
+const int THANATOS9_POSITION		= 15;
+const int DUALSWORD_SLOT				= 1;
+const int DUALSWORD_POSITION		= 16;
+
+const int DCLAW_WEIGHT					= 10;
+const int BEAMSWORD_WEIGHT			= 10;
+const int BALROG9_WEIGHT				= 10;
+const int JANUS9_WEIGHT					= 10;
+const int DWAKI_WEIGHT					= 10;
+const int THANATOS9_WEIGHT			= 10;
+const int DUALSWORD_WEIGHT			= 10;
+
 //Pistols
 const int M950_SLOT						= 2;
 const int M950_POSITION					= 10;
-const int SKULL1_SLOT						= 2;
-const int SKULL1_POSITION				= 11;
 const int SKULL2_SLOT						= 2;
 const int SKULL2_POSITION				= 12;
 const int BLOODHUNTER_SLOT			= 2;
 const int BLOODHUNTER_POSITION		= 13;
 const int DESPERADO_SLOT				= 2;
 const int DESPERADO_POSITION			= 14;
+
+const int M950_WEIGHT					= 10;
+const int SKULL2_WEIGHT					= 10;
+const int BLOODHUNTER_WEIGHT		= 10;
+const int DESPERADO_WEIGHT			= 10;
+
 //Shotguns
-//const int QBARREL_SLOT					= 3;
-//const int QBARREL_POSITION				= 10;
-const int BALROG11_SLOT					= 3;
-const int BALROG11_POSITION			= 11;
-//const int RAILCANNON_SLOT				= 3;
-//const int RAILCANNON_POSITION		= 10;
-//const int SGDRILL_SLOT					= 3;
-//const int SGDRILL_POSITION				= 12;
 const int BLOCKAS_SLOT					= 3;
 const int BLOCKAS_POSITION				= 10;
 const int MK3A1_SLOT						= 3;
-const int MK3A1_POSITION				= 10;
-const int FIREVULCAN_SLOT				= 3;
-const int FIREVULCAN_POSITION		= 13;
-//const int LSG1_SLOT						= 3;
-//const int LSG1_POSITION					= 14;
-//const int SKULL11_SLOT					= 3;
-//const int SKULL11_POSITION				= 15;
-//const int KSG12_SLOT						= 3;
-//const int KSG12_POSITION				= 16;
+const int MK3A1_POSITION				= 11;
+const int VOLCANO_SLOT					= 3;
+const int VOLCANO_POSITION			= 12;
+
+const int BLOCKAS_WEIGHT				= 20;
+const int MK3A1_WEIGHT					= 20;
+const int VOLCANO_WEIGHT				= 20;
+
 //SMGs
-//const int V3_SLOT							= 4;
-//const int V3_POSITION						= 10;
 const int CROW3_SLOT						= 4;
-const int CROW3_POSITION				= 11;
+const int CROW3_POSITION				= 10;
+
+const int CROW3_WEIGHT					= 10;
+
 //Assault Rifles
-//const int ETHEREAL_SLOT					= 5;
-//const int ETHEREAL_POSITION			= 10;
 const int PLASMAGUN_SLOT				= 5;
-const int PLASMAGUN_POSITION			= 11;
+const int PLASMAGUN_POSITION			= 10;
 const int CSOBOW_SLOT					= 5;
-const int CSOBOW_POSITION				= 12;
+const int CSOBOW_POSITION				= 11;
 const int FAILNAUGHT_SLOT				= 5;
-const int FAILNAUGHT_POSITION		= 13;
+const int FAILNAUGHT_POSITION		= 12;
+
+const int PLASMAGUN_WEIGHT			= 20;
+const int CSOBOW_WEIGHT				= 10;
+const int FAILNAUGHT_WEIGHT			= 10;
+
 //Sniper Rifles
-//const int M82_SLOT							= 6;
-//const int M82_POSITION					= 10;
 const int SAVERY_SLOT					= 6;
-const int SAVERY_POSITION				= 11;
-//const int DESTROYER_SLOT				= 6;
-//const int DESTROYER_POSITION			= 12;
+const int SAVERY_POSITION				= 10;
+
+const int SAVERY_WEIGHT					= 15;
+
 //Machine Guns
 const int AEOLIS_SLOT						= 7;
 const int AEOLIS_POSITION				= 10;
 const int M134HERO_SLOT					= 7;
 const int M134HERO_POSITION			= 11;
-//const int LASERMINIGUN_SLOT			= 7;
-//const int LASERMINIGUN_POSITION	= 11;
+
+const int AEOLIS_WEIGHT					= 30;
+const int M134HERO_WEIGHT				= 40;
+
 //Special/Miscellaneous (Equipment)
-//const int PB_SLOT							= 7;
-//const int PB_POSITION						= 11;
-//const int SPEARGUN_SLOT					= 7;
-//const int SPEARGUN_POSITION			= 12;
-//const int CSOCROSSBOW_SLOT			= 7;
-//const int CSOCROSSBOW_POSITION	= 13;
-//const int RAILBUSTER_SLOT				= 8;
-//const int RAILBUSTER_POSITION			= 13;
-//const int AT4_SLOT							= 8;
-//const int AT4_POSITION					= 14;
+
 
 const float CSO_AZ_MULTIPLIER	= 1.2f; //Anti-Zombie
 
@@ -420,7 +413,7 @@ class ef_gundrop : ScriptBaseAnimating
 
 	void Precache()
 	{
-		g_Game.PrecacheModel( CSO::CSO_ITEMDISPLAY_MODEL );
+		g_Game.PrecacheModel( CSO_ITEMDISPLAY_MODEL );
 	}
 
 	void IdleThink()
@@ -442,4 +435,38 @@ void RegisterGunDrop()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "CSO::ef_gundrop", "ef_gundrop" );
 }
+
+class ammo_762mg : ScriptBasePlayerAmmoEntity
+{
+	void Spawn()
+	{ 
+		Precache();
+
+		g_EntityFuncs.SetModel( self, "models/custom_weapons/cs16/w_762natobox_big.mdl" );
+
+		BaseClass.Spawn();
+	}
+
+	void Precache()
+	{
+		g_Game.PrecacheModel( "models/custom_weapons/cs16/w_762natobox_big.mdl" );
+	}
+
+	bool AddAmmo( CBaseEntity@ pOther )
+	{ 
+		if( pOther.GiveAmmo( 100, "762mg", 600 ) != -1)
+		{
+			g_SoundSystem.EmitSound( self.edict(), CHAN_ITEM, "items/9mmclip1.wav", VOL_NORM, ATTN_NORM );
+			return true;
+		}
+
+		return false;
+	}
+}
+
+void Register762MG()
+{
+	g_CustomEntityFuncs.RegisterCustomEntity( "CSO::ammo_762mg", "ammo_762mg" );
+}
+
 } //namespace CSO END
