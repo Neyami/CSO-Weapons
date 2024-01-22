@@ -18,8 +18,6 @@ const int DWAKI_SLOT						= 1;
 const int DWAKI_POSITION				= 14;
 const int THANATOS9_SLOT				= 1;
 const int THANATOS9_POSITION		= 15;
-const int DUALSWORD_SLOT				= 1;
-const int DUALSWORD_POSITION		= 16;
 
 const int DCLAW_WEIGHT					= 10;
 const int BEAMSWORD_WEIGHT			= 10;
@@ -27,7 +25,6 @@ const int BALROG9_WEIGHT				= 10;
 const int JANUS9_WEIGHT					= 10;
 const int DWAKI_WEIGHT					= 10;
 const int THANATOS9_WEIGHT			= 10;
-const int DUALSWORD_WEIGHT			= 10;
 
 //Pistols
 const int M950_SLOT						= 2;
