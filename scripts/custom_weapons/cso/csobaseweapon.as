@@ -9,6 +9,9 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		set { self.m_hPlayer = EHandle(@value); }
 	}
 
+	protected EHandle m_eDropEffect;
+	protected int m_iWeaponType;
+
 	//legacy support only
 	void CS16GetDefaultShellInfo( EHandle ePlayer, Vector& out ShellVelocity, Vector& out ShellOrigin, float forwardScale, float rightScale, float upScale, bool leftShell, bool downShell )
 	{
@@ -87,5 +90,76 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 				}
 			}
 		}
+	}
+
+	void HandleAmmoReduction()
+	{
+		self.m_iClip--;
+
+		if( self.m_iClip == 0 and m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
+			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
+	}
+
+	void HandleRecoil( Vector2D vec2dRecoilStandingX, Vector2D vec2dRecoilStandingY, Vector2D vec2dRecoilDuckingX, Vector2D vec2dRecoilDuckingY )
+	{
+		Vector2D vec2dRecoilX = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? vec2dRecoilDuckingX : vec2dRecoilStandingX;
+		Vector2D vec2dRecoilY = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? vec2dRecoilDuckingY : vec2dRecoilStandingY;
+
+		m_pPlayer.pev.punchangle.x = Math.RandomFloat( vec2dRecoilX.x, vec2dRecoilX.y );
+		m_pPlayer.pev.punchangle.y = Math.RandomFloat( vec2dRecoilY.x, vec2dRecoilY.y );
+	}
+
+	void Think()
+	{
+		if( CSO::bUseDroppedItemEffect )
+		{
+			if( pev.owner is null and m_eDropEffect.GetEntity() is null and pev.velocity == g_vecZero )
+			{
+				CBaseEntity@ cbeGunDrop = g_EntityFuncs.Create( "ef_gundrop", pev.origin, g_vecZero, false, self.edict() );
+				m_eDropEffect = EHandle( cbeGunDrop );
+				CSO::ef_gundrop@ pGunDrop = cast<CSO::ef_gundrop@>(CastToScriptClass(cbeGunDrop));
+				pGunDrop.m_hOwner = EHandle( self );
+				pGunDrop.pev.movetype	= MOVETYPE_FOLLOW;
+				@pGunDrop.pev.aiment	= self.edict();
+
+				g_EntityFuncs.DispatchSpawn( pGunDrop.self.edict() );
+			}
+		}
+
+		BaseClass.Think();
+	}
+
+	// AMXX Stuff that I cba converting :ayaya:
+	void get_position( float flForward, float flRight, float flUp, Vector &out vecOut )
+	{
+		Vector vecOrigin, vecAngle, vecForward, vecRight, vecUp;
+
+		vecOrigin = m_pPlayer.pev.origin;
+		vecUp = m_pPlayer.pev.view_ofs; //GetGunPosition() ??
+		vecOrigin = vecOrigin + vecUp;
+
+		vecAngle = m_pPlayer.pev.v_angle; //if normal entity: use pev.angles
+
+		g_EngineFuncs.AngleVectors( vecAngle, vecForward, vecRight, vecUp );
+
+		vecOut = vecOrigin + vecForward * flForward + vecRight * flRight + vecUp * flUp;
+	}
+
+	void get_speed_vector( const Vector origin1, const Vector origin2, float speed, Vector &out new_velocity )
+	{
+		new_velocity = origin2 - origin1;
+
+		float num = sqrt( speed*speed / (new_velocity.x*new_velocity.x + new_velocity.y*new_velocity.y + new_velocity.z*new_velocity.z) );
+
+		new_velocity = new_velocity * num;
+	}
+
+	bool is_wall_between_points( Vector start, Vector end, edict_t@ ignore_ent )
+	{
+		TraceResult ptr;
+
+		g_Utility.TraceLine( start, end, ignore_monsters, ignore_ent, ptr );
+
+		return (end - ptr.vecEndPos).Length() > 0;
 	}
 }
