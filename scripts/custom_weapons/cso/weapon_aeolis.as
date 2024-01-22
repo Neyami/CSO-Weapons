@@ -5,7 +5,6 @@ const int AEOLIS_DEFAULT_GIVE			= 150;
 const int AEOLIS_MAX_AMMO				= 200;
 const int AEOLIS_MAX_AMMO2				= 89;
 const int AEOLIS_MAX_CLIP 				= 150;
-const int AEOLIS_WEIGHT 				= 15;
 const float AEOLIS_DAMAGE				= 30;
 const float AEOLIS_DAMAGE_FLAME			= 35;
 const float AEOLIS_DELAY_PRIMARY		= 0.10f;
@@ -119,8 +118,7 @@ class weapon_aeolis : CBaseCSOWeapon
 		info.iMaxClip 	= AEOLIS_MAX_CLIP;
 		info.iSlot 		= CSO::AEOLIS_SLOT - 1;
 		info.iPosition 	= CSO::AEOLIS_POSITION - 1;
-		info.iFlags 	= 0;
-		info.iWeight 	= AEOLIS_WEIGHT;
+		info.iWeight 	= CSO::AEOLIS_WEIGHT;
 
 		return true;
 	}
@@ -255,7 +253,7 @@ class weapon_aeolis : CBaseCSOWeapon
 		CS16GetDefaultShellInfo( m_pPlayer, vecShellVelocity, vecShellOrigin, 15, 13, -10, true, false );
 		g_EntityFuncs.EjectBrass( vecShellOrigin, vecShellVelocity, m_pPlayer.pev.angles.y, g_EngineFuncs.ModelIndex(AEOLIS_MODEL_SHELL), TE_BOUNCE_SHELL ); 
 
-		CSO::DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, m_pPlayer );
+		DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, m_pPlayer );
 
 		if( self.m_iClip == 0 && m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
 			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
@@ -489,7 +487,7 @@ void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_aeolis::csoproj_flame", "csoproj_flame" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_aeolis::weapon_aeolis", "weapon_aeolis" );
-	g_ItemRegistry.RegisterWeapon( "weapon_aeolis", "custom_weapons/cso", "556", "semen" );
+	g_ItemRegistry.RegisterWeapon( "weapon_aeolis", "custom_weapons/cso", "556", "semen", "ammo_556" );
 }
 
 } //namespace cso_aeolis END

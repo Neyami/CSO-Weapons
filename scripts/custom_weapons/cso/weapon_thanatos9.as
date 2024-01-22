@@ -1,8 +1,6 @@
 namespace cso_thanatos9
 {
 
-const int CSOW_WEIGHT				= 10;
-
 const float CSOW_DAMAGE_A			= 1000;
 const float CSOW_DAMAGE_B			= 500;
 
@@ -140,7 +138,8 @@ class weapon_thanatos9 : CBaseCSOWeapon
 		info.iMaxClip		= 0; //WEAPON_NOCLIP;
 		info.iSlot			= CSO::THANATOS9_SLOT - 1;
 		info.iPosition		= CSO::THANATOS9_POSITION - 1;
-		info.iWeight		= CSOW_WEIGHT;
+		info.iWeight		= CSO::THANATOS9_WEIGHT;
+
 		return true;
 	}
 
@@ -697,31 +696,6 @@ class weapon_thanatos9 : CBaseCSOWeapon
 				g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_HIT_WALL], VOL_NORM, ATTN_NORM );
 			}
 		}
-	}
-
-	void get_position( float forw, float right, float up, Vector &out vOut )
-	{
-		Vector vOrigin, vAngle, vForward, vRight, vUp;
-
-		vOrigin = m_pPlayer.pev.origin;
-		vUp = m_pPlayer.pev.view_ofs; //for player, can also use GetGunPosition()
-		vOrigin = vOrigin + vUp;
-		vAngle = m_pPlayer.pev.v_angle; //if normal entity: use pev.angles
-
-		g_EngineFuncs.AngleVectors( vAngle, vForward, vRight, vUp );
-
-		vOut.x = vOrigin.x + vForward.x * forw + vRight.x * right + vUp.x * up;
-		vOut.y = vOrigin.y + vForward.y * forw + vRight.y * right + vUp.y * up;
-		vOut.z = vOrigin.z + vForward.z * forw + vRight.z * right + vUp.z * up;
-	}
-
-	bool is_wall_between_points( Vector start, Vector end, edict_t@ ignore_ent )
-	{
-		TraceResult ptr;
-
-		g_Utility.TraceLine( start, end, ignore_monsters, ignore_ent, ptr );
-
-		return (end - ptr.vecEndPos).Length() > 0;
 	}
 }
 

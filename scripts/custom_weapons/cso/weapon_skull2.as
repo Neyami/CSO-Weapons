@@ -4,7 +4,6 @@ namespace cso_skull2
 const int CSOW_DEFAULT_GIVE			= 7;
 const int CSOW_MAX_CLIP 			= 7; //14 when dualwielding
 const int CSOW_MAX_AMMO				= 35;
-const int CSOW_WEIGHT				= 10;
 const float CSOW_DAMAGE1			= 39;
 const float CSOW_DAMAGE2			= 47;
 const float CSOW_DELAY1				= 0.28f;
@@ -137,7 +136,7 @@ class weapon_skull2 : CBaseCSOWeapon
 		info.iAmmo1Drop		= CSOW_MAX_CLIP;
 		info.iSlot			= CSO::SKULL2_SLOT - 1;
 		info.iPosition		= CSO::SKULL2_POSITION - 1;
-		info.iWeight		= CSOW_WEIGHT;
+		info.iWeight		= CSO::SKULL2_WEIGHT;
 
 		return true;
 	}

@@ -1,7 +1,6 @@
 namespace cso_dragonclaw
 {
 
-const int DCLAW_WEIGHT					= 55;
 const int DCLAW_DAMAGE_SLASH			= 45;//45 default
 const int DCLAW_DAMAGE_STAB				= 80;//100 default
 
@@ -94,7 +93,8 @@ class weapon_dragonclaw : CBaseCSOWeapon
 		info.iMaxClip		= WEAPON_NOCLIP;
 		info.iSlot			= CSO::DCLAW_SLOT - 1;
 		info.iPosition		= CSO::DCLAW_POSITION - 1;
-		info.iWeight		= DCLAW_WEIGHT;
+		info.iWeight		= CSO::DCLAW_WEIGHT;
+
 		return true;
 	}
 

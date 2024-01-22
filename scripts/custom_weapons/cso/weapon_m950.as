@@ -4,7 +4,6 @@ namespace cso_m950
 const int M950_DEFAULT_GIVE			= 50;
 const int M950_MAX_AMMO				= 120;
 const int M950_MAX_CLIP 			= 50;
-const int M950_WEIGHT 				= 15;
 const float M950_DAMAGE				= 16;
 const float M950_DELAY				= 0.16f;
 const float M950_TIME_RELOAD		= 3.5f;
@@ -84,8 +83,7 @@ class weapon_m950 : CBaseCSOWeapon
 		info.iMaxClip 	= M950_MAX_CLIP;
 		info.iSlot 		= CSO::M950_SLOT - 1;
 		info.iPosition 	= CSO::M950_POSITION - 1;
-		info.iFlags 	= 0;
-		info.iWeight 	= M950_WEIGHT;
+		info.iWeight 	= CSO::M950_WEIGHT;
 
 		return true;
 	}
@@ -194,7 +192,7 @@ class weapon_m950 : CBaseCSOWeapon
 		vecShellVelocity.y *= -1;
 		g_EntityFuncs.EjectBrass( vecShellOrigin, vecShellVelocity, m_pPlayer.pev.angles[ 1 ], g_EngineFuncs.ModelIndex(M950_MODEL_SHELL), TE_BOUNCE_SHELL );
 
-		CSO::DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_MP5, m_pPlayer );
+		DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_MP5, m_pPlayer );
 
 		if( self.m_iClip == 0 && m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
 			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
@@ -290,7 +288,7 @@ class weapon_m950 : CBaseCSOWeapon
 void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m950::weapon_m950", "weapon_m950" );
-	g_ItemRegistry.RegisterWeapon( "weapon_m950", "custom_weapons/cso", "9mm" );
+	g_ItemRegistry.RegisterWeapon( "weapon_m950", "custom_weapons/cso", "9mm", "", "ammo_9mmclip" );
 }
 
 } //namespace cso_m950 END

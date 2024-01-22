@@ -3,7 +3,6 @@ namespace cso_failnaught
 
 const int CSOW_DEFAULT_GIVE					= 25;
 const int CSOW_MAX_AMMO						= 250;
-const int CSOW_WEIGHT							= 10;
 const int  CSOW_ARROW_MAX_STACKS		= 5; //Number of arrows that need to hit an enemy to cause an explosion
 const float CSOW_DAMAGE1						= 40; //40
 const float CSOW_DAMAGE2						= 200; //33
@@ -146,9 +145,10 @@ class weapon_failnaught : CBaseCSOWeapon
 	{
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
 		info.iMaxClip 		= WEAPON_NOCLIP;
+		info.iAmmo1Drop	= CSOW_DEFAULT_GIVE;
 		info.iSlot			= CSO::FAILNAUGHT_SLOT - 1;
 		info.iPosition		= CSO::FAILNAUGHT_POSITION - 1;
-		info.iWeight		= CSOW_WEIGHT;
+		info.iWeight		= CSO::FAILNAUGHT_WEIGHT;
 		info.iFlags			= ITEM_FLAG_NOAUTOSWITCHEMPTY | ITEM_FLAG_SELECTONEMPTY;
 
 		return true;
@@ -381,24 +381,6 @@ class weapon_failnaught : CBaseCSOWeapon
 		}
 
 		BaseClass.ItemPostFrame();
-	}
-
-	void get_position( float flForward, float flRight, float flUp, Vector &out vecOut )
-	{
-		Vector vecOrigin, vecAngle, vecForward, vecRight, vecUp;
-
-		vecOrigin = m_pPlayer.pev.origin;
-		vecUp = m_pPlayer.pev.view_ofs;
-
-		for( int i = 0; i < 3; i++ )
-			vecOrigin[i] = vecOrigin[i] + vecUp[i];
-
-		vecAngle = m_pPlayer.pev.v_angle;
-
-		g_EngineFuncs.AngleVectors( vecAngle, vecForward, vecRight, vecUp );
-
-		for( int j = 0; j < 3; j++ )
-			vecOut[j] = vecOrigin[j] + vecForward[j] * flForward + vecRight[j] * flRight + vecUp[j] * flUp;
 	}
 }
 
@@ -637,7 +619,7 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_failnaught::holyarrow", "holyarrow" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_failnaught::ammo_holyarrows", "ammo_holyarrows" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_failnaught::weapon_failnaught", "weapon_failnaught" );
-	g_ItemRegistry.RegisterWeapon( "weapon_failnaught", "custom_weapons/cso", "holyarrows" );
+	g_ItemRegistry.RegisterWeapon( "weapon_failnaught", "custom_weapons/cso", "holyarrows", "", "ammo_holyarrows" );
 }
 
 } //namespace cso_failnaught END

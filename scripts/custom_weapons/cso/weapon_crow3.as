@@ -3,7 +3,6 @@ namespace cso_crow3
 const int CSOW_DEFAULT_GIVE					= 64;
 const int CSOW_MAX_CLIP 						= 64;
 const int CSOW_MAX_AMMO						= 120;
-const int CSOW_WEIGHT							= 10;
 const float CSOW_DAMAGE						= 14;
 const float CSOW_TIME_DELAY					= 0.087;
 const float CSOW_TIME_DRAW					= 1.0;
@@ -64,7 +63,6 @@ enum csowstate_e
 class weapon_crow3 : CBaseCSOWeapon
 {
 	private int m_iReloadState;
-	EHandle m_eDropEffect;
 
 	void Spawn()
 	{
@@ -113,7 +111,7 @@ class weapon_crow3 : CBaseCSOWeapon
 		info.iMaxClip 		= CSOW_MAX_CLIP;
 		info.iSlot			= CSO::CROW3_SLOT - 1;
 		info.iPosition		= CSO::CROW3_POSITION - 1;
-		info.iWeight		= CSOW_WEIGHT;
+		info.iWeight		= CSO::CROW3_WEIGHT;
 
 		return true;
 	}
@@ -172,7 +170,7 @@ class weapon_crow3 : CBaseCSOWeapon
 		}
 
 		HandleAmmoReduction();
-		HandleRecoil();
+		HandleRecoil( CSOW_RECOIL_STANDING_X, CSOW_RECOIL_STANDING_Y, CSOW_RECOIL_DUCKING_X, CSOW_RECOIL_DUCKING_Y );
 
 		m_pPlayer.m_iWeaponVolume = NORMAL_GUN_VOLUME;
 		m_pPlayer.m_iWeaponFlash = NORMAL_GUN_FLASH;
@@ -193,7 +191,7 @@ class weapon_crow3 : CBaseCSOWeapon
 		Vector vecShootCone = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_CONE_CROUCHING : CSOW_CONE_STANDING;
 
 		m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, CSOW_DAMAGE );
-		CSO::DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_MP5, m_pPlayer, true );
+		DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_MP5, m_pPlayer, true );
 	}
 
 	void WeaponIdle()
@@ -287,49 +285,12 @@ class weapon_crow3 : CBaseCSOWeapon
 			}
 		}
 	}
-
-	void HandleAmmoReduction()
-	{
-		self.m_iClip--;
-
-		if( self.m_iClip == 0 and m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
-			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
-	}
-
-	void HandleRecoil()
-	{
-		Vector2D vec2dRecoilX = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_X : CSOW_RECOIL_STANDING_X;
-		Vector2D vec2dRecoilY = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_Y : CSOW_RECOIL_STANDING_Y;
-
-		m_pPlayer.pev.punchangle.x = Math.RandomFloat( vec2dRecoilX.x, vec2dRecoilX.y );
-		m_pPlayer.pev.punchangle.y = Math.RandomFloat( vec2dRecoilY.x, vec2dRecoilY.y );
-	}
-
-	void Think()
-	{
-		if( CSO::bUseDroppedItemEffect )
-		{
-			if( pev.owner is null and m_eDropEffect.GetEntity() is null and pev.velocity == g_vecZero )
-			{
-				CBaseEntity@ cbeGunDrop = g_EntityFuncs.Create( "ef_gundrop", pev.origin, g_vecZero, false, self.edict() );
-				m_eDropEffect = EHandle( cbeGunDrop );
-				CSO::ef_gundrop@ pGunDrop = cast<CSO::ef_gundrop@>(CastToScriptClass(cbeGunDrop));
-				pGunDrop.m_hOwner = EHandle( self );
-				pGunDrop.pev.movetype	= MOVETYPE_FOLLOW;
-				@pGunDrop.pev.aiment	= self.edict();
-
-				g_EntityFuncs.DispatchSpawn( pGunDrop.self.edict() );
-			}
-		}
-
-		BaseClass.Think();
-	}
 }
 
 void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_crow3::weapon_crow3", "weapon_crow3" );
-	g_ItemRegistry.RegisterWeapon( "weapon_crow3", "custom_weapons/cso", "9mm" );
+	g_ItemRegistry.RegisterWeapon( "weapon_crow3", "custom_weapons/cso", "9mm", "", "ammo_9mmAR" );
 
 	if( CSO::bUseDroppedItemEffect )
 	{

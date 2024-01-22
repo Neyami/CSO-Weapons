@@ -6,7 +6,6 @@ const bool CSOW_USE_MAGDROP			= true; //Drop mag while reloading or not
 const int CSOW_DEFAULT_GIVE				= 30;
 const int CSOW_MAX_CLIP 					= 30;
 const int CSOW_MAX_AMMO					= 100;
-const int CSOW_WEIGHT						= 10;
 const float CSOW_DAMAGE					= 32;
 const float CSOW_DAMAGE_GREN_MIN		= 40.0; //(Random number between these two) * Level of grenade 1-3 * 0.5
 const float CSOW_DAMAGE_GREN_MAX	= 50.0;
@@ -169,7 +168,7 @@ class weapon_bloodhunter : CBaseCSOWeapon
 		info.iAmmo1Drop	= CSOW_MAX_CLIP;
 		info.iSlot			= CSO::BLOODHUNTER_SLOT - 1;
 		info.iPosition		= CSO::BLOODHUNTER_POSITION - 1;
-		info.iWeight		= CSOW_WEIGHT;
+		info.iWeight		= CSO::BLOODHUNTER_WEIGHT;
 
 		return true;
 	}
@@ -215,7 +214,7 @@ class weapon_bloodhunter : CBaseCSOWeapon
 		self.m_fInReload = false;
 		SetThink(null);
 		m_flRedrawTime = 0.0;
-		m_flThrowGrenade = 0.0f;
+		m_flThrowGrenade = 0.0;
 
 		BaseClass.Holster( skipLocal );
 	}
@@ -225,7 +224,7 @@ class weapon_bloodhunter : CBaseCSOWeapon
 		self.m_fInReload = false;
 		SetThink(null);
 		m_flRedrawTime = 0.0;
-		m_flThrowGrenade = 0.0f;
+		m_flThrowGrenade = 0.0;
 		g_Game.AlertMessage( at_console, "weapon_bloodhunter has been destroyed via ~ \n");
 	}
 
@@ -425,17 +424,17 @@ class weapon_bloodhunter : CBaseCSOWeapon
 
 	void ItemPostFrame()
 	{
-		if( m_flRedrawTime > 0.0f and m_flRedrawTime < g_Engine.time )
+		if( m_flRedrawTime > 0.0 and m_flRedrawTime < g_Engine.time )
 		{
 			self.SendWeaponAnim( ANIM_DRAW + m_uiLevel );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
-			m_flRedrawTime = 0.0f;
+			m_flRedrawTime = 0.0;
 		}
 
-		if( m_flThrowGrenade > 0.0f and m_flThrowGrenade < g_Engine.time )
+		if( m_flThrowGrenade > 0.0 and m_flThrowGrenade < g_Engine.time )
 		{
 			ThrowGrenade();
-			m_flThrowGrenade = 0.0f;
+			m_flThrowGrenade = 0.0;
 		}
 
 		BaseClass.ItemPostFrame();
@@ -489,7 +488,7 @@ class weapon_bloodhunter : CBaseCSOWeapon
 	{
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle);
 		Vector vecShellVelocity = m_pPlayer.pev.velocity + -g_Engine.v_right * Math.RandomFloat(50, 70) + g_Engine.v_up * Math.RandomFloat(100, 150) + g_Engine.v_forward * 25;
-		g_EntityFuncs.EjectBrass( pev.origin + m_pPlayer.pev.view_ofs + g_Engine.v_up * -9 + g_Engine.v_forward * 16 - g_Engine.v_right * 9, vecShellVelocity, pev.angles.y, g_EngineFuncs.ModelIndex(MODEL_SHELL), TE_BOUNCE_SHELL );
+		g_EntityFuncs.EjectBrass( pev.origin + m_pPlayer.pev.view_ofs + g_Engine.v_forward * 16 - g_Engine.v_right * 9 + g_Engine.v_up * -9, vecShellVelocity, pev.angles.y, g_EngineFuncs.ModelIndex(MODEL_SHELL), TE_BOUNCE_SHELL );
 	}
 }
 
@@ -621,7 +620,7 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_bloodhunter::bloodgrenade", "bloodgrenade" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_bloodhunter::bloodhunter_effect", "bloodhunter_effect" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_bloodhunter::weapon_bloodhunter", "weapon_bloodhunter" );
-	g_ItemRegistry.RegisterWeapon( "weapon_bloodhunter", "custom_weapons/cso", "357", "", "ammo_357", "" );
+	g_ItemRegistry.RegisterWeapon( "weapon_bloodhunter", "custom_weapons/cso", "357", "", "ammo_357" );
 }
 
 } //namespace cso_bloodhunter END

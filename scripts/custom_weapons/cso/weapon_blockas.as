@@ -9,7 +9,6 @@ const int CSOW_DEFAULT_GIVE			= 8;
 const int CSOW_MAX_CLIP 			= 8;
 const int CSOW_MAX_AMMO1 			= 32; //doesn't actually do anything since it uses the maxammo set by the buymenu plugin ¯\_(ツ)_/¯
 const int CSOW_MAX_AMMO2 			= 10;
-const int CSOW_WEIGHT 				= 20;
 const int CSOW_PELLETCOUNT			= 8;
 const float CSOW_DAMAGE1			= 7.5f; //total 60
 const float CSOW_DAMAGE2			= 113.0f;
@@ -172,8 +171,7 @@ class weapon_blockas : CBaseCSOWeapon
 		info.iMaxClip 	= CSOW_MAX_CLIP;
 		info.iSlot 		= CSO::BLOCKAS_SLOT - 1;
 		info.iPosition 	= CSO::BLOCKAS_POSITION - 1;
-		info.iFlags 	= 0;
-		info.iWeight 	= CSOW_WEIGHT;
+		info.iWeight 	= CSO::BLOCKAS_WEIGHT;
 
 		return true;
 	}
@@ -684,28 +682,6 @@ class weapon_blockas : CBaseCSOWeapon
 			msg1.WriteByte( TE_BOUNCE_NULL ); // bouncesound //TE_BOUNCE_SHOTSHELL
 			msg1.WriteByte( 20 ); // decay time
 		msg1.End();
-	}
-
-	void get_position( float forw, float right, float up, Vector &out vStart )
-	{
-		Vector vOrigin, vForward, vRight, vUp;
-
-		vOrigin = m_pPlayer.GetOrigin();
-		vUp = m_pPlayer.pev.view_ofs; //for player
-		vOrigin = vOrigin + vUp;
-
-		g_EngineFuncs.AngleVectors( m_pPlayer.pev.v_angle, vForward, vRight, vUp );
-
-		vStart = vOrigin + vForward * forw + vRight * right + vUp * up;
-	}
-
-	void get_speed_vector( const Vector origin1, const Vector origin2, float speed, Vector &out new_velocity )
-	{
-		new_velocity = origin2 - origin1;
-
-		float num = sqrt( speed*speed / (new_velocity.x*new_velocity.x + new_velocity.y*new_velocity.y + new_velocity.z*new_velocity.z) );
-
-		new_velocity = new_velocity * num;
 	}
 }
 

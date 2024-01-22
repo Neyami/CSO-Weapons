@@ -1,9 +1,7 @@
-//Based on Dual Katan by Dias
+//Based on Dual Katana by Dias
 namespace cso_dualwaki
 {
 	
-const int CSOW_WEIGHT					= 55;
-
 const int SLASH_DAMAGE					= 40;
 const int SLASH_RADIUS					= 100;
 const float SLASH_RESET_TIME			= 1.0f;
@@ -120,7 +118,7 @@ class weapon_dualwaki : CBaseCSOWeapon
 		info.iMaxClip		= WEAPON_NOCLIP;
 		info.iSlot			= CSO::DWAKI_SLOT - 1;
 		info.iPosition		= CSO::DWAKI_POSITION - 1;
-		info.iWeight		= CSOW_WEIGHT;
+		info.iWeight		= CSO::DWAKI_WEIGHT;
 
 		return true;
 	}
@@ -431,31 +429,6 @@ class weapon_dualwaki : CBaseCSOWeapon
 			else
 				g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_STABMISS], VOL_NORM, ATTN_NORM );
 		}
-	}
-
-	void get_position( float forw, float right, float up, Vector &out vOut )
-	{
-		Vector vOrigin, vAngle, vForward, vRight, vUp;
-
-		vOrigin = m_pPlayer.pev.origin;
-		vUp = m_pPlayer.pev.view_ofs; //for player, can also use GetGunPosition()
-		vOrigin = vOrigin + vUp;
-		vAngle = m_pPlayer.pev.v_angle; //if normal entity: use pev.angles
-
-		g_EngineFuncs.AngleVectors( vAngle, vForward, vRight, vUp );
-
-		vOut.x = vOrigin.x + vForward.x * forw + vRight.x * right + vUp.x * up;
-		vOut.y = vOrigin.y + vForward.y * forw + vRight.y * right + vUp.y * up;
-		vOut.z = vOrigin.z + vForward.z * forw + vRight.z * right + vUp.z * up;
-	}
-
-	bool is_wall_between_points( Vector start, Vector end, edict_t@ ignore_ent )
-	{
-		TraceResult ptr;
-
-		g_Utility.TraceLine( start, end, ignore_monsters, ignore_ent, ptr );
-
-		return (end - ptr.vecEndPos).Length() > 0;
 	}
 }
 

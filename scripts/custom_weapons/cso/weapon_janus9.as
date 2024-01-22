@@ -1,7 +1,6 @@
 namespace cso_janus9
 {
 
-const int CSOW_WEIGHT					= 10;
 const int CSOW_DAMAGE1					= 35;
 const int CSOW_DAMAGE2					= 50;
 const int CSOW_DAMAGE3					= 75;
@@ -129,7 +128,7 @@ class weapon_janus9 : CBaseCSOWeapon
 		info.iMaxClip		= WEAPON_NOCLIP;
 		info.iSlot			= CSO::JANUS9_SLOT - 1;
 		info.iPosition		= CSO::JANUS9_POSITION - 1;
-		info.iWeight		= CSOW_WEIGHT;
+		info.iWeight		= CSO::JANUS9_WEIGHT;
 
 		return true;
 	}

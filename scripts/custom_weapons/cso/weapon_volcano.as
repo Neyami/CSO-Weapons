@@ -8,7 +8,6 @@ const Vector2D CSOW_VEC2D_RECOIL( 3.0f, 5.0f );
 const int CSOW_DEFAULT_GIVE			= 40;
 const int CSOW_MAX_CLIP 			= 40;
 const int CSOW_MAX_AMMO 			= 40; //doesn't actually do anything since it uses the maxammo set by the buymenu plugin ¯\_(ツ)_/¯
-const int CSOW_WEIGHT 				= 20;
 const int CSOW_PELLETCOUNT			= 6;
 const float CSOW_DAMAGE				= 4.5f; //total 27
 
@@ -101,10 +100,9 @@ class weapon_volcano : CBaseCSOWeapon
 	{
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
 		info.iMaxClip 	= CSOW_MAX_CLIP;
-		info.iSlot 		= CSO::FIREVULCAN_SLOT - 1;
-		info.iPosition 	= CSO::FIREVULCAN_POSITION - 1;
-		info.iFlags 	= 0;
-		info.iWeight 	= CSOW_WEIGHT;
+		info.iSlot 		= CSO::VOLCANO_SLOT - 1;
+		info.iPosition 	= CSO::VOLCANO_POSITION - 1;
+		info.iWeight 	= CSO::VOLCANO_WEIGHT;
 
 		return true;
 	}

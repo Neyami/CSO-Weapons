@@ -4,7 +4,6 @@ namespace cso_desperado
 const int CSOW_DEFAULT_GIVE				= 7;
 const int CSOW_MAX_CLIP 					= 7;
 const int CSOW_MAX_AMMO					= 999;
-const int CSOW_WEIGHT						= 10;
 const float CSOW_DAMAGE					= 35;
 const float CSOW_TIME_DELAY				= 0.12f;
 const float CSOW_TIME_DRAW				= 0.2f;
@@ -114,8 +113,8 @@ class weapon_desperado : CBaseCSOWeapon
 		info.iMaxClip 		= CSOW_MAX_CLIP;
 		info.iSlot			= CSO::DESPERADO_SLOT - 1;
 		info.iPosition		= CSO::DESPERADO_POSITION - 1;
+		info.iWeight		= CSO::DESPERADO_WEIGHT;
 		info.iFlags			= ITEM_FLAG_NOAUTOSWITCHEMPTY | ITEM_FLAG_SELECTONEMPTY;
-		info.iWeight		= CSOW_WEIGHT;
 
 		return true;
 	}

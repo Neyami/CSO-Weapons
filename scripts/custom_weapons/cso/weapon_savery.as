@@ -4,7 +4,6 @@ namespace cso_savery
 const int SAVERY_DEFAULT_GIVE			= 7;
 const int SAVERY_MAX_AMMO				= 30;
 const int SAVERY_MAX_CLIP 				= 7;
-const int SAVERY_WEIGHT 				= 15;
 const float SAVERY_DAMAGE				= 100;
 const float SAVERY_DELAY				= 1.5f;
 const float SAVERY_TIME_RELOAD			= 3.0f;
@@ -56,6 +55,7 @@ class weapon_savery : CBaseCSOWeapon
 
 	void Spawn()
 	{
+		self.Precache();
 		g_EntityFuncs.SetModel( self, MODEL_WORLD );
 		self.m_iDefaultAmmo = SAVERY_DEFAULT_GIVE*4;
 		m_iZoomMode = CSO::MODE_NOZOOM;
@@ -97,8 +97,7 @@ class weapon_savery : CBaseCSOWeapon
 		info.iMaxClip 	= SAVERY_MAX_CLIP;
 		info.iSlot 		= CSO::SAVERY_SLOT - 1;
 		info.iPosition 	= CSO::SAVERY_POSITION - 1;
-		info.iFlags 	= 0;
-		info.iWeight 	= SAVERY_WEIGHT;
+		info.iWeight 	= CSO::SAVERY_WEIGHT;
 
 		return true;
 	}
@@ -194,7 +193,7 @@ class weapon_savery : CBaseCSOWeapon
 
 		m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, SAVERY_DAMAGE );
 
-		CSO::DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_MP5, m_pPlayer );
+		DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_MP5, m_pPlayer );
 
 		CSO::DoGunSmoke( vecSrc + g_Engine.v_forward * 8 + g_Engine.v_up * -10, CSO::SMOKE_RIFLE );
 
@@ -350,7 +349,7 @@ class weapon_savery : CBaseCSOWeapon
 void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_savery::weapon_savery", "weapon_savery" );
-	g_ItemRegistry.RegisterWeapon( "weapon_savery", "custom_weapons/cso", "m40a1", "", "ammo_762box" );
+	g_ItemRegistry.RegisterWeapon( "weapon_savery", "custom_weapons/cso", "m40a1", "", "ammo_762" );
 }
 
 } //namespace cso_savery END

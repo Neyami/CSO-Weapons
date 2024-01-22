@@ -7,7 +7,6 @@ const Vector2D CSOW_VEC2D_RECOIL( 6.0f, 10.0f );
 const int CSOW_DEFAULT_GIVE			= 10;
 const int CSOW_MAX_CLIP 			= 10;
 const int CSOW_MAX_AMMO 			= 40; //doesn't actually do anything since it uses the maxammo set by the buymenu plugin ¯\_(ツ)_/¯
-const int CSOW_WEIGHT 				= 20;
 const int CSOW_PELLETCOUNT			= 8;
 const float CSOW_DAMAGE				= 7.5; //total 60
 
@@ -89,8 +88,7 @@ class weapon_mk3a1 : CBaseCSOWeapon
 		info.iMaxClip 	= CSOW_MAX_CLIP;
 		info.iSlot 		= CSO::MK3A1_SLOT - 1;
 		info.iPosition 	= CSO::MK3A1_POSITION - 1;
-		info.iFlags 	= 0;
-		info.iWeight 	= CSOW_WEIGHT;
+		info.iWeight 	= CSO::MK3A1_WEIGHT;
 
 		return true;
 	}

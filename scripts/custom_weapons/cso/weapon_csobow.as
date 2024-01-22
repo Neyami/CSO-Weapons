@@ -2,7 +2,6 @@ namespace cso_bow
 {
 const int CSOW_DEFAULT_GIVE					= 6;
 const int CSOW_MAX_AMMO						= 60;
-const int CSOW_WEIGHT							= 10;
 const float CSOW_DAMAGE1						= 70; //78
 const float CSOW_DAMAGE2						= 140; //127
 const float CSOW_TIME_DELAY					= 0.28;
@@ -126,9 +125,10 @@ class weapon_csobow : CBaseCSOWeapon
 	{
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
 		info.iMaxClip 		= WEAPON_NOCLIP;
+		info.iAmmo1Drop	= CSOW_DEFAULT_GIVE;
 		info.iSlot			= CSO::CSOBOW_SLOT - 1;
 		info.iPosition		= CSO::CSOBOW_POSITION - 1;
-		info.iWeight		= CSOW_WEIGHT;
+		info.iWeight		= CSO::CSOBOW_WEIGHT;
 		info.iFlags			= ITEM_FLAG_NOAUTOSWITCHEMPTY | ITEM_FLAG_SELECTONEMPTY;
 
 		return true;
@@ -341,24 +341,6 @@ class weapon_csobow : CBaseCSOWeapon
 		self.SendWeaponAnim( (m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) > 0) ? ANIM_IDLE : ANIM_IDLE_EMPTY);
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
 	}
-
-	void get_position( float flForward, float flRight, float flUp, Vector &out vecOut )
-	{
-		Vector vecOrigin, vecAngle, vecForward, vecRight, vecUp;
-
-		vecOrigin = m_pPlayer.pev.origin;
-		vecUp = m_pPlayer.pev.view_ofs;
-
-		for( int i = 0; i < 3; i++ )
-			vecOrigin[i] = vecOrigin[i] + vecUp[i];
-
-		vecAngle = m_pPlayer.pev.v_angle;
-
-		g_EngineFuncs.AngleVectors( vecAngle, vecForward, vecRight, vecUp );
-
-		for( int j = 0; j < 3; j++ )
-			vecOut[j] = vecOrigin[j] + vecForward[j] * flForward + vecRight[j] * flRight + vecUp[j] * flUp;
-	}
 }
 
 class csoarrow : ScriptBaseEntity
@@ -512,7 +494,7 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_bow::csoarrow", "csoarrow" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_bow::ammo_csoarrows", "ammo_csoarrows" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_bow::weapon_csobow", "weapon_csobow" );
-	g_ItemRegistry.RegisterWeapon( "weapon_csobow", "custom_weapons/cso", "csoarrows" );
+	g_ItemRegistry.RegisterWeapon( "weapon_csobow", "custom_weapons/cso", "csoarrows", "", "ammo_csoarrows" );
 }
 
 } //namespace cso_bow END

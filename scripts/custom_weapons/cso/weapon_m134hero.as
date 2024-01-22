@@ -4,7 +4,6 @@ namespace cso_m134hero
 const int CSOW_DEFAULT_GIVE					= 300;
 const int CSOW_MAX_CLIP 						= 300;
 const int CSOW_MAX_AMMO						= 600;
-const int CSOW_WEIGHT							= 10;
 const float CSOW_DAMAGE						= 23; // Normal: 23, Zombie: 111, Scenario: 53
 const float CSOW_TIME_DELAY1					= 0.04;
 const float CSOW_TIME_DELAY2					= 0.02;
@@ -104,7 +103,6 @@ class weapon_m134hero : CBaseCSOWeapon
 	private bool m_bRapidMode;
 	private bool m_bFired;
 	private HUDSpriteParams m_hudParamsCooldown;
-	EHandle m_eDropEffect;
 
 	void Spawn()
 	{
@@ -130,6 +128,7 @@ class weapon_m134hero : CBaseCSOWeapon
 		g_Game.PrecacheModel( MODEL_PLAYER_IDLE );
 		g_Game.PrecacheModel( MODEL_PLAYER_SPIN );
 		g_Game.PrecacheModel( MODEL_WORLD );
+		g_Game.PrecacheModel( "models/custom_weapons/cs16/w_762natobox_big.mdl" );
 		g_Game.PrecacheModel( SPRITE_STEAM );
 		g_Game.PrecacheModel( MODEL_SHELL1 );
 		g_Game.PrecacheModel( MODEL_SHELL2 );
@@ -164,7 +163,7 @@ class weapon_m134hero : CBaseCSOWeapon
 		info.iAmmo1Drop	= 100;
 		info.iSlot			= CSO::M134HERO_SLOT - 1;
 		info.iPosition		= CSO::M134HERO_POSITION - 1;
-		info.iWeight		= CSOW_WEIGHT;
+		info.iWeight		= CSO::M134HERO_WEIGHT;
 		info.iFlags			= ITEM_FLAG_NOAUTORELOAD; //removing this may interfere with the overheating if the weapon is fired until out of clip-ammo
 
 		return true;
@@ -424,7 +423,7 @@ class weapon_m134hero : CBaseCSOWeapon
 				{
 					m_bFired = true;
 
-					HandleRecoil();
+					HandleRecoil( CSOW_RECOIL_STANDING_X, CSOW_RECOIL_STANDING_Y, CSOW_RECOIL_DUCKING_X, CSOW_RECOIL_DUCKING_Y );
 					HandleBrassEject();
 					g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, 0.52, 0, 94 + Math.RandomLong(0, 15) );
 
@@ -444,7 +443,7 @@ class weapon_m134hero : CBaseCSOWeapon
 					Vector vecShootCone = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_CONE_CROUCHING : CSOW_CONE_STANDING;
 
 					m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, CSOW_DAMAGE );
-					CSO::DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, m_pPlayer, true );
+					DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, m_pPlayer, true );
 
 					HandleAmmoReduction();
 				}
@@ -613,70 +612,21 @@ class weapon_m134hero : CBaseCSOWeapon
 			m1.WriteByte( 7 );
 		m1.End();		
 	}
-
-	void HandleRecoil()
-	{
-		Vector2D vec2dRecoilX = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_X : CSOW_RECOIL_STANDING_X;
-		Vector2D vec2dRecoilY = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_Y : CSOW_RECOIL_STANDING_Y;
-
-		m_pPlayer.pev.punchangle.x = Math.RandomFloat( vec2dRecoilX.x, vec2dRecoilX.y );
-		m_pPlayer.pev.punchangle.y = Math.RandomFloat( vec2dRecoilY.x, vec2dRecoilY.y );
-	}
-
-	void HandleAmmoReduction()
-	{
-		self.m_iClip--;
-
-		if( self.m_iClip == 0 and m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
-			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
-	}
-
-	void get_position( float flForward, float flRight, float flUp, Vector &out vecOut )
-	{
-		Vector vecOrigin, vecAngle, vecForward, vecRight, vecUp;
-
-		vecOrigin = m_pPlayer.pev.origin;
-		vecUp = m_pPlayer.pev.view_ofs;
-
-		for( int i = 0; i < 3; i++ )
-			vecOrigin[i] = vecOrigin[i] + vecUp[i];
-
-		vecAngle = m_pPlayer.pev.v_angle;
-
-		g_EngineFuncs.AngleVectors( vecAngle, vecForward, vecRight, vecUp );
-
-		for( int j = 0; j < 3; j++ )
-			vecOut[j] = vecOrigin[j] + vecForward[j] * flForward + vecRight[j] * flRight + vecUp[j] * flUp;
-	}
-
-	void Think()
-	{
-		if( CSO::bUseDroppedItemEffect )
-		{
-			if( pev.owner is null and m_eDropEffect.GetEntity() is null and pev.velocity == g_vecZero )
-			{
-				CBaseEntity@ cbeGunDrop = g_EntityFuncs.Create( "ef_gundrop", pev.origin, g_vecZero, false, self.edict() );
-				m_eDropEffect = EHandle( cbeGunDrop );
-				CSO::ef_gundrop@ pGunDrop = cast<CSO::ef_gundrop@>(CastToScriptClass(cbeGunDrop));
-				pGunDrop.m_hOwner = EHandle( self );
-				pGunDrop.pev.movetype	= MOVETYPE_FOLLOW;
-				@pGunDrop.pev.aiment	= self.edict();
-
-				g_EntityFuncs.DispatchSpawn( pGunDrop.self.edict() );
-			}
-		}
-
-		BaseClass.Think();
-	}
 }
 
 void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m134hero::weapon_m134hero", "weapon_m134hero" );
-	g_ItemRegistry.RegisterWeapon( "weapon_m134hero", "custom_weapons/cso", "762mg" );
+	g_ItemRegistry.RegisterWeapon( "weapon_m134hero", "custom_weapons/cso", "762mg", "", "ammo_762mg" );
+
+	if( !g_CustomEntityFuncs.IsCustomEntity( "ammo_762mg" ) )
+		CSO::Register762MG();
 
 	if( CSO::bUseDroppedItemEffect )
-		g_CustomEntityFuncs.RegisterCustomEntity( "CSO::ef_gundrop", "ef_gundrop" );
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			CSO::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_m134hero END
@@ -685,6 +635,5 @@ void Register()
 TODO
 Fix p_model (placement and angle)
 Fix thing with overheating
-Fix ammo dropping bug
 
 */

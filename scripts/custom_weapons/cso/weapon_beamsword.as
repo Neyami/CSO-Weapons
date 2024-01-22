@@ -2,7 +2,6 @@
 namespace cso_beamsword
 {
 
-const int CSOW_WEIGHT						= 10;
 const int CSOW_DAMAGE1						= 48; //62
 const int CSOW_DAMAGE2						= 31;
 
@@ -147,7 +146,7 @@ class weapon_beamsword : CBaseCSOWeapon
 		info.iMaxClip		= WEAPON_NOCLIP;
 		info.iSlot			= CSO::BEAMSWORD_SLOT - 1;
 		info.iPosition		= CSO::BEAMSWORD_POSITION - 1;
-		info.iWeight		= CSOW_WEIGHT;
+		info.iWeight		= CSO::BEAMSWORD_WEIGHT;
 
 		return true;
 	}
@@ -451,39 +450,18 @@ class weapon_beamsword : CBaseCSOWeapon
 		m_pPlayer.m_szAnimExtension = m_iMode == MODE_ON ? CSOW_ANIMEXT1 : CSOW_ANIMEXT2;
 		SetThink( null );
 	}
-
-	void get_position( float flForward, float flRight, float flUp, Vector &out vecOut )
-	{
-		Vector vecOrigin, vecAngle, vecForward, vecRight, vecUp;
-
-		vecOrigin = m_pPlayer.pev.origin;
-		vecUp = m_pPlayer.pev.view_ofs;
-
-		for( int i = 0; i < 3; i++ )
-			vecOrigin[i] = vecOrigin[i] + vecUp[i];
-
-		vecAngle = m_pPlayer.pev.v_angle;
-
-		g_EngineFuncs.AngleVectors( vecAngle, vecForward, vecRight, vecUp );
-
-		for( int j = 0; j < 3; j++ )
-			vecOut[j] = vecOrigin[j] + vecForward[j] * flForward + vecRight[j] * flRight + vecUp[j] * flUp;
-	}
-
-	bool is_wall_between_points( Vector start, Vector end, edict_t@ ignore_ent )
-	{
-		TraceResult ptr;
-
-		g_Utility.TraceLine( start, end, ignore_monsters, ignore_ent, ptr );
-
-		return (end - ptr.vecEndPos).Length() > 0;
-	}
 }
 
 void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_beamsword::weapon_beamsword", "weapon_beamsword" );
 	g_ItemRegistry.RegisterWeapon( "weapon_beamsword", "custom_weapons/cso" );
+
+	if( CSO::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			CSO::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_beamsword END
@@ -491,4 +469,5 @@ void Register()
 /*
 TODO
 Fix p_model texture alignment?
+Increase movement speed when off?
 */

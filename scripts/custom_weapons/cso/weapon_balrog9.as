@@ -1,7 +1,6 @@
 namespace cso_balrog9
 {
 
-const int BALROG9_WEIGHT				= 10;
 const int BALROG9_DAMAGE_PRIMARY		= 35;
 const float BALROG9_DAMAGE_SEC_MIN		= 60;
 const float BALROG9_DAMAGE_SEC_MAX		= 120;
@@ -118,7 +117,8 @@ class weapon_balrog9 : CBaseCSOWeapon
 		info.iMaxClip		= WEAPON_NOCLIP;
 		info.iSlot			= CSO::BALROG9_SLOT - 1;
 		info.iPosition		= CSO::BALROG9_POSITION - 1;
-		info.iWeight		= BALROG9_WEIGHT;
+		info.iWeight		= CSO::BALROG9_WEIGHT;
+
 		return true;
 	}
 

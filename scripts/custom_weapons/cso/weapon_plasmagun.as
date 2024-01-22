@@ -3,7 +3,6 @@ namespace cso_plasmagun
 const int CSOW_DEFAULT_GIVE					= 45;
 const int CSOW_MAX_CLIP 						= 45;
 const int CSOW_MAX_AMMO						= 200;
-const int CSOW_WEIGHT							= 20;
 const int CSOW_ZOOMFOV						= 40;
 const float CSOW_DAMAGE						= 43; //28?
 const float CSOW_DAMAGE_RADIUS			= 88;
@@ -107,7 +106,7 @@ class weapon_plasmagun : CBaseCSOWeapon
 		info.iMaxClip 		= CSOW_MAX_CLIP;
 		info.iSlot			= CSO::PLASMAGUN_SLOT - 1;
 		info.iPosition		= CSO::PLASMAGUN_POSITION - 1;
-		info.iWeight		= CSOW_WEIGHT;
+		info.iWeight		= CSO::PLASMAGUN_WEIGHT;
 
 		return true;
 	}
@@ -134,7 +133,7 @@ class weapon_plasmagun : CBaseCSOWeapon
 		if( self.m_bPlayEmptySound )
 		{
 			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], 1.0f, ATTN_NORM );
+			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
 		}
 
 		return false;
@@ -146,6 +145,7 @@ class weapon_plasmagun : CBaseCSOWeapon
 		{
 			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
+			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_IDLE], 0.5, ATTN_NORM );
 
 			return bResult;
 		}
@@ -383,7 +383,7 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_plasmagun::ammo_plasmashell", "ammo_plasmashell" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_plasmagun::plasmaball", "plasmaball" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_plasmagun::weapon_plasmagun", "weapon_plasmagun" );
-	g_ItemRegistry.RegisterWeapon( "weapon_plasmagun", "custom_weapons/cso", "plasma" );
+	g_ItemRegistry.RegisterWeapon( "weapon_plasmagun", "custom_weapons/cso", "plasma", "", "ammo_plasmashell" );
 }
 
 } //namespace cso_plasmagun END
