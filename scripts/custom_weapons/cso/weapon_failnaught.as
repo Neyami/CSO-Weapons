@@ -93,7 +93,7 @@ enum csowmodes_e
 
 class weapon_failnaught : CBaseCSOWeapon
 {
-	CBaseEntity@ m_pMonster;
+	EHandle m_eMonster;
 	int m_iArrowStack;
 	private int m_iState;
 	private float m_flTimeCharge;
@@ -146,9 +146,9 @@ class weapon_failnaught : CBaseCSOWeapon
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
 		info.iMaxClip 		= WEAPON_NOCLIP;
 		info.iAmmo1Drop	= CSOW_DEFAULT_GIVE;
-		info.iSlot			= CSO::FAILNAUGHT_SLOT - 1;
-		info.iPosition		= CSO::FAILNAUGHT_POSITION - 1;
-		info.iWeight		= CSO::FAILNAUGHT_WEIGHT;
+		info.iSlot			= cso::FAILNAUGHT_SLOT - 1;
+		info.iPosition		= cso::FAILNAUGHT_POSITION - 1;
+		info.iWeight		= cso::FAILNAUGHT_WEIGHT;
 		info.iFlags			= ITEM_FLAG_NOAUTOSWITCHEMPTY | ITEM_FLAG_SELECTONEMPTY;
 
 		return true;
@@ -304,7 +304,7 @@ class weapon_failnaught : CBaseCSOWeapon
 
 		CBaseEntity@ cbeArrow = g_EntityFuncs.Create( "holyarrow", vecOrigin, vecAngles, false, m_pPlayer.edict() );
 		holyarrow@ pArrow = cast<holyarrow@>(CastToScriptClass(cbeArrow));
-		@pArrow.m_pLauncher = this;
+		pArrow.m_eLauncher = EHandle(self);
 
 		float flSpeed = (m_pPlayer.pev.waterlevel < WATERLEVEL_HEAD) ? CSOW_ARROW_SPEED : CSOW_ARROW_SPEED/2;
 		vecVelocity = vecEnd - vecOrigin;
@@ -386,7 +386,7 @@ class weapon_failnaught : CBaseCSOWeapon
 
 class holyarrow : ScriptBaseEntity
 {
-	weapon_failnaught@ m_pLauncher;
+	EHandle m_eLauncher;
 	private bool m_bBeamCreated;
 
 	void Spawn()
@@ -432,7 +432,7 @@ class holyarrow : ScriptBaseEntity
 			{
 				pOther.TraceAttack( pevOwner, pev.dmg, pev.velocity.Normalize(), tr, DMG_BULLET | DMG_NEVERGIB ); 
 
-				if( m_pLauncher !is null and !pOther.IsBSPModel() and pOther.IsAlive() and !pOther.IsPlayerAlly() )
+				if( m_eLauncher.IsValid() and !pOther.IsBSPModel() and pOther.IsAlive() and !pOther.IsPlayerAlly() )
 					HandleStacks( EHandle(pOther) );
 			}
 
@@ -508,7 +508,11 @@ class holyarrow : ScriptBaseEntity
 
 	void HandleStacks( EHandle &in eMonster )
 	{
+		if( !m_eLauncher.IsValid() ) return;
+
 		CBaseEntity@ pMonster = eMonster.GetEntity();
+		CBaseEntity@ cbeLauncher = m_eLauncher.GetEntity();
+		weapon_failnaught@ pLauncher = cast<weapon_failnaught@>(CastToScriptClass(cbeLauncher));
 
 		int iBaseScale = 10;
 		int iMinScale = 3;
@@ -516,18 +520,20 @@ class holyarrow : ScriptBaseEntity
 		float flBaseVolume = 73728;
 		float flScale;
 
-		if( m_pLauncher.m_pMonster is null or m_pLauncher.m_pMonster !is pMonster ) //Enemy hit and no currently set target or not the same as hit enemy; set enemy as target and increase stack
+		if( !pLauncher.m_eMonster.IsValid() or pLauncher.m_eMonster.GetEntity() !is pMonster ) //Enemy hit and no currently set target or not the same as hit enemy; set enemy as target and increase stack
 		{
-			@m_pLauncher.m_pMonster = pMonster;
-			m_pLauncher.m_iArrowStack = 1; //Set to 1 because this check should only happen once
+			//g_Game.AlertMessage( at_notice, "ENEMY HIT AND NO CURRENT TARGET OR NEW TARGET\n" );
+			pLauncher.m_eMonster = eMonster;
+			pLauncher.m_iArrowStack = 1; //Set to 1 because this check should only happen once
 		}
 		else
 		{
-			if( m_pLauncher.m_pMonster is pMonster ) //Enemy hit and is the same as the set target; increase stack
+			if( pLauncher.m_eMonster.GetEntity() is pMonster ) //Enemy hit and is the same as the set target; increase stack
 			{
-				if( m_pLauncher.m_iArrowStack < CSOW_ARROW_MAX_STACKS-1 )
-					m_pLauncher.m_iArrowStack++;
-				else if( m_pLauncher.m_iArrowStack == CSOW_ARROW_MAX_STACKS-1 ) //The stack is one arrow away from max; cause an explosion and reset stack to 0
+				//g_Game.AlertMessage( at_notice, "ENEMY HIT AND AND IS THE SAME\n" );
+				if( pLauncher.m_iArrowStack < CSOW_ARROW_MAX_STACKS-1 )
+					pLauncher.m_iArrowStack++;
+				else if( pLauncher.m_iArrowStack == CSOW_ARROW_MAX_STACKS-1 ) //The stack is one arrow away from max; cause an explosion and reset stack to 0
 				{
 					Vector vecOrigin = pMonster.pev.origin;
 					float flMobVolume = (pMonster.pev.size.x * pMonster.pev.size.y * pMonster.pev.size.z);
@@ -549,9 +555,9 @@ class holyarrow : ScriptBaseEntity
 					float flRadius = (pev.dmg * flScale) * 0.3; //CSOW_ARROW_EXP_RADIUS
 					//g_WeaponFuncs.RadiusDamage( vecOrigin, self.pev, pev.owner.vars, pev.dmg * 5, (pev.dmg*5) * 2.5, CLASS_NONE, DMG_GENERIC );
 					DoRadiusDamage( vecOrigin, flRadius );
-					//g_Game.AlertMessage( at_console, "Damage radius: %1\n", flRadius );
+					//g_Game.AlertMessage( at_notice, "Damage radius: %1\n", flRadius );
 
-					m_pLauncher.m_iArrowStack = 0;
+					pLauncher.m_iArrowStack = 0;
 				}
 			}
 		}
@@ -632,4 +638,5 @@ Autoremove stacks after a certain time?
 Hunter's Instinct, see mobs through walls
 Make a proper ammo model?
 Add viewmodel muzzleflashes somehow (the model events don't show up properly)
+Add muzzleflashes somehow, they don't work properly when put in the model's .qc
 */
