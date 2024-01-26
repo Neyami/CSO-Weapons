@@ -146,9 +146,9 @@ class weapon_failnaught : CBaseCSOWeapon
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
 		info.iMaxClip 		= WEAPON_NOCLIP;
 		info.iAmmo1Drop	= CSOW_DEFAULT_GIVE;
-		info.iSlot			= cso::FAILNAUGHT_SLOT - 1;
-		info.iPosition		= cso::FAILNAUGHT_POSITION - 1;
-		info.iWeight		= cso::FAILNAUGHT_WEIGHT;
+		info.iSlot			= CSO::FAILNAUGHT_SLOT - 1;
+		info.iPosition		= CSO::FAILNAUGHT_POSITION - 1;
+		info.iWeight		= CSO::FAILNAUGHT_WEIGHT;
 		info.iFlags			= ITEM_FLAG_NOAUTOSWITCHEMPTY | ITEM_FLAG_SELECTONEMPTY;
 
 		return true;
