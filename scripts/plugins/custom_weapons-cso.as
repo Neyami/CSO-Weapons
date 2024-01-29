@@ -25,9 +25,11 @@
 #include "../custom_weapons/cso/weapon_crow3"
 
 //Assault Rifles
+#include "../custom_weapons/cso/weapon_aug"
 #include "../custom_weapons/cso/weapon_plasmagun"
 #include "../custom_weapons/cso/weapon_csobow"
 #include "../custom_weapons/cso/weapon_failnaught"
+#include "../custom_weapons/cso/weapon_augex"
 
 //Machine Guns
 #include "../custom_weapons/cso/weapon_aeolis"
@@ -58,9 +60,11 @@ void MapInit()
 	cso_volcano::Register();
 	cso_mk3a1::Register();
 	cso_crow3::Register();
+	cso_aug::Register();
 	cso_plasmagun::Register();
 	cso_bow::Register();
 	cso_failnaught::Register();
+	cso_augex::Register();
 	cso_aeolis::Register();
 	cso_m134hero::Register();
 	cso_savery::Register();
