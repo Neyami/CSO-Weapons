@@ -16,11 +16,11 @@ https://github.com/Zode/AFBase
 
 If you don't use my plugin, then you'll have to put this in another plugin that you've got, such as a buymenu.
 
-`#include "../custom_weapons/baseweapon"`
-
+`#include "../custom_weapons/cso/csobaseweapon"`  
 `#include "../custom_weapons/cso/csocommon"`  
 
-Change bUseDroppedItemEffect to true in csocommon.as if you want to use CSO-like dropped weapons (experimental, only m134hero has it atm)
+Set bUseDroppedItemEffect to true in csocommon.as if you want to use CSO-like dropped weapons  
+Change USE_CSLIKE_RECOIL and USE_PENETRATION in weapon_aug and weapon_augex to your preference.
 
 <BR>
 
@@ -183,6 +183,18 @@ Change bUseDroppedItemEffect to true in csocommon.as if you want to use CSO-like
 
 
 # ASSAULT RIFLES
+* Steyr AUG A1
+
+    * ENTITIES
+    * `weapon_aug` - Weapon
+ 
+    * AMMO NAME
+    * `556`
+
+
+<BR>
+
+
 * Plasma Gun
 
     * ENTITIES
@@ -223,6 +235,22 @@ Change bUseDroppedItemEffect to true in csocommon.as if you want to use CSO-like
 
 
 <BR>
+
+
+* Burning AUG
+
+    * ENTITIES
+    * `weapon_augex` - Weapon
+    * `augex_grenade` - Projectile
+ 
+    * AMMO NAME
+    * `556`
+    * `ARgrenades`
+
+
+<BR>
+
+
 
 
 # MACHINE GUNS
