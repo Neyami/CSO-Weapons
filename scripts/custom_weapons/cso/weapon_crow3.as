@@ -83,11 +83,11 @@ class weapon_crow3 : CBaseCSOWeapon
 		g_Game.PrecacheModel( MODEL_PLAYER );
 		g_Game.PrecacheModel( MODEL_WORLD );
 
-		if( CSO::bUseDroppedItemEffect )
-			g_Game.PrecacheModel( CSO::CSO_ITEMDISPLAY_MODEL );
+		if( cso::bUseDroppedItemEffect )
+			g_Game.PrecacheModel( cso::CSO_ITEMDISPLAY_MODEL );
 
-		for( uint i = 1; i < CSO::pSmokeSprites.length(); ++i )
-			g_Game.PrecacheModel( CSO::pSmokeSprites[i] );
+		for( uint i = 1; i < cso::pSmokeSprites.length(); ++i )
+			g_Game.PrecacheModel( cso::pSmokeSprites[i] );
 
 		for( uint i = 0; i < pCSOWSounds.length(); ++i )
 			g_SoundSystem.PrecacheSound( pCSOWSounds[i] );
@@ -109,9 +109,9 @@ class weapon_crow3 : CBaseCSOWeapon
 	{
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
 		info.iMaxClip 		= CSOW_MAX_CLIP;
-		info.iSlot			= CSO::CROW3_SLOT - 1;
-		info.iPosition		= CSO::CROW3_POSITION - 1;
-		info.iWeight		= CSO::CROW3_WEIGHT;
+		info.iSlot			= cso::CROW3_SLOT - 1;
+		info.iPosition		= cso::CROW3_POSITION - 1;
+		info.iWeight		= cso::CROW3_WEIGHT;
 
 		return true;
 	}
@@ -191,7 +191,7 @@ class weapon_crow3 : CBaseCSOWeapon
 		Vector vecShootCone = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_CONE_CROUCHING : CSOW_CONE_STANDING;
 
 		m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, CSOW_DAMAGE );
-		DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_MP5, m_pPlayer, true );
+		DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_MP5, true );
 	}
 
 	void WeaponIdle()
@@ -292,10 +292,10 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_crow3::weapon_crow3", "weapon_crow3" );
 	g_ItemRegistry.RegisterWeapon( "weapon_crow3", "custom_weapons/cso", "9mm", "", "ammo_9mmAR" );
 
-	if( CSO::bUseDroppedItemEffect )
+	if( cso::bUseDroppedItemEffect )
 	{
 		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
-			CSO::RegisterGunDrop();
+			cso::RegisterGunDrop();
 	}
 }
 

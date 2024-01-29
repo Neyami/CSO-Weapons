@@ -86,9 +86,9 @@ class weapon_mk3a1 : CBaseCSOWeapon
 	{
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
 		info.iMaxClip 	= CSOW_MAX_CLIP;
-		info.iSlot 		= CSO::MK3A1_SLOT - 1;
-		info.iPosition 	= CSO::MK3A1_POSITION - 1;
-		info.iWeight 	= CSO::MK3A1_WEIGHT;
+		info.iSlot 		= cso::MK3A1_SLOT - 1;
+		info.iPosition 	= cso::MK3A1_POSITION - 1;
+		info.iWeight 	= cso::MK3A1_WEIGHT;
 
 		return true;
 	}
@@ -167,7 +167,7 @@ class weapon_mk3a1 : CBaseCSOWeapon
 			flDamage = self.m_flCustomDmg;
 
 		m_pPlayer.FireBullets( CSOW_PELLETCOUNT, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 0, 0 );
-		CSO::CreateShotgunPelletDecals( m_pPlayer, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, CSOW_PELLETCOUNT, flDamage, (DMG_BULLET | DMG_LAUNCH | DMG_NEVERGIB) );
+		cso::CreateShotgunPelletDecals( m_pPlayer, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, CSOW_PELLETCOUNT, flDamage, (DMG_BULLET | DMG_LAUNCH | DMG_NEVERGIB) );
 
 		if( self.m_iClip <= 0 and m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 )
 			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );

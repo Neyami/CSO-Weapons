@@ -35,6 +35,8 @@ const string AEOLIS_SOUND_FLAME2		= "custom_weapons/cso/flamegun-2.wav";
 const string AEOLIS_SOUND_STEAM			= "custom_weapons/cso/papin_steam.wav";
 const string AEOLIS_SOUND_EMPTY			= "custom_weapons/cs16/dryfire_rifle.wav";
 
+const Vector CSOW_SHELL_ORIGIN				= Vector(15.0, 13.0, -10.0); //forward, right, up
+
 enum AeolisAnimation
 {
 	AEOLIS_IDLE = 0,
@@ -71,11 +73,11 @@ class weapon_aeolis : CBaseCSOWeapon
 		g_Game.PrecacheModel( AEOLIS_MODEL_PLAYER );
 		g_Game.PrecacheModel( AEOLIS_MODEL_WORLD );
 
-		g_Game.PrecacheModel( AEOLIS_MODEL_SHELL );
+		m_iShell = g_Game.PrecacheModel( AEOLIS_MODEL_SHELL );
 		g_Game.PrecacheModel( AEOLIS_MODEL_CLIP );
 
-		for( uint i = 0; i < CSO::pSmokeSprites.length(); ++i )
-			g_Game.PrecacheModel( CSO::pSmokeSprites[i] );
+		for( uint i = 0; i < cso::pSmokeSprites.length(); ++i )
+			g_Game.PrecacheModel( cso::pSmokeSprites[i] );
 
 		g_Game.PrecacheModel( AEOLIS_SPRITE_FLAME );
 
@@ -116,9 +118,9 @@ class weapon_aeolis : CBaseCSOWeapon
 		info.iMaxAmmo1 	= AEOLIS_MAX_AMMO;
 		info.iMaxAmmo2 	= AEOLIS_MAX_AMMO2;
 		info.iMaxClip 	= AEOLIS_MAX_CLIP;
-		info.iSlot 		= CSO::AEOLIS_SLOT - 1;
-		info.iPosition 	= CSO::AEOLIS_POSITION - 1;
-		info.iWeight 	= CSO::AEOLIS_WEIGHT;
+		info.iSlot 		= cso::AEOLIS_SLOT - 1;
+		info.iPosition 	= cso::AEOLIS_POSITION - 1;
+		info.iWeight 	= cso::AEOLIS_WEIGHT;
 
 		return true;
 	}
@@ -241,7 +243,7 @@ class weapon_aeolis : CBaseCSOWeapon
 
 			if( m_iHeat == 10 || m_iHeat == 24 )
 			{
-				CSO::DoGunSmoke( vecSrc + g_Engine.v_forward * 8 + g_Engine.v_up * -10 + g_Engine.v_right * 4, CSO::SMOKE_RIFLE );
+				cso::DoGunSmoke( vecSrc + g_Engine.v_forward * 8 + g_Engine.v_up * -10 + g_Engine.v_right * 4, SMOKE_RIFLE );
 				g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_AUTO, AEOLIS_SOUND_STEAM, 0.5f, ATTN_NORM );
 			}
 		}
@@ -250,10 +252,11 @@ class weapon_aeolis : CBaseCSOWeapon
 		m_pPlayer.m_rgAmmo( self.m_iSecondaryAmmoType, m_iHeat );
 
 		Vector vecShellOrigin, vecShellVelocity;
-		CS16GetDefaultShellInfo( m_pPlayer, vecShellVelocity, vecShellOrigin, 15, 13, -10, true, false );
+		CS16GetDefaultShellInfo( m_pPlayer, vecShellVelocity, vecShellOrigin, CSOW_SHELL_ORIGIN.x, CSOW_SHELL_ORIGIN.y, CSOW_SHELL_ORIGIN.z, false, false );
 		g_EntityFuncs.EjectBrass( vecShellOrigin, vecShellVelocity, m_pPlayer.pev.angles.y, g_EngineFuncs.ModelIndex(AEOLIS_MODEL_SHELL), TE_BOUNCE_SHELL ); 
+		//EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x + g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell, TE_BOUNCE_SHELL );
 
-		DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, m_pPlayer );
+		DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW );
 
 		if( self.m_iClip == 0 && m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
 			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
@@ -317,7 +320,7 @@ class weapon_aeolis : CBaseCSOWeapon
 		m_pPlayer.m_iWeaponVolume = NORMAL_GUN_VOLUME;
 
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
-		CSO::ShootCustomProjectile( "csoproj_flame", AEOLIS_SPRITE_FLAME, m_pPlayer.GetGunPosition() + g_Engine.v_forward * 16 + g_Engine.v_right * 2 + g_Engine.v_up * -2, g_Engine.v_forward * 400, m_pPlayer.pev.v_angle, m_pPlayer );
+		cso::ShootCustomProjectile( "csoproj_flame", AEOLIS_SPRITE_FLAME, m_pPlayer.GetGunPosition() + g_Engine.v_forward * 16 + g_Engine.v_right * 2 + g_Engine.v_up * -2, g_Engine.v_forward * 400, m_pPlayer.pev.v_angle, m_pPlayer );
 
 		self.m_flNextSecondaryAttack = g_Engine.time + AEOLIS_DELAY_SECONDARY;
 		self.m_flTimeWeaponIdle = g_Engine.time + 0.1f;

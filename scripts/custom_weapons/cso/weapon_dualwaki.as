@@ -116,9 +116,9 @@ class weapon_dualwaki : CBaseCSOWeapon
 		info.iMaxAmmo1		= -1;
 		info.iMaxAmmo2		= -1;
 		info.iMaxClip		= WEAPON_NOCLIP;
-		info.iSlot			= CSO::DWAKI_SLOT - 1;
-		info.iPosition		= CSO::DWAKI_POSITION - 1;
-		info.iWeight		= CSO::DWAKI_WEIGHT;
+		info.iSlot			= cso::DWAKI_SLOT - 1;
+		info.iPosition		= cso::DWAKI_POSITION - 1;
+		info.iWeight		= cso::DWAKI_WEIGHT;
 
 		return true;
 	}

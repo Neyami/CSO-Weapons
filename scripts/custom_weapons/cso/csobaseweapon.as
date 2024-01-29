@@ -11,6 +11,12 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 
 	protected EHandle m_eDropEffect;
 	protected int m_iWeaponType;
+	int m_iShell;
+
+	int m_iShotsFired; //For CS-Like
+	bool m_bDirection; //For CS-Like
+	bool m_bDelayFire; //For CS-Like
+	float m_flDecreaseShotsFired; //For CS-Like
 
 	//legacy support only
 	void CS16GetDefaultShellInfo( EHandle ePlayer, Vector& out ShellVelocity, Vector& out ShellOrigin, float forwardScale, float rightScale, float upScale, bool leftShell, bool downShell )
@@ -40,6 +46,30 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		}
 	}
 
+	void EjectBrass( Vector vecOrigin, int iShell, int iBounce = TE_BOUNCE_SHELL, bool bRight = true )
+	{
+		Vector vecVelocity;
+
+		if( bRight )
+			vecVelocity = m_pPlayer.pev.velocity + g_Engine.v_right * Math.RandomFloat(50, 70) + g_Engine.v_up * Math.RandomFloat(50, 75) + g_Engine.v_forward * 25;
+		else
+			vecVelocity = m_pPlayer.pev.velocity - g_Engine.v_right * Math.RandomFloat(50, 70) + g_Engine.v_up * Math.RandomFloat(50, 75) + g_Engine.v_forward * 25;
+
+		NetworkMessage m1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
+			m1.WriteByte( TE_MODEL );
+			m1.WriteCoord( vecOrigin.x );
+			m1.WriteCoord( vecOrigin.y );
+			m1.WriteCoord( vecOrigin.z );
+			m1.WriteCoord( vecVelocity.x ); 
+			m1.WriteCoord( vecVelocity.y );
+			m1.WriteCoord( vecVelocity.z );
+			m1.WriteAngle( Math.RandomLong(0, 360) );
+			m1.WriteShort( iShell );
+			m1.WriteByte( iBounce );
+			m1.WriteByte( 7 );
+		m1.End();		
+	}
+
 	void DoDecalGunshot( Vector vecSrc, Vector vecAiming, float flConeX, float flConeY, int iBulletType, EHandle &in ePlayer, bool bSmokePuff = false )
 	{
 		CBasePlayer@ pPlayer = null;
@@ -48,7 +78,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		if( pPlayer !is null ) DoDecalGunshot( vecSrc, vecAiming, flConeX, flConeY, iBulletType, pPlayer, bSmokePuff );
 	}
 
-	void DoDecalGunshot( Vector vecSrc, Vector vecAiming, float flConeX, float flConeY, int iBulletType, CBasePlayer@ pPlayer, bool bSmokePuff = false )
+	void DoDecalGunshot( Vector vecSrc, Vector vecAiming, float flConeX, float flConeY, int iBulletType, bool bSmokePuff = false )
 	{
 		TraceResult tr;
 		
@@ -62,7 +92,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 
 		Vector vecEnd	= vecSrc + vecDir * 8192;
 
-		g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, pPlayer.edict(), tr );
+		g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr );
 		
 		if( tr.flFraction < 1.0 )
 		{
@@ -81,7 +111,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 							m1.WriteCoord( tr.vecEndPos.x );
 							m1.WriteCoord( tr.vecEndPos.y );
 							m1.WriteCoord( tr.vecEndPos.z - 10.0 );
-							m1.WriteShort( g_EngineFuncs.ModelIndex(CSO::pSmokeSprites[Math.RandomLong(1, 4)]) );
+							m1.WriteShort( g_EngineFuncs.ModelIndex(cso::pSmokeSprites[Math.RandomLong(1, 4)]) );
 							m1.WriteByte( 2 );
 							m1.WriteByte( 50 );
 							m1.WriteByte( TE_EXPLFLAG_NODLIGHTS|TE_EXPLFLAG_NOSOUND|TE_EXPLFLAG_NOPARTICLES );
@@ -96,7 +126,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 	{
 		self.m_iClip--;
 
-		if( self.m_iClip == 0 and m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
+		if( self.m_iClip <= 0 and m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
 			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
 	}
 
@@ -109,15 +139,55 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		m_pPlayer.pev.punchangle.y = Math.RandomFloat( vec2dRecoilY.x, vec2dRecoilY.y );
 	}
 
+	//For CS-Like
+	void KickBack( float up_base, float lateral_base, float up_modifier, float lateral_modifier, float up_max, float lateral_max, int direction_change )
+	{
+		float flFront, flSide;
+
+		if( m_iShotsFired == 1 )
+		{
+			flFront = up_base;
+			flSide = lateral_base;
+		}
+		else
+		{
+			flFront = m_iShotsFired * up_modifier + up_base;
+			flSide = m_iShotsFired * lateral_modifier + lateral_base;
+		}
+
+		m_pPlayer.pev.punchangle.x -= flFront;
+
+		if( m_pPlayer.pev.punchangle.x < -up_max )
+			m_pPlayer.pev.punchangle.x = -up_max;
+
+		if( m_bDirection )
+		{
+			m_pPlayer.pev.punchangle.y += flSide;
+
+			if( m_pPlayer.pev.punchangle.y > lateral_max )
+				m_pPlayer.pev.punchangle.y = lateral_max;
+		}
+		else
+		{
+			m_pPlayer.pev.punchangle.y -= flSide;
+
+			if( m_pPlayer.pev.punchangle.y < -lateral_max )
+				m_pPlayer.pev.punchangle.y = -lateral_max;
+		}
+
+		if( Math.RandomLong(0, direction_change) == 0 )
+			m_bDirection = !m_bDirection;
+	}
+
 	void Think()
 	{
-		if( CSO::bUseDroppedItemEffect )
+		if( cso::bUseDroppedItemEffect )
 		{
 			if( pev.owner is null and m_eDropEffect.GetEntity() is null and pev.velocity == g_vecZero )
 			{
 				CBaseEntity@ cbeGunDrop = g_EntityFuncs.Create( "ef_gundrop", pev.origin, g_vecZero, false, self.edict() );
 				m_eDropEffect = EHandle( cbeGunDrop );
-				CSO::ef_gundrop@ pGunDrop = cast<CSO::ef_gundrop@>(CastToScriptClass(cbeGunDrop));
+				cso::ef_gundrop@ pGunDrop = cast<cso::ef_gundrop@>(CastToScriptClass(cbeGunDrop));
 				pGunDrop.m_hOwner = EHandle( self );
 				pGunDrop.pev.movetype	= MOVETYPE_FOLLOW;
 				@pGunDrop.pev.aiment	= self.edict();

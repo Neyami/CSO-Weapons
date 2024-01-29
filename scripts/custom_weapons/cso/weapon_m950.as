@@ -37,7 +37,7 @@ enum M950Animation
 
 class weapon_m950 : CBaseCSOWeapon
 {
-	int m_iDroppedClip, m_iShotsFired;
+	int m_iDroppedClip;
 
 	void Spawn()
 	{
@@ -81,9 +81,9 @@ class weapon_m950 : CBaseCSOWeapon
 	{
 		info.iMaxAmmo1 	= M950_MAX_AMMO;
 		info.iMaxClip 	= M950_MAX_CLIP;
-		info.iSlot 		= CSO::M950_SLOT - 1;
-		info.iPosition 	= CSO::M950_POSITION - 1;
-		info.iWeight 	= CSO::M950_WEIGHT;
+		info.iSlot 		= cso::M950_SLOT - 1;
+		info.iPosition 	= cso::M950_POSITION - 1;
+		info.iWeight 	= cso::M950_WEIGHT;
 
 		return true;
 	}
@@ -192,7 +192,7 @@ class weapon_m950 : CBaseCSOWeapon
 		vecShellVelocity.y *= -1;
 		g_EntityFuncs.EjectBrass( vecShellOrigin, vecShellVelocity, m_pPlayer.pev.angles[ 1 ], g_EngineFuncs.ModelIndex(M950_MODEL_SHELL), TE_BOUNCE_SHELL );
 
-		DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_MP5, m_pPlayer );
+		DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_MP5 );
 
 		if( self.m_iClip == 0 && m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
 			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );

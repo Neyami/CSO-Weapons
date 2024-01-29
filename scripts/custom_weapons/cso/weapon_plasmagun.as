@@ -104,9 +104,9 @@ class weapon_plasmagun : CBaseCSOWeapon
 	{
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
 		info.iMaxClip 		= CSOW_MAX_CLIP;
-		info.iSlot			= CSO::PLASMAGUN_SLOT - 1;
-		info.iPosition		= CSO::PLASMAGUN_POSITION - 1;
-		info.iWeight		= CSO::PLASMAGUN_WEIGHT;
+		info.iSlot			= cso::PLASMAGUN_SLOT - 1;
+		info.iPosition		= cso::PLASMAGUN_POSITION - 1;
+		info.iWeight		= cso::PLASMAGUN_WEIGHT;
 
 		return true;
 	}

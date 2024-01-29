@@ -111,9 +111,9 @@ class weapon_desperado : CBaseCSOWeapon
 	{
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
 		info.iMaxClip 		= CSOW_MAX_CLIP;
-		info.iSlot			= CSO::DESPERADO_SLOT - 1;
-		info.iPosition		= CSO::DESPERADO_POSITION - 1;
-		info.iWeight		= CSO::DESPERADO_WEIGHT;
+		info.iSlot			= cso::DESPERADO_SLOT - 1;
+		info.iPosition		= cso::DESPERADO_POSITION - 1;
+		info.iWeight		= cso::DESPERADO_WEIGHT;
 		info.iFlags			= ITEM_FLAG_NOAUTOSWITCHEMPTY | ITEM_FLAG_SELECTONEMPTY;
 
 		return true;

@@ -166,9 +166,9 @@ class weapon_bloodhunter : CBaseCSOWeapon
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
 		info.iMaxClip 		= CSOW_MAX_CLIP;
 		info.iAmmo1Drop	= CSOW_MAX_CLIP;
-		info.iSlot			= CSO::BLOODHUNTER_SLOT - 1;
-		info.iPosition		= CSO::BLOODHUNTER_POSITION - 1;
-		info.iWeight		= CSO::BLOODHUNTER_WEIGHT;
+		info.iSlot			= cso::BLOODHUNTER_SLOT - 1;
+		info.iPosition		= cso::BLOODHUNTER_POSITION - 1;
+		info.iWeight		= cso::BLOODHUNTER_WEIGHT;
 
 		return true;
 	}

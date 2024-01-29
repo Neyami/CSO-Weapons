@@ -126,9 +126,9 @@ class weapon_janus9 : CBaseCSOWeapon
 		info.iMaxAmmo1		= -1;
 		info.iMaxAmmo2		= -1;
 		info.iMaxClip		= WEAPON_NOCLIP;
-		info.iSlot			= CSO::JANUS9_SLOT - 1;
-		info.iPosition		= CSO::JANUS9_POSITION - 1;
-		info.iWeight		= CSO::JANUS9_WEIGHT;
+		info.iSlot			= cso::JANUS9_SLOT - 1;
+		info.iPosition		= cso::JANUS9_POSITION - 1;
+		info.iWeight		= cso::JANUS9_WEIGHT;
 
 		return true;
 	}
@@ -417,7 +417,7 @@ class weapon_janus9 : CBaseCSOWeapon
 void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_janus9::weapon_janus9", "weapon_janus9" );
-	g_CustomEntityFuncs.RegisterCustomEntity( "CSO::cso_aoetrigger", "cso_aoetrigger" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso::cso_aoetrigger", "cso_aoetrigger" );
 	g_ItemRegistry.RegisterWeapon( "weapon_janus9", "custom_weapons/cso" );
 }
 

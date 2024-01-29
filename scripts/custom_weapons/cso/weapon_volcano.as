@@ -2,7 +2,7 @@ namespace cso_volcano
 {
 
 const Vector CSOW_VECTOR_SPREAD( 0.03f, 0.03f, 0.0f );
-const Vector CSOW_VECTOR_EJECT( 22.0f, 11.0f, -9.0f );
+const Vector CSOW_SHELL_ORIGIN( 22.0f, 11.0f, -9.0f );
 const Vector2D CSOW_VEC2D_RECOIL( 3.0f, 5.0f );
 
 const int CSOW_DEFAULT_GIVE			= 40;
@@ -100,9 +100,9 @@ class weapon_volcano : CBaseCSOWeapon
 	{
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
 		info.iMaxClip 	= CSOW_MAX_CLIP;
-		info.iSlot 		= CSO::VOLCANO_SLOT - 1;
-		info.iPosition 	= CSO::VOLCANO_POSITION - 1;
-		info.iWeight 	= CSO::VOLCANO_WEIGHT;
+		info.iSlot 		= cso::VOLCANO_SLOT - 1;
+		info.iPosition 	= cso::VOLCANO_POSITION - 1;
+		info.iWeight 	= cso::VOLCANO_WEIGHT;
 
 		return true;
 	}
@@ -164,7 +164,7 @@ class weapon_volcano : CBaseCSOWeapon
 		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2) );
 
 		Vector vecShellVelocity, vecShellOrigin;
-		CS16GetDefaultShellInfo( EHandle(m_pPlayer), vecShellVelocity, vecShellOrigin, CSOW_VECTOR_EJECT.x, CSOW_VECTOR_EJECT.y, CSOW_VECTOR_EJECT.z, true, false );
+		CS16GetDefaultShellInfo( EHandle(m_pPlayer), vecShellVelocity, vecShellOrigin, CSOW_SHELL_ORIGIN.x, CSOW_SHELL_ORIGIN.y, CSOW_SHELL_ORIGIN.z, true, false );
 		g_EntityFuncs.EjectBrass( vecShellOrigin, vecShellVelocity*1.2f, m_pPlayer.pev.angles.y, g_EngineFuncs.ModelIndex(MODEL_SHELL), TE_BOUNCE_SHOTSHELL );
 
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], 1.0f, 0.5f, 0, 94 + Math.RandomLong(0, 15) );
@@ -178,7 +178,7 @@ class weapon_volcano : CBaseCSOWeapon
 			flDamage = self.m_flCustomDmg;
 
 		m_pPlayer.FireBullets( CSOW_PELLETCOUNT, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 0, 0 );
-		CSO::CreateShotgunPelletDecals( m_pPlayer, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, CSOW_PELLETCOUNT, flDamage, (DMG_BULLET | DMG_NEVERGIB) );
+		cso::CreateShotgunPelletDecals( m_pPlayer, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, CSOW_PELLETCOUNT, flDamage, (DMG_BULLET | DMG_NEVERGIB) );
 
 		if( self.m_iClip <= 0 and m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 )
 			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );

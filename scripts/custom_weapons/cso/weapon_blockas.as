@@ -1,24 +1,24 @@
 namespace cso_blockas
 {
 
-const Vector CSOW_VECTOR_SPREAD( 0.0725f, 0.0725f, 0.0f );
-const Vector CSOW_VECTOR_EJECT( 22.0f, 11.0f, -9.0f );
-const Vector2D CSOW_VEC2D_RECOIL( 6.0f, 10.0f );
+const Vector CSOW_VECTOR_SPREAD( 0.0725, 0.0725, 0.0 );
+const Vector CSOW_SHELL_ORIGIN( 22.0, 11.0, -9.0 );
+const Vector2D CSOW_VEC2D_RECOIL( 6.0, 10.0 );
 
 const int CSOW_DEFAULT_GIVE			= 8;
 const int CSOW_MAX_CLIP 			= 8;
 const int CSOW_MAX_AMMO1 			= 32; //doesn't actually do anything since it uses the maxammo set by the buymenu plugin ¯\_(ツ)_/¯
 const int CSOW_MAX_AMMO2 			= 10;
 const int CSOW_PELLETCOUNT			= 8;
-const float CSOW_DAMAGE1			= 7.5f; //total 60
-const float CSOW_DAMAGE2			= 113.0f;
-const float CSOW_RADIUS				= 80.0f;
+const float CSOW_DAMAGE1			= 7.5; //total 60
+const float CSOW_DAMAGE2			= 113.0;
+const float CSOW_RADIUS				= 80.0;
 
-const float CSOW_DELAY1				= 0.30f;
+const float CSOW_DELAY1				= 0.30;
 const float CSOW_DELAY2				= 0.35;
-const float CSOW_TIME_IDLE			= 1.7f;
-const float CSOW_TIME_DRAW			= 1.0f; //1.1f
-const float CSOW_TIME_FIRE_TO_IDLE	= 1.0f;
+const float CSOW_TIME_IDLE			= 1.7;
+const float CSOW_TIME_DRAW			= 1.0; //1.1
+const float CSOW_TIME_FIRE_TO_IDLE	= 1.0;
 
 const string MODEL_VIEW1			= "models/custom_weapons/cso/v_blockas1.mdl";
 const string MODEL_VIEW2			= "models/custom_weapons/cso/v_blockas2.mdl";
@@ -169,9 +169,9 @@ class weapon_blockas : CBaseCSOWeapon
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO1;
 		info.iMaxAmmo2 	= CSOW_MAX_AMMO2;
 		info.iMaxClip 	= CSOW_MAX_CLIP;
-		info.iSlot 		= CSO::BLOCKAS_SLOT - 1;
-		info.iPosition 	= CSO::BLOCKAS_POSITION - 1;
-		info.iWeight 	= CSO::BLOCKAS_WEIGHT;
+		info.iSlot 		= cso::BLOCKAS_SLOT - 1;
+		info.iPosition 	= cso::BLOCKAS_POSITION - 1;
+		info.iWeight 	= cso::BLOCKAS_WEIGHT;
 
 		return true;
 	}
@@ -205,7 +205,7 @@ class weapon_blockas : CBaseCSOWeapon
 		{
 			self.m_bPlayEmptySound = false;
 
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], 0.8f, ATTN_NORM );
+			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], 0.8, ATTN_NORM );
 		}
 		
 		return false;
@@ -255,7 +255,7 @@ class weapon_blockas : CBaseCSOWeapon
 		if( m_pPlayer.pev.waterlevel == WATERLEVEL_HEAD )
 		{
 			self.PlayEmptySound();
-			self.m_flNextPrimaryAttack = g_Engine.time + 0.15f;
+			self.m_flNextPrimaryAttack = g_Engine.time + 0.15;
 
 			return;
 		}
@@ -265,7 +265,7 @@ class weapon_blockas : CBaseCSOWeapon
 			if( self.m_iClip <= 0 )
 			{
 				self.PlayEmptySound();
-				self.m_flNextPrimaryAttack = g_Engine.time + 1.0f;
+				self.m_flNextPrimaryAttack = g_Engine.time + 1.0;
 
 				return;
 			}
@@ -281,10 +281,10 @@ class weapon_blockas : CBaseCSOWeapon
 			self.SendWeaponAnim( Math.RandomLong(ANIM1_SHOOT1, ANIM1_SHOOT2) );
 
 			Vector vecShellVelocity, vecShellOrigin;
-			CS16GetDefaultShellInfo( EHandle(m_pPlayer), vecShellVelocity, vecShellOrigin, CSOW_VECTOR_EJECT.x, CSOW_VECTOR_EJECT.y, CSOW_VECTOR_EJECT.z, true, false );
+			CS16GetDefaultShellInfo( EHandle(m_pPlayer), vecShellVelocity, vecShellOrigin, CSOW_SHELL_ORIGIN.x, CSOW_SHELL_ORIGIN.y, CSOW_SHELL_ORIGIN.z, true, false );
 			g_EntityFuncs.EjectBrass( vecShellOrigin, vecShellVelocity, m_pPlayer.pev.angles.y, g_EngineFuncs.ModelIndex(MODEL_SHELL), TE_BOUNCE_SHOTSHELL );
 
-			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT1], 1.0f, 0.5f, 0, 94 + Math.RandomLong(0, 15) );
+			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT1], VOL_NORM, 0.5, 0, 94 + Math.RandomLong(0, 15) );
 
 			Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
 			Vector vecSrc	 = m_pPlayer.GetGunPosition();
@@ -294,8 +294,8 @@ class weapon_blockas : CBaseCSOWeapon
 			if( self.m_flCustomDmg > 0 )
 				flDamage = self.m_flCustomDmg;
 
-			m_pPlayer.FireBullets( CSOW_PELLETCOUNT, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 0, 0 );
-			CSO::CreateShotgunPelletDecals( m_pPlayer, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, CSOW_PELLETCOUNT, flDamage, (DMG_BULLET | DMG_LAUNCH | DMG_NEVERGIB) );
+			m_pPlayer.FireBullets( CSOW_PELLETCOUNT, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, 8192.0, BULLET_PLAYER_CUSTOMDAMAGE, 0, 0 );
+			cso::CreateShotgunPelletDecals( m_pPlayer, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, CSOW_PELLETCOUNT, flDamage, (DMG_BULLET | DMG_LAUNCH | DMG_NEVERGIB) );
 
 			if( self.m_iClip <= 0 and m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 )
 				m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
@@ -304,9 +304,9 @@ class weapon_blockas : CBaseCSOWeapon
 			self.m_flNextSecondaryAttack = g_Engine.time + CSOW_DELAY1;
 
 			if( self.m_iClip > 0 )
-				self.m_flTimeWeaponIdle = g_Engine.time + 2.25f;
+				self.m_flTimeWeaponIdle = g_Engine.time + 2.25;
 			else
-				self.m_flTimeWeaponIdle = 0.75f;
+				self.m_flTimeWeaponIdle = 0.75;
 
 			m_iShotgunReload = 0;
 
@@ -324,23 +324,23 @@ class weapon_blockas : CBaseCSOWeapon
 		if( !m_bRocketLoaded )
 			return;
 
-		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 4.0f;
-		self.m_flTimeWeaponIdle = g_Engine.time + 5.0f;
+		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 4.0;
+		self.m_flTimeWeaponIdle = g_Engine.time + 5.0;
 
 		self.SendWeaponAnim(ANIM2_SHOOT_START);
-		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT2_START], 1.0f, ATTN_NORM );
+		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT2_START], VOL_NORM, ATTN_NORM );
 
-		m_flShootRocketStage1 = g_Engine.time + 1.0f;
+		m_flShootRocketStage1 = g_Engine.time + 1.0;
 	}
 
 	void Shoot_Rocket()
 	{
 		self.SendWeaponAnim(ANIM2_SHOOT_END);
 
-		m_pPlayer.pev.punchangle.x -= 4.0f;
+		m_pPlayer.pev.punchangle.x -= 4.0;
 
 		Vector vecOrigin, vecTargetOrigin, vecAngles, angles_fix;
-		get_position( 2.0f, 4.0f, 0.0f, vecOrigin );
+		get_position( 2.0, 4.0, 0.0, vecOrigin );
 
 		vecAngles = m_pPlayer.pev.v_angle;
 
@@ -359,12 +359,12 @@ class weapon_blockas : CBaseCSOWeapon
 		pRocket.pev.angles = angles_fix;
 
 		Vector vecVelocity;
-		Vector start = m_pPlayer.GetGunPosition(); //m_pPlayer.GetOrigin() + m_pPlayer.pev.view_ofs;
+		Vector start = m_pPlayer.GetGunPosition();
 
 		Math.MakeVectors( m_pPlayer.pev.v_angle );
 		
 		TraceResult tr;
-		g_Utility.TraceLine( start, start + g_Engine.v_forward * 9999.0f, dont_ignore_monsters, self.edict(), tr );
+		g_Utility.TraceLine( start, start + g_Engine.v_forward * 9999.0, dont_ignore_monsters, self.edict(), tr );
 
 		vecTargetOrigin = tr.vecEndPos;
 
@@ -380,12 +380,12 @@ class weapon_blockas : CBaseCSOWeapon
 			msg1.WriteByte( 200 );  // brightness
 		msg1.End();
 
-		get_speed_vector( vecOrigin, vecTargetOrigin, 1500.0f, vecVelocity );
+		get_speed_vector( vecOrigin, vecTargetOrigin, 1500.0, vecVelocity );
 		pRocket.pev.velocity = vecVelocity;
 
 		g_EntityFuncs.DispatchSpawn( pRocket.edict() );
 
-		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT2_END], 1.0f, ATTN_NORM );
+		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT2_END], VOL_NORM, ATTN_NORM );
 		m_bRocketLoaded = false;
 
 		for( int i = 0; i < 5; i++ )
@@ -401,7 +401,7 @@ class weapon_blockas : CBaseCSOWeapon
 		m_pPlayer.m_rgAmmo( self.m_iSecondaryAmmoType, ammo2 );
 
 		if( ammo2 >= 1 )
-			m_flShootRocketStage2 = g_Engine.time + 1.0f;
+			m_flShootRocketStage2 = g_Engine.time + 1.0;
 	}
 
 	void SecondaryAttack()
@@ -420,11 +420,11 @@ class weapon_blockas : CBaseCSOWeapon
 			}
 		}
 
-		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 4.7f;
-		self.m_flTimeWeaponIdle = g_Engine.time + 4.7f;
+		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 4.7;
+		self.m_flTimeWeaponIdle = g_Engine.time + 4.7;
 		m_bChanging = true;
 
-		m_flModeChangeStage1 = g_Engine.time + 1.0f;
+		m_flModeChangeStage1 = g_Engine.time + 1.0;
 	}
 
 	void Reload()
@@ -446,9 +446,9 @@ class weapon_blockas : CBaseCSOWeapon
 				self.SendWeaponAnim( ANIM1_RELOAD_START );
 
 				m_iShotgunReload = 1;
-				self.m_flTimeWeaponIdle = g_Engine.time + 0.55f;
-				//self.m_flNextPrimaryAttack = g_Engine.time + 0.55f; //prevents firing while reloading
-				//self.m_flNextSecondaryAttack = g_Engine.time + 0.55f; //prevents firing while reloading
+				self.m_flTimeWeaponIdle = g_Engine.time + 0.55;
+				//self.m_flNextPrimaryAttack = g_Engine.time + 0.55; //prevents firing while reloading
+				//self.m_flNextSecondaryAttack = g_Engine.time + 0.55; //prevents firing while reloading
 			}
 			else if( m_iShotgunReload == 1 )
 			{
@@ -466,7 +466,7 @@ class weapon_blockas : CBaseCSOWeapon
 				ammo--;
 				m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType, ammo);
 
-				self.m_flTimeWeaponIdle = g_Engine.time + 0.3f;
+				self.m_flTimeWeaponIdle = g_Engine.time + 0.3;
 			}
 			else
 				m_iShotgunReload = 1;
@@ -495,7 +495,7 @@ class weapon_blockas : CBaseCSOWeapon
 					self.SendWeaponAnim( ANIM1_RELOAD_END );
 
 					m_iShotgunReload = 0;
-					self.m_flTimeWeaponIdle = g_Engine.time + 1.5f;
+					self.m_flTimeWeaponIdle = g_Engine.time + 1.5;
 				}
 			}
 			else
@@ -503,7 +503,7 @@ class weapon_blockas : CBaseCSOWeapon
 				if( m_iWeaponMode == MODE_A )
 				{
 					self.SendWeaponAnim( ANIM1_IDLE );
-					self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_IDLE * Math.RandomFloat(1.0f, 1.2f));
+					self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_IDLE * Math.RandomFloat(1.0, 1.2));
 				}
 				else
 				{
@@ -512,7 +512,7 @@ class weapon_blockas : CBaseCSOWeapon
 					else
 						self.SendWeaponAnim( ANIM2_IDLE_EMPTY );
 
-					self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_IDLE * Math.RandomFloat(1.0f, 1.2f));
+					self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_IDLE * Math.RandomFloat(1.0, 1.2));
 				}
 			}
 		}
@@ -560,10 +560,10 @@ class weapon_blockas : CBaseCSOWeapon
 			return;
 
 		self.SendWeaponAnim(ANIM2_RELOAD);
-		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 1.5f;
-		self.m_flTimeWeaponIdle = g_Engine.time + 2.0f;
+		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 1.5;
+		self.m_flTimeWeaponIdle = g_Engine.time + 2.0;
 
-		m_flShootRocketStage3 = g_Engine.time + 1.0f;
+		m_flShootRocketStage3 = g_Engine.time + 1.0;
 	}
 
 	void Complete_Reload_Rocket()
@@ -579,7 +579,7 @@ class weapon_blockas : CBaseCSOWeapon
 		self.SendWeaponAnim(0);
 		m_pPlayer.pev.viewmodel = MODEL_VIEW_BLOCKCHANGE;
 
-		m_flModeChangeStage2 = g_Engine.time + 2.36f;
+		m_flModeChangeStage2 = g_Engine.time + 2.36;
 	}
 
 	void AnimBlockChange_2()
@@ -606,7 +606,7 @@ class weapon_blockas : CBaseCSOWeapon
 
 		m_iWeaponMode = (m_iWeaponMode == MODE_B) ? MODE_A : MODE_B;
 
-		m_flModeChangeStage3 = g_Engine.time + 1.36f;
+		m_flModeChangeStage3 = g_Engine.time + 1.36;
 	}
 
 	void AnimBlockChange_Complete()
@@ -642,21 +642,21 @@ class weapon_blockas : CBaseCSOWeapon
 
 		if( !bRight )
 		{
-			v_forward = v_forward * 20.0f;
-			v_right = v_right * -2.5f;
-			v_up = v_up * -1.5f;
-			v_forward2 = v_forward2 * 19.9f;
-			v_right2 = v_right2 * -2.0f;
-			v_up2 = v_up2 * -2.0f;
+			v_forward = v_forward * 20.0;
+			v_right = v_right * -2.5;
+			v_up = v_up * -1.5;
+			v_forward2 = v_forward2 * 19.9;
+			v_right2 = v_right2 * -2.0;
+			v_up2 = v_up2 * -2.0;
 		}
 		else
 		{
-			v_forward = v_forward * 20.0f;
-			v_right = v_right * 2.5f;
-			v_up = v_up * -1.5f;
-			v_forward2 = v_forward2 * 19.9f;
-			v_right2 = v_right2 * 2.0f;
-			v_up2 = v_up2 * -2.0f;
+			v_forward = v_forward * 20.0;
+			v_right = v_right * 2.5;
+			v_up = v_up * -1.5;
+			v_forward2 = v_forward2 * 19.9;
+			v_right2 = v_right2 * 2.0;
+			v_up2 = v_up2 * -2.0;
 		}
 
 		origin = gunorigin + v_forward;
@@ -667,13 +667,13 @@ class weapon_blockas : CBaseCSOWeapon
 		origin2 = origin2 + v_up2;
 
 		Vector velocity;
-		get_speed_vector( origin2, origin, Math.RandomFloat(70.0f, 320.0f), velocity );
+		get_speed_vector( origin2, origin, Math.RandomFloat(70.0, 320.0), velocity );
 
 		NetworkMessage msg1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
 			msg1.WriteByte( TE_MODEL );
 			msg1.WriteCoord( origin.x );
 			msg1.WriteCoord( origin.y );
-			msg1.WriteCoord( origin.z - 16.0f );
+			msg1.WriteCoord( origin.z - 16.0 );
 			msg1.WriteCoord( velocity.x );
 			msg1.WriteCoord( velocity.y );
 			msg1.WriteCoord( velocity.z );
@@ -691,11 +691,11 @@ class block_missile : ScriptBaseEntity
 	{
 		pev.movetype = MOVETYPE_TOSS;
 		pev.solid    = SOLID_BBOX;
-		pev.gravity = 0.5f;
+		pev.gravity = 0.5;
 
 		g_EntityFuncs.SetModel( self, MODEL_ROCKET );
 		g_EntityFuncs.SetOrigin( self, pev.origin );
-		g_EntityFuncs.SetSize( self.pev, Vector(-0.1f, -0.1f, -0.1f), Vector(0.1f, 0.1f, 0.1f) );
+		g_EntityFuncs.SetSize( self.pev, Vector(-0.1, -0.1, -0.1), Vector(0.1, 0.1, 0.1) );
 
 		NetworkMessage msg1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
 			msg1.WriteByte( TE_BEAMFOLLOW );
@@ -729,8 +729,8 @@ class block_missile : ScriptBaseEntity
 		tr = g_Utility.GetGlobalTrace();
 
 		// Pull out of the wall a bit
-		if( tr.flFraction != 1.0f )
-			pev.origin = tr.vecEndPos + (tr.vecPlaneNormal * 24.0f);
+		if( tr.flFraction != 1.0 )
+			pev.origin = tr.vecEndPos + (tr.vecPlaneNormal * 24.0);
 
 		Vector vecOrigin = pev.origin;
 
@@ -738,7 +738,7 @@ class block_missile : ScriptBaseEntity
 			msg1.WriteByte( TE_EXPLOSION );
 			msg1.WriteCoord( vecOrigin.x );
 			msg1.WriteCoord( vecOrigin.y );
-			msg1.WriteCoord( vecOrigin.z + 20.0f );
+			msg1.WriteCoord( vecOrigin.z + 20.0 );
 			msg1.WriteShort( g_EngineFuncs.ModelIndex(SPRITE_EXPLOSION1) );
 			msg1.WriteByte( 25 ); // scale * 10
 			msg1.WriteByte( 30 ); // framerate
@@ -747,9 +747,9 @@ class block_missile : ScriptBaseEntity
 
 		NetworkMessage msg2( MSG_PVS, NetworkMessages::SVC_TEMPENTITY, vecOrigin );
 			msg2.WriteByte( TE_EXPLOSION );
-			msg2.WriteCoord( vecOrigin.x + Math.RandomFloat(-64.0f, 64.0f) );
-			msg2.WriteCoord( vecOrigin.y + Math.RandomFloat(-64.0f, 64.0f) );
-			msg2.WriteCoord( vecOrigin.z + Math.RandomFloat(30.0f, 35.0f) );
+			msg2.WriteCoord( vecOrigin.x + Math.RandomFloat(-64.0, 64.0) );
+			msg2.WriteCoord( vecOrigin.y + Math.RandomFloat(-64.0, 64.0) );
+			msg2.WriteCoord( vecOrigin.z + Math.RandomFloat(30.0, 35.0) );
 			msg2.WriteShort( g_EngineFuncs.ModelIndex(SPRITE_EXPLOSION2) );
 			msg2.WriteByte( 30 ); // scale * 10
 			msg2.WriteByte( 30 ); // framerate
@@ -758,9 +758,9 @@ class block_missile : ScriptBaseEntity
 
 		NetworkMessage msg3( MSG_PVS, NetworkMessages::SVC_TEMPENTITY, vecOrigin );
 			msg3.WriteByte( TE_EXPLOSION );
-			msg3.WriteCoord( vecOrigin.x + Math.RandomFloat(-64.0f, 64.0f) );
-			msg3.WriteCoord( vecOrigin.y + Math.RandomFloat(-64.0f, 64.0f) );
-			msg3.WriteCoord( vecOrigin.z + Math.RandomFloat(30.0f, 35.0f) );
+			msg3.WriteCoord( vecOrigin.x + Math.RandomFloat(-64.0, 64.0) );
+			msg3.WriteCoord( vecOrigin.y + Math.RandomFloat(-64.0, 64.0) );
+			msg3.WriteCoord( vecOrigin.z + Math.RandomFloat(30.0, 35.0) );
 			msg3.WriteShort( g_EngineFuncs.ModelIndex(SPRITE_EXPLOSION3) );
 			msg3.WriteByte( 30 ); // scale * 10
 			msg3.WriteByte( 30 ); // framerate
@@ -793,7 +793,7 @@ class block_missile : ScriptBaseEntity
 		pev.solid = SOLID_NOT;
 
 		SetThink( ThinkFunction(this.Smoke) );
-		pev.nextthink = g_Engine.time + 0.5f;
+		pev.nextthink = g_Engine.time + 0.5;
 	}
 
 	void Smoke()

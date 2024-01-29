@@ -144,9 +144,9 @@ class weapon_beamsword : CBaseCSOWeapon
 		info.iMaxAmmo1		= -1;
 		info.iMaxAmmo2		= -1;
 		info.iMaxClip		= WEAPON_NOCLIP;
-		info.iSlot			= CSO::BEAMSWORD_SLOT - 1;
-		info.iPosition		= CSO::BEAMSWORD_POSITION - 1;
-		info.iWeight		= CSO::BEAMSWORD_WEIGHT;
+		info.iSlot			= cso::BEAMSWORD_SLOT - 1;
+		info.iPosition		= cso::BEAMSWORD_POSITION - 1;
+		info.iWeight		= cso::BEAMSWORD_WEIGHT;
 
 		return true;
 	}
@@ -457,10 +457,10 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_beamsword::weapon_beamsword", "weapon_beamsword" );
 	g_ItemRegistry.RegisterWeapon( "weapon_beamsword", "custom_weapons/cso" );
 
-	if( CSO::bUseDroppedItemEffect )
+	if( cso::bUseDroppedItemEffect )
 	{
 		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
-			CSO::RegisterGunDrop();
+			cso::RegisterGunDrop();
 	}
 }
 

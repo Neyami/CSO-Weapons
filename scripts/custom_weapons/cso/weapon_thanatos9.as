@@ -105,7 +105,6 @@ class weapon_thanatos9 : CBaseCSOWeapon
 		self.FallInit();
 	}
 
-	//~18?
 	void Precache()
 	{
 		self.PrecacheCustomModels();
@@ -136,9 +135,9 @@ class weapon_thanatos9 : CBaseCSOWeapon
 		info.iMaxAmmo1		= -1;
 		info.iMaxAmmo2		= -1;
 		info.iMaxClip		= 0; //WEAPON_NOCLIP;
-		info.iSlot			= CSO::THANATOS9_SLOT - 1;
-		info.iPosition		= CSO::THANATOS9_POSITION - 1;
-		info.iWeight		= CSO::THANATOS9_WEIGHT;
+		info.iSlot			= cso::THANATOS9_SLOT - 1;
+		info.iPosition		= cso::THANATOS9_POSITION - 1;
+		info.iWeight		= cso::THANATOS9_WEIGHT;
 
 		return true;
 	}
@@ -194,21 +193,6 @@ class weapon_thanatos9 : CBaseCSOWeapon
 		g_SoundSystem.StopSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOTB_LOOP] );
 
 		BaseClass.Holster( skipLocal );
-	}
-
-	~weapon_thanatos9()
-	{
-		SetThink(null);
-
-		if( (m_iWeaponState & (STATE_MODEB | STATE_CHANGING)) == (STATE_MODEB | STATE_CHANGING) )
-			m_iWeaponState = STATE_MODEA;
-
-		m_iWeaponState &= ~STATE_CHANGING;
-		m_iWeaponState &= ~STATE_MODEB_LOOP;
-		m_flTimeToChangeToA = 0;
-		m_flTimeToChangeToB = 0;
-		g_SoundSystem.StopSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOTB_LOOP] );
-		g_Game.AlertMessage( at_console, "weapon_thanatos9 has been destroyed via ~ \n");
 	}
 
 	void PrimaryAttack()

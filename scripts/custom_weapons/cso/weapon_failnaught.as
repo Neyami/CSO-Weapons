@@ -121,8 +121,8 @@ class weapon_failnaught : CBaseCSOWeapon
 		g_Game.PrecacheModel( MODEL_WORLD );
 		g_Game.PrecacheModel( MODEL_AMMO );
 		g_Game.PrecacheModel( MODEL_PROJ );
-		g_Game.PrecacheModel( PENETRATE::SPRITE_TRAIL_FAILNAUGHT );
-		g_Game.PrecacheModel( PENETRATE::SPRITE_TRAIL_FAILNAUGHT_EXPLODE );
+		g_Game.PrecacheModel( cso::SPRITE_TRAIL_FAILNAUGHT );
+		g_Game.PrecacheModel( cso::SPRITE_TRAIL_FAILNAUGHT_EXPLODE );
 		g_Game.PrecacheModel( SPRITE_EXPLODE );
 
 		for( i = 0; i < pCSOWSounds.length(); ++i )
@@ -146,9 +146,9 @@ class weapon_failnaught : CBaseCSOWeapon
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
 		info.iMaxClip 		= WEAPON_NOCLIP;
 		info.iAmmo1Drop	= CSOW_DEFAULT_GIVE;
-		info.iSlot			= CSO::FAILNAUGHT_SLOT - 1;
-		info.iPosition		= CSO::FAILNAUGHT_POSITION - 1;
-		info.iWeight		= CSO::FAILNAUGHT_WEIGHT;
+		info.iSlot			= cso::FAILNAUGHT_SLOT - 1;
+		info.iPosition		= cso::FAILNAUGHT_POSITION - 1;
+		info.iWeight		= cso::FAILNAUGHT_WEIGHT;
 		info.iFlags			= ITEM_FLAG_NOAUTOSWITCHEMPTY | ITEM_FLAG_SELECTONEMPTY;
 
 		return true;
@@ -336,8 +336,8 @@ class weapon_failnaught : CBaseCSOWeapon
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_CHARGE_SHOOT], VOL_NORM, ATTN_NORM );
 
-		//FirePenetratingBullets( Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, float flDamage, float flRangeModifier, EHandle &in ePlayer, bool bPistol, int shared_rand )
-		PENETRATE::FirePenetratingBullets( m_pPlayer.GetGunPosition(), g_Engine.v_forward, 0, 4096, 4, PENETRATE::BULLET_PLAYER_FAILNAUGHT, CSOW_DAMAGE2, 1.0, EHandle(m_pPlayer), false, m_pPlayer.random_seed ); //multiply CSOW_DAMAGE2 by 1.5 ??
+		//FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, float flDamage, float flRangeModifier, EHandle &in ePlayer, bool bPistol, int shared_rand )
+		cso::FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, 0, 4096, 4, BULLET_PLAYER_FAILNAUGHT, CSOW_DAMAGE2, 1.0, EHandle(m_pPlayer), false, m_pPlayer.random_seed ); //multiply CSOW_DAMAGE2 by 1.5 ??
 
 		Vector2D vec2dRecoilX = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_X : CSOW_RECOIL_STANDING_X;
 		Vector2D vec2dRecoilY = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_Y : CSOW_RECOIL_STANDING_Y;
@@ -479,7 +479,7 @@ class holyarrow : ScriptBaseEntity
 			NetworkMessage m1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
 				m1.WriteByte( TE_BEAMFOLLOW );
 				m1.WriteShort( self.entindex() );
-				m1.WriteShort( g_EngineFuncs.ModelIndex(PENETRATE::SPRITE_TRAIL_FAILNAUGHT) );
+				m1.WriteShort( g_EngineFuncs.ModelIndex(cso::SPRITE_TRAIL_FAILNAUGHT) );
 				m1.WriteByte( 10 ); // life
 				m1.WriteByte( 2 );  // width
 				m1.WriteByte( 255 ); // r
@@ -491,7 +491,7 @@ class holyarrow : ScriptBaseEntity
 			NetworkMessage m2( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
 				m2.WriteByte( TE_BEAMFOLLOW );
 				m2.WriteShort( self.entindex() );
-				m2.WriteShort( g_EngineFuncs.ModelIndex(PENETRATE::SPRITE_TRAIL_FAILNAUGHT) );
+				m2.WriteShort( g_EngineFuncs.ModelIndex(cso::SPRITE_TRAIL_FAILNAUGHT) );
 				m2.WriteByte( 10 ); // life
 				m2.WriteByte( 2 );  // width
 				m2.WriteByte( 255 ); // r

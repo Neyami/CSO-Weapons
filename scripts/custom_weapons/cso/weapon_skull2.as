@@ -134,9 +134,9 @@ class weapon_skull2 : CBaseCSOWeapon
 		info.iMaxAmmo1 		= CSOW_MAX_AMMO;
 		info.iMaxClip 		= m_uiMode == MODE_SINGLE ? CSOW_MAX_CLIP : (CSOW_MAX_CLIP * 2);
 		info.iAmmo1Drop		= CSOW_MAX_CLIP;
-		info.iSlot			= CSO::SKULL2_SLOT - 1;
-		info.iPosition		= CSO::SKULL2_POSITION - 1;
-		info.iWeight		= CSO::SKULL2_WEIGHT;
+		info.iSlot			= cso::SKULL2_SLOT - 1;
+		info.iPosition		= cso::SKULL2_POSITION - 1;
+		info.iWeight		= cso::SKULL2_WEIGHT;
 
 		return true;
 	}

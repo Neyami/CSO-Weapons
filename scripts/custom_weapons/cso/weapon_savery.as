@@ -58,7 +58,7 @@ class weapon_savery : CBaseCSOWeapon
 		self.Precache();
 		g_EntityFuncs.SetModel( self, MODEL_WORLD );
 		self.m_iDefaultAmmo = SAVERY_DEFAULT_GIVE*4;
-		m_iZoomMode = CSO::MODE_NOZOOM;
+		m_iZoomMode = cso::MODE_NOZOOM;
 		self.FallInit();
 	}
 
@@ -71,8 +71,8 @@ class weapon_savery : CBaseCSOWeapon
 		g_Game.PrecacheModel( MODEL_SHELL );
 		g_Game.PrecacheModel( MODEL_CLIP );
 
-		for( uint i = 0; i < CSO::pSmokeSprites.length(); i++ )
-			g_Game.PrecacheModel( CSO::pSmokeSprites[i] );
+		for( uint i = 0; i < cso::pSmokeSprites.length(); i++ )
+			g_Game.PrecacheModel( cso::pSmokeSprites[i] );
 
 		g_SoundSystem.PrecacheSound( "items/9mmclip1.wav" );
 
@@ -95,9 +95,9 @@ class weapon_savery : CBaseCSOWeapon
 	{
 		info.iMaxAmmo1 	= SAVERY_MAX_AMMO;
 		info.iMaxClip 	= SAVERY_MAX_CLIP;
-		info.iSlot 		= CSO::SAVERY_SLOT - 1;
-		info.iPosition 	= CSO::SAVERY_POSITION - 1;
-		info.iWeight 	= CSO::SAVERY_WEIGHT;
+		info.iSlot 		= cso::SAVERY_SLOT - 1;
+		info.iPosition 	= cso::SAVERY_POSITION - 1;
+		info.iWeight 	= cso::SAVERY_WEIGHT;
 
 		return true;
 	}
@@ -143,7 +143,7 @@ class weapon_savery : CBaseCSOWeapon
 	{
 		g_SoundSystem.StopSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_IDLE] );
 		self.m_fInReload = false;
-		m_iZoomMode = CSO::MODE_NOZOOM;
+		m_iZoomMode = cso::MODE_NOZOOM;
 		ToggleZoom( 0 );
 
 		SetThink(null);
@@ -164,8 +164,8 @@ class weapon_savery : CBaseCSOWeapon
 		int playerState = 0;//standing
 
 		if( m_pPlayer.pev.flags & FL_DUCKING != 0 ) playerState++;
-		if( m_iZoomMode == CSO::MODE_ZOOM1 ) playerState++;
-		if( m_iZoomMode == CSO::MODE_ZOOM2 ) playerState += 2;
+		if( m_iZoomMode == cso::MODE_ZOOM1 ) playerState++;
+		if( m_iZoomMode == cso::MODE_ZOOM2 ) playerState += 2;
 
 		Vector vecShootCone = g_vecShootCone[playerState];
 
@@ -193,9 +193,9 @@ class weapon_savery : CBaseCSOWeapon
 
 		m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, SAVERY_DAMAGE );
 
-		DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_MP5, m_pPlayer );
+		DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_MP5 );
 
-		CSO::DoGunSmoke( vecSrc + g_Engine.v_forward * 8 + g_Engine.v_up * -10, CSO::SMOKE_RIFLE );
+		cso::DoGunSmoke( vecSrc + g_Engine.v_forward * 8 + g_Engine.v_up * -10, SMOKE_RIFLE );
 
 		if( self.m_iClip == 0 and m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
 			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
@@ -212,25 +212,25 @@ class weapon_savery : CBaseCSOWeapon
     {
         switch( m_iZoomMode )
         {
-            case CSO::MODE_NOZOOM:
+            case cso::MODE_NOZOOM:
             {
-                m_iZoomMode = CSO::MODE_ZOOM1;
+                m_iZoomMode = cso::MODE_ZOOM1;
                 ToggleZoom( 30 );
                 m_pPlayer.m_szAnimExtension = "sniperscope";
                 break;
             }
         
-            case CSO::MODE_ZOOM1:
+            case cso::MODE_ZOOM1:
             {
-                m_iZoomMode = CSO::MODE_ZOOM2;
+                m_iZoomMode = cso::MODE_ZOOM2;
                 ToggleZoom( 10 );
                 m_pPlayer.m_szAnimExtension = "sniperscope";
                 break;
             }
             
-            case CSO::MODE_ZOOM2:
+            case cso::MODE_ZOOM2:
             {
-                m_iZoomMode = CSO::MODE_NOZOOM;
+                m_iZoomMode = cso::MODE_NOZOOM;
                 ToggleZoom( 0 );
                 m_pPlayer.m_szAnimExtension = "sniper";
                 break;
@@ -247,7 +247,7 @@ class weapon_savery : CBaseCSOWeapon
 		if( m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 or self.m_iClip >= SAVERY_MAX_CLIP )
 			return;
 
-		m_iZoomMode = CSO::MODE_NOZOOM;
+		m_iZoomMode = cso::MODE_NOZOOM;
 		m_pPlayer.m_szAnimExtension = "sniper";
 		ToggleZoom( 0 );
 
