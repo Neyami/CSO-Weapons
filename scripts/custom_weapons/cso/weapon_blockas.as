@@ -30,6 +30,8 @@ const string MODEL_WORLD1			= "models/custom_weapons/cso/w_blockas1.mdl";
 const string MODEL_SHELL			= "models/custom_weapons/cso/block_shell.mdl";
 const string MODEL_ROCKET			= "models/custom_weapons/cso/block_missile.mdl";
 
+const string CSOW_ANIMEXT			= "shotgun";
+
 const string SPRITE_TRAIL			= "sprites/smoke.spr";
 const string SPRITE_EXPLOSION1		= "sprites/eexplo.spr";
 const string SPRITE_EXPLOSION2		= "sprites/fexplo.spr";
@@ -124,6 +126,8 @@ class weapon_blockas : CBaseCSOWeapon
 		m_iWeaponMode = MODE_A;
 		m_bFirstPickup = false;
 		m_bFirstChange = true;
+		g_iCSOWHands = HANDS_SVENCOOP;
+		m_bSwitchHands = true;
 
 		self.FallInit();
 	}
@@ -217,11 +221,11 @@ class weapon_blockas : CBaseCSOWeapon
 		{
 			switch( m_iWeaponMode )
 			{
-				case MODE_A: bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW1), self.GetP_Model(MODEL_PLAYER1), ANIM1_DRAW, "shotgun" ); break; //saw, shotgun while reloading??
-				case MODE_B: bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW2), self.GetP_Model(MODEL_PLAYER2), (m_bRocketLoaded ? ANIM2_DRAW : ANIM2_DRAW_EMPTY), "shotgun" ); break;
+				case MODE_A: bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW1), self.GetP_Model(MODEL_PLAYER1), ANIM1_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break; //saw, shotgun while reloading??
+				case MODE_B: bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW2), self.GetP_Model(MODEL_PLAYER2), (m_bRocketLoaded ? ANIM2_DRAW : ANIM2_DRAW_EMPTY), CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
 			}
 
-			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
+			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 			return bResult;
 		}
 	}
@@ -278,7 +282,7 @@ class weapon_blockas : CBaseCSOWeapon
 			m_pPlayer.pev.effects |= EF_MUZZLEFLASH;
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
-			self.SendWeaponAnim( Math.RandomLong(ANIM1_SHOOT1, ANIM1_SHOOT2) );
+			self.SendWeaponAnim( Math.RandomLong(ANIM1_SHOOT1, ANIM1_SHOOT2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 			Vector vecShellVelocity, vecShellOrigin;
 			CS16GetDefaultShellInfo( EHandle(m_pPlayer), vecShellVelocity, vecShellOrigin, CSOW_SHELL_ORIGIN.x, CSOW_SHELL_ORIGIN.y, CSOW_SHELL_ORIGIN.z, true, false );
@@ -300,8 +304,7 @@ class weapon_blockas : CBaseCSOWeapon
 			if( self.m_iClip <= 0 and m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 )
 				m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
 
-			self.m_flNextPrimaryAttack = g_Engine.time + CSOW_DELAY1;
-			self.m_flNextSecondaryAttack = g_Engine.time + CSOW_DELAY1;
+			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_DELAY1;
 
 			if( self.m_iClip > 0 )
 				self.m_flTimeWeaponIdle = g_Engine.time + 2.25;
@@ -324,10 +327,10 @@ class weapon_blockas : CBaseCSOWeapon
 		if( !m_bRocketLoaded )
 			return;
 
-		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 4.0;
+		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + 4.0;
 		self.m_flTimeWeaponIdle = g_Engine.time + 5.0;
 
-		self.SendWeaponAnim(ANIM2_SHOOT_START);
+		self.SendWeaponAnim( ANIM2_SHOOT_START, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT2_START], VOL_NORM, ATTN_NORM );
 
 		m_flShootRocketStage1 = g_Engine.time + 1.0;
@@ -335,7 +338,7 @@ class weapon_blockas : CBaseCSOWeapon
 
 	void Shoot_Rocket()
 	{
-		self.SendWeaponAnim(ANIM2_SHOOT_END);
+		self.SendWeaponAnim( ANIM2_SHOOT_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		m_pPlayer.pev.punchangle.x -= 4.0;
 
@@ -410,17 +413,17 @@ class weapon_blockas : CBaseCSOWeapon
 
 		switch( m_iWeaponMode )
 		{
-			case MODE_A: self.SendWeaponAnim( ANIM1_CHANGE1 ); break;
+			case MODE_A: self.SendWeaponAnim( ANIM1_CHANGE1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
 			case MODE_B:
 			{
-				if( m_bRocketLoaded ) self.SendWeaponAnim( ANIM2_CHANGE1 );
-				else self.SendWeaponAnim( ANIM2_CHANGE1_EMPTY );
+				if( m_bRocketLoaded ) self.SendWeaponAnim( ANIM2_CHANGE1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				else self.SendWeaponAnim( ANIM2_CHANGE1_EMPTY, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 				break;
 			}
 		}
 
-		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 4.7;
+		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + 4.7;
 		self.m_flTimeWeaponIdle = g_Engine.time + 4.7;
 		m_bChanging = true;
 
@@ -443,7 +446,7 @@ class weapon_blockas : CBaseCSOWeapon
 
 			if( m_iShotgunReload <= 0 )
 			{
-				self.SendWeaponAnim( ANIM1_RELOAD_START );
+				self.SendWeaponAnim( ANIM1_RELOAD_START, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 				m_iShotgunReload = 1;
 				self.m_flTimeWeaponIdle = g_Engine.time + 0.55;
@@ -460,7 +463,7 @@ class weapon_blockas : CBaseCSOWeapon
 				g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_ITEM, pCSOWSounds[SND_RELOAD_INSERT], VOL_NORM, ATTN_NORM, SND_FORCE_SINGLE, 85 + Math.RandomLong(0, 31) ); //0x1f
 
 				m_pPlayer.SetAnimation(PLAYER_RELOAD);
-				self.SendWeaponAnim( ANIM1_RELOAD_INSERT );
+				self.SendWeaponAnim( ANIM1_RELOAD_INSERT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 				self.m_iClip++;
 				ammo--;
@@ -492,7 +495,7 @@ class weapon_blockas : CBaseCSOWeapon
 					Reload();
 				else
 				{
-					self.SendWeaponAnim( ANIM1_RELOAD_END );
+					self.SendWeaponAnim( ANIM1_RELOAD_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 					m_iShotgunReload = 0;
 					self.m_flTimeWeaponIdle = g_Engine.time + 1.5;
@@ -502,15 +505,15 @@ class weapon_blockas : CBaseCSOWeapon
 			{
 				if( m_iWeaponMode == MODE_A )
 				{
-					self.SendWeaponAnim( ANIM1_IDLE );
+					self.SendWeaponAnim( ANIM1_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 					self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_IDLE * Math.RandomFloat(1.0, 1.2));
 				}
 				else
 				{
 					if( m_bRocketLoaded )
-						self.SendWeaponAnim( ANIM2_IDLE );
+						self.SendWeaponAnim( ANIM2_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 					else
-						self.SendWeaponAnim( ANIM2_IDLE_EMPTY );
+						self.SendWeaponAnim( ANIM2_IDLE_EMPTY, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 					self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_IDLE * Math.RandomFloat(1.0, 1.2));
 				}
@@ -559,8 +562,8 @@ class weapon_blockas : CBaseCSOWeapon
 		if( m_iWeaponMode != MODE_B or m_bRocketLoaded )
 			return;
 
-		self.SendWeaponAnim(ANIM2_RELOAD);
-		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 1.5;
+		self.SendWeaponAnim( ANIM2_RELOAD, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + 1.5;
 		self.m_flTimeWeaponIdle = g_Engine.time + 2.0;
 
 		m_flShootRocketStage3 = g_Engine.time + 1.0;
@@ -576,7 +579,7 @@ class weapon_blockas : CBaseCSOWeapon
 		if( !m_bChanging )
 			return;
 
-		self.SendWeaponAnim(0);
+		self.SendWeaponAnim( 0, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		m_pPlayer.pev.viewmodel = MODEL_VIEW_BLOCKCHANGE;
 
 		m_flModeChangeStage2 = g_Engine.time + 2.36;
@@ -593,15 +596,15 @@ class weapon_blockas : CBaseCSOWeapon
 			m_pPlayer.pev.weaponmodel = MODEL_PLAYER2;
 			//g_EntityFuncs.SetModel( self, MODEL_WORLD2 ); //doesn't work, probably no way to get it to work
 
-			if( !m_bRocketLoaded ) self.SendWeaponAnim(ANIM2_CHANGE2_EMPTY);
-			else self.SendWeaponAnim(ANIM2_CHANGE2);
+			if( !m_bRocketLoaded ) self.SendWeaponAnim( ANIM2_CHANGE2_EMPTY, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			else self.SendWeaponAnim( ANIM2_CHANGE2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		}
 		else
 		{
 			m_pPlayer.pev.viewmodel = MODEL_VIEW1;
 			m_pPlayer.pev.weaponmodel = MODEL_PLAYER1;
 			//g_EntityFuncs.SetModel( self, MODEL_WORLD1 ); //doesn't work, probably no way to get it to work
-			self.SendWeaponAnim( ANIM1_CHANGE2 );
+			self.SendWeaponAnim( ANIM1_CHANGE2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		}
 
 		m_iWeaponMode = (m_iWeaponMode == MODE_B) ? MODE_A : MODE_B;

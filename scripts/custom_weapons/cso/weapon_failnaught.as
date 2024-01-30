@@ -106,6 +106,8 @@ class weapon_failnaught : CBaseCSOWeapon
 		self.m_iDefaultAmmo = CSOW_MAX_AMMO;
 
 		m_iArrowStack = 0;
+		g_iCSOWHands = HANDS_SVENCOOP;
+		m_bSwitchHands = true;
 
 		self.FallInit();
 	}
@@ -176,8 +178,8 @@ class weapon_failnaught : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT );
-			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 
 			return bResult;
 		}
@@ -233,8 +235,8 @@ class weapon_failnaught : CBaseCSOWeapon
 		{
 			case STATE_NONE: 
 			{
-				self.SendWeaponAnim( ANIM_CHARGE_START );
-				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.5;
+				self.SendWeaponAnim( ANIM_CHARGE_START, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.5;
 
 				m_iState = STATE_CHARGE_START;
 
@@ -243,8 +245,8 @@ class weapon_failnaught : CBaseCSOWeapon
 
 			case STATE_CHARGE_START:
 			{
-				self.SendWeaponAnim( ANIM_CHARGE_IDLE1 );
-				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.35;
+				self.SendWeaponAnim( ANIM_CHARGE_IDLE1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.35;
 
 				m_flTimeCharge = g_Engine.time;
 				m_iState = STATE_CHARGE_IDLE;
@@ -254,16 +256,16 @@ class weapon_failnaught : CBaseCSOWeapon
 
 			case STATE_CHARGE_IDLE:
 			{
-				self.SendWeaponAnim( ANIM_CHARGE_IDLE1 );
-				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.35;
+				self.SendWeaponAnim( ANIM_CHARGE_IDLE1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.35;
 
 				m_iState = STATE_CHARGE_IDLE;
 
 				if( g_Engine.time >= (m_flTimeCharge + CSOW_TIME_CHARGE) )
 				{
-					self.SendWeaponAnim( ANIM_CHARGE_FINISH );
+					self.SendWeaponAnim( ANIM_CHARGE_FINISH, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 					g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_CHARGE_START_FX], VOL_NORM, ATTN_NORM );
-					self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flTimeWeaponIdle = m_flNextLoopSound = g_Engine.time + 0.35;
+					self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = m_flNextLoopSound = g_Engine.time + 0.35;
 
 					m_iState = STATE_CHARGE_FINISH;
 				}
@@ -273,8 +275,8 @@ class weapon_failnaught : CBaseCSOWeapon
 
 			case STATE_CHARGE_FINISH:
 			{
-				self.SendWeaponAnim( ANIM_CHARGE_IDLE2 );
-				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.35;
+				self.SendWeaponAnim( ANIM_CHARGE_IDLE2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.35;
 
 				m_iState = STATE_CHARGE_FINISH;
 
@@ -288,7 +290,7 @@ class weapon_failnaught : CBaseCSOWeapon
 		m_flNextLoopSound = 0.0;
 
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
-		self.SendWeaponAnim( bInCharge ? ANIM_CHARGE_SHOOT1 : ANIM_SHOOT1 );
+		self.SendWeaponAnim( bInCharge ? ANIM_CHARGE_SHOOT1 : ANIM_SHOOT1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[bInCharge ? SND_CHARGE_SHOOT : SND_SHOOT], VOL_NORM, ATTN_NORM );
 
 		int ammo = m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType );
@@ -318,7 +320,7 @@ class weapon_failnaught : CBaseCSOWeapon
 		m_pPlayer.pev.punchangle.x = Math.RandomFloat( vec2dRecoilX.x, vec2dRecoilX.y );
 		m_pPlayer.pev.punchangle.y = Math.RandomFloat( vec2dRecoilY.x, vec2dRecoilY.y );
 
-		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + (bInCharge ? CSOW_TIME_RELOAD2 : CSOW_TIME_RELOAD1);
+		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + (bInCharge ? CSOW_TIME_RELOAD2 : CSOW_TIME_RELOAD1);
 
 		m_iState = STATE_NONE;
 	}
@@ -332,7 +334,7 @@ class weapon_failnaught : CBaseCSOWeapon
 		m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType, ammo );
 
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
-		self.SendWeaponAnim( ANIM_CHARGE_SHOOT2 );
+		self.SendWeaponAnim( ANIM_CHARGE_SHOOT2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_CHARGE_SHOOT], VOL_NORM, ATTN_NORM );
 
@@ -345,7 +347,7 @@ class weapon_failnaught : CBaseCSOWeapon
 		m_pPlayer.pev.punchangle.x = Math.RandomFloat( vec2dRecoilX.x, vec2dRecoilX.y );
 		m_pPlayer.pev.punchangle.y = Math.RandomFloat( vec2dRecoilY.x, vec2dRecoilY.y );
 
-		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD2;
+		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD2;
 
 		m_iState = STATE_NONE;
 	}
@@ -358,7 +360,7 @@ class weapon_failnaught : CBaseCSOWeapon
 		if( m_iState == STATE_CHARGE_START or m_iState == STATE_CHARGE_IDLE )
 		{
 			ShootNormal( true );
-			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.2;
+			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.2;
 			return;
 		}
 		else if( m_iState == STATE_CHARGE_FINISH )
@@ -367,7 +369,7 @@ class weapon_failnaught : CBaseCSOWeapon
 			return;
 		}
 
-		self.SendWeaponAnim( ANIM_IDLE );
+		self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
 	}
 

@@ -35,3 +35,10 @@ enum SMOKETYPE
 	SMOKE_WALL3,
 	SMOKE_WALL4
 };
+
+enum csowhands_e
+{
+	HANDS_MALE = 0,
+	HANDS_FEMALE,
+	HANDS_SVENCOOP
+};

@@ -58,6 +58,8 @@ class weapon_mk3a1 : CBaseCSOWeapon
 		g_EntityFuncs.SetModel( self, MODEL_WORLD );
 		self.m_iDefaultAmmo = CSOW_DEFAULT_GIVE;
 		self.m_flCustomDmg = pev.dmg;
+		g_iCSOWHands = HANDS_SVENCOOP;
+		m_bSwitchHands = true;
 
 		self.FallInit();
 	}
@@ -122,8 +124,8 @@ class weapon_mk3a1 : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT );
-			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = g_Engine.time + CSOW_TIME_DRAW;
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 			return bResult;
 		}
 	}
@@ -133,7 +135,7 @@ class weapon_mk3a1 : CBaseCSOWeapon
 		if( m_pPlayer.pev.waterlevel == WATERLEVEL_HEAD )
 		{
 			self.PlayEmptySound();
-			self.m_flNextPrimaryAttack = g_Engine.time + 0.15f;
+			self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + 0.15f;
 
 			return;
 		}
@@ -141,7 +143,7 @@ class weapon_mk3a1 : CBaseCSOWeapon
 		if( self.m_iClip <= 0 )
 		{
 			self.PlayEmptySound();
-			self.m_flNextPrimaryAttack = g_Engine.time + 1.0f;
+			self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + 1.0f;
 
 			return;
 		}
@@ -154,7 +156,7 @@ class weapon_mk3a1 : CBaseCSOWeapon
 		m_pPlayer.pev.effects |= EF_MUZZLEFLASH;
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
-		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2) );
+		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], 1.0f, 0.5f, 0, 94 + Math.RandomLong(0, 15) );
 
@@ -172,7 +174,7 @@ class weapon_mk3a1 : CBaseCSOWeapon
 		if( self.m_iClip <= 0 and m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 )
 			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
 
-		self.m_flNextPrimaryAttack = g_Engine.time + CSOW_DELAY1;
+		self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_DELAY1;
 
 		if( self.m_iClip > 0 )
 			self.m_flTimeWeaponIdle = g_Engine.time + 2.25f;
@@ -192,7 +194,7 @@ class weapon_mk3a1 : CBaseCSOWeapon
 		if( ammo <= 0 or self.m_iClip >= CSOW_MAX_CLIP )
 			return;
 
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD );
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
 		BaseClass.Reload();
@@ -206,7 +208,7 @@ class weapon_mk3a1 : CBaseCSOWeapon
 			return;
 
 		self.m_flTimeWeaponIdle = g_Engine.time + 20;
-		self.SendWeaponAnim( ANIM_IDLE );
+		self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 	}
 }
 

@@ -78,6 +78,8 @@ class weapon_desperado : CBaseCSOWeapon
 		self.m_iDefaultAmmo = CSOW_DEFAULT_GIVE;
 		self.FallInit();
 		m_iMode = MODE_RIGHT;
+		g_iCSOWHands = HANDS_SVENCOOP;
+		m_bSwitchHands = true;
 	}
 
 	void Precache()
@@ -151,8 +153,8 @@ class weapon_desperado : CBaseCSOWeapon
 		bool bResult;
 		{
 			FastReload();
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model((m_iMode == MODE_RIGHT ? MODEL_PLAYER_R : MODEL_PLAYER_L)), ANIM_DRAW_R + m_iMode, CSOW_ANIMEXT );
-			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model((m_iMode == MODE_RIGHT ? MODEL_PLAYER_R : MODEL_PLAYER_L)), ANIM_DRAW_R + m_iMode, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 
 			return bResult;
 		}
@@ -171,8 +173,8 @@ class weapon_desperado : CBaseCSOWeapon
 			Fire();
 		else if( m_iMode == MODE_LEFT )
 		{
-			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_SWAP;
-			self.SendWeaponAnim( ANIM_SWAP_R + m_iMode );
+			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_SWAP;
+			self.SendWeaponAnim( ANIM_SWAP_R + m_iMode, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			m_iMode = MODE_RIGHT;
 			m_pPlayer.pev.weaponmodel = MODEL_PLAYER_R;
 			FastReload();			
@@ -183,8 +185,8 @@ class weapon_desperado : CBaseCSOWeapon
 	{
 		if( m_iMode == MODE_RIGHT )
 		{
-			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_SWAP;
-			self.SendWeaponAnim( ANIM_SWAP_R + m_iMode );
+			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_SWAP;
+			self.SendWeaponAnim( ANIM_SWAP_R + m_iMode, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			m_iMode = MODE_LEFT;
 			m_pPlayer.pev.weaponmodel = MODEL_PLAYER_L;
 			FastReload();
@@ -199,7 +201,7 @@ class weapon_desperado : CBaseCSOWeapon
 		{
 			self.m_bPlayEmptySound = true;
 			PlayEmptySound();
-			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DELAY;
+			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY;
 			return;
 		}
 
@@ -210,7 +212,7 @@ class weapon_desperado : CBaseCSOWeapon
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], 1, ATTN_NORM );
 
-		self.SendWeaponAnim( ANIM_SHOOT_R + m_iMode );
+		self.SendWeaponAnim( ANIM_SHOOT_R + m_iMode, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
@@ -228,7 +230,7 @@ class weapon_desperado : CBaseCSOWeapon
 		m_pPlayer.pev.punchangle.x = Math.RandomFloat( vec2dRecoilX.x, vec2dRecoilX.y );
 		m_pPlayer.pev.punchangle.y = Math.RandomFloat( vec2dRecoilY.x, vec2dRecoilY.y );
 
-		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DELAY;
+		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY;
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE;
 
 		m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH;
@@ -275,16 +277,16 @@ class weapon_desperado : CBaseCSOWeapon
 			if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 )
 				return;
 
-			self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD_R + m_iMode, CSOW_TIME_RELOAD );
+			self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD_R + m_iMode, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
 			BaseClass.Reload();
 		}
 		else
 		{
-			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_RELOAD;
+			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_RELOAD;
 
-			self.SendWeaponAnim( ANIM_RELOAD_R + m_iMode );
+			self.SendWeaponAnim( ANIM_RELOAD_R + m_iMode, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_fInReload = true;
 			self.m_flTimeWeaponIdle = g_Engine.time + 3;
 
@@ -339,12 +341,12 @@ class weapon_desperado : CBaseCSOWeapon
 		if( m_iInRun != 0 )
 		{
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE_RUN;
-			self.SendWeaponAnim( ANIM_RUN_END_R + m_iMode );
+			self.SendWeaponAnim( ANIM_RUN_END_R + m_iMode, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			m_iInRun = 0;
 		}
 		else
 		{
-			self.SendWeaponAnim( ANIM_IDLE_M + m_iMode );
+			self.SendWeaponAnim( ANIM_IDLE_M + m_iMode, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
 		}
 	}
@@ -355,7 +357,7 @@ class weapon_desperado : CBaseCSOWeapon
 		{
 			if( m_iInRun == 0 )
 			{
-				self.SendWeaponAnim(ANIM_RUN_START_R + m_iMode);
+				self.SendWeaponAnim( ANIM_RUN_START_R + m_iMode, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				m_iInRun = 1;
 				self.m_flTimeWeaponIdle = g_Engine.time + 0.3f; //CSOW_TIME_IDLE_RUN
 			}
@@ -363,7 +365,7 @@ class weapon_desperado : CBaseCSOWeapon
 			{
 				if( self.m_flTimeWeaponIdle < g_Engine.time )
 				{
-					self.SendWeaponAnim(ANIM_RUN_IDLE_R + m_iMode);
+					self.SendWeaponAnim( ANIM_RUN_IDLE_R + m_iMode, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 					self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE_RUN;
 				}
 			}

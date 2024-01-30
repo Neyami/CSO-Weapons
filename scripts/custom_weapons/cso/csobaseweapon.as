@@ -1,3 +1,5 @@
+int g_iCSOWHands = 0;
+
 class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 {
 	// Possible workaround for the SendWeaponAnim() access violation crash.
@@ -10,39 +12,32 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 	}
 
 	protected EHandle m_eDropEffect;
-	protected int m_iWeaponType;
+	int m_iWeaponType;
 	int m_iShell;
+	bool m_bSwitchHands = false; //limit to models with all 3 hands for now
 
 	int m_iShotsFired; //For CS-Like
 	bool m_bDirection; //For CS-Like
 	bool m_bDelayFire; //For CS-Like
 	float m_flDecreaseShotsFired; //For CS-Like
 
-	//legacy support only
-	void CS16GetDefaultShellInfo( EHandle ePlayer, Vector& out ShellVelocity, Vector& out ShellOrigin, float forwardScale, float rightScale, float upScale, bool leftShell, bool downShell )
+	void TertiaryAttack()
 	{
-		CBasePlayer@ pPlayer = null;
-
-		if( ePlayer.IsValid() ) @pPlayer = cast<CBasePlayer@>( ePlayer.GetEntity() );
-		if( pPlayer !is null ) CS16GetDefaultShellInfo( pPlayer, ShellVelocity, ShellOrigin, forwardScale, rightScale, upScale, leftShell, downShell );
-	}
-
-	void CS16GetDefaultShellInfo( CBasePlayer@ pPlayer, Vector& out ShellVelocity, Vector& out ShellOrigin, float forwardScale, float rightScale, float upScale, bool leftShell, bool downShell )
-	{  
-		Vector vecForward, vecRight, vecUp;
-
-		float fR;
-		float fU;
-
-		g_EngineFuncs.AngleVectors( pPlayer.pev.v_angle, vecForward, vecRight, vecUp );
-
-		(leftShell == true) ? fR = Math.RandomFloat( -70, -50 ) : fR = Math.RandomFloat( 50, 70 );
-		(downShell == true) ? fU = Math.RandomFloat( -150, -100 ) : fU = Math.RandomFloat( 100, 150 );
-
-		for( int i = 0; i < 3; ++i )
+		if( m_bSwitchHands )
 		{
-			ShellVelocity[i] = pPlayer.pev.velocity[i] + vecRight[i] * fR + vecUp[i] * fU + vecForward[i] * 25;
-			ShellOrigin[i]   = pPlayer.pev.origin[i] + pPlayer.pev.view_ofs[i] + vecUp[i] * upScale + vecForward[i] * forwardScale + vecRight[i] * rightScale;
+			g_iCSOWHands++;
+			if( g_iCSOWHands == HANDS_SVENCOOP+1 ) g_iCSOWHands = HANDS_MALE;
+
+			self.SendWeaponAnim( 0, 0, g_iCSOWHands );
+
+			if( g_iCSOWHands == HANDS_SVENCOOP )
+				g_PlayerFuncs.ClientPrint( m_pPlayer, HUD_PRINTCENTER, "HANDS SET TO SVENCOOP" );
+			else if( g_iCSOWHands == HANDS_MALE )
+				g_PlayerFuncs.ClientPrint( m_pPlayer, HUD_PRINTCENTER, "HANDS SET TO CSO MALE" );
+			else if( g_iCSOWHands == HANDS_FEMALE )
+				g_PlayerFuncs.ClientPrint( m_pPlayer, HUD_PRINTCENTER, "HANDS SET TO CSO FEMALE" );
+
+			self.m_flNextTertiaryAttack = g_Engine.time + 0.5;
 		}
 	}
 
@@ -231,5 +226,33 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		g_Utility.TraceLine( start, end, ignore_monsters, ignore_ent, ptr );
 
 		return (end - ptr.vecEndPos).Length() > 0;
+	}
+
+	//legacy support only
+	void CS16GetDefaultShellInfo( EHandle ePlayer, Vector& out ShellVelocity, Vector& out ShellOrigin, float forwardScale, float rightScale, float upScale, bool leftShell, bool downShell )
+	{
+		CBasePlayer@ pPlayer = null;
+
+		if( ePlayer.IsValid() ) @pPlayer = cast<CBasePlayer@>( ePlayer.GetEntity() );
+		if( pPlayer !is null ) CS16GetDefaultShellInfo( pPlayer, ShellVelocity, ShellOrigin, forwardScale, rightScale, upScale, leftShell, downShell );
+	}
+
+	void CS16GetDefaultShellInfo( CBasePlayer@ pPlayer, Vector& out ShellVelocity, Vector& out ShellOrigin, float forwardScale, float rightScale, float upScale, bool leftShell, bool downShell )
+	{  
+		Vector vecForward, vecRight, vecUp;
+
+		float fR;
+		float fU;
+
+		g_EngineFuncs.AngleVectors( pPlayer.pev.v_angle, vecForward, vecRight, vecUp );
+
+		(leftShell == true) ? fR = Math.RandomFloat( -70, -50 ) : fR = Math.RandomFloat( 50, 70 );
+		(downShell == true) ? fU = Math.RandomFloat( -150, -100 ) : fU = Math.RandomFloat( 100, 150 );
+
+		for( int i = 0; i < 3; ++i )
+		{
+			ShellVelocity[i] = pPlayer.pev.velocity[i] + vecRight[i] * fR + vecUp[i] * fU + vecForward[i] * 25;
+			ShellOrigin[i]   = pPlayer.pev.origin[i] + pPlayer.pev.view_ofs[i] + vecUp[i] * upScale + vecForward[i] * forwardScale + vecRight[i] * rightScale;
+		}
 	}
 }

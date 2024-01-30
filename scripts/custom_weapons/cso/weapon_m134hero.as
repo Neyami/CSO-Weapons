@@ -116,6 +116,8 @@ class weapon_m134hero : CBaseCSOWeapon
 		m_bFired = false;
 		m_iCooldown = 0;
 		SetHudParamsCooldown();
+		g_iCSOWHands = HANDS_SVENCOOP;
+		m_bSwitchHands = true;
 
 		self.FallInit();
 	}
@@ -198,7 +200,7 @@ class weapon_m134hero : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER_IDLE), m_bOverheated ? ANIM_OH_DRAW : ANIM_DRAW, CSOW_ANIMEXT );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER_IDLE), m_bOverheated ? ANIM_OH_DRAW : ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 
 			return bResult;
@@ -252,7 +254,7 @@ class weapon_m134hero : CBaseCSOWeapon
 		}
 		else if( m_iState == STATE_BEGIN )
 		{
-			if( m_pPlayer.pev.weaponanim != ANIM_SHOOT_END ) self.SendWeaponAnim( ANIM_SHOOT_START );
+			if( m_pPlayer.pev.weaponanim != ANIM_SHOOT_END ) self.SendWeaponAnim( ANIM_SHOOT_START, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			m_pPlayer.pev.weaponmodel = MODEL_PLAYER_SPIN;
 
 			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, 0.52, 0, 94 + Math.RandomLong(0, 15) );
@@ -266,8 +268,8 @@ class weapon_m134hero : CBaseCSOWeapon
 		{
 			if( self.m_iClip > 0 )
 			{
-				if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_LOOP );
-				else self.SendWeaponAnim( ANIM_SFIRE_LOOP );
+				if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_LOOP, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				else self.SendWeaponAnim( ANIM_SFIRE_LOOP, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 				ScreenShake();
 
@@ -277,7 +279,7 @@ class weapon_m134hero : CBaseCSOWeapon
 			else
 			{
 				m_iState = STATE_END;
-				self.SendWeaponAnim( ANIM_SHOOT_END );
+				self.SendWeaponAnim( ANIM_SHOOT_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				m_pPlayer.pev.weaponmodel = MODEL_PLAYER_IDLE;
 
 				g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SPINDOWN], VOL_NORM, 0.52, 0, 94 + Math.RandomLong(0, 15) );
@@ -311,7 +313,7 @@ class weapon_m134hero : CBaseCSOWeapon
 		}
 		else if( m_iState == STATE_BEGIN )
 		{
-			if( m_pPlayer.pev.weaponanim != ANIM_SHOOT_END ) self.SendWeaponAnim( ANIM_SFIRE_START );
+			if( m_pPlayer.pev.weaponanim != ANIM_SHOOT_END ) self.SendWeaponAnim( ANIM_SFIRE_START, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			m_pPlayer.pev.weaponmodel = MODEL_PLAYER_SPIN;
 
 			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SPINUP], VOL_NORM, 0.52, 0, 94 + Math.RandomLong(0, 15) );
@@ -327,8 +329,8 @@ class weapon_m134hero : CBaseCSOWeapon
 		{
 			if( self.m_iClip > 0 )
 			{
-				if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_LOOP );
-				else self.SendWeaponAnim( ANIM_SFIRE_LOOP );
+				if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_LOOP, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				else self.SendWeaponAnim( ANIM_SFIRE_LOOP, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + 0.5;
 				self.m_flTimeWeaponIdle = g_Engine.time + 1.0;
@@ -351,7 +353,8 @@ class weapon_m134hero : CBaseCSOWeapon
 		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 or self.m_iClip >= CSOW_MAX_CLIP or m_bOverheated )
 			return;
 
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD );
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
+
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
 		BaseClass.Reload();
@@ -364,7 +367,7 @@ class weapon_m134hero : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( m_bOverheated ? ANIM_OH_IDLE : ANIM_IDLE );
+		self.SendWeaponAnim( m_bOverheated ? ANIM_OH_IDLE : ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + 20.0;
 
 		if( m_iState == STATE_LOOP )
@@ -378,7 +381,7 @@ class weapon_m134hero : CBaseCSOWeapon
 			if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) > 0 )
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 0.25; //??
 
-			if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_END );
+			if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			else Overheat_Begin();
 
 			m_pPlayer.pev.weaponmodel = MODEL_PLAYER_IDLE;
@@ -450,9 +453,9 @@ class weapon_m134hero : CBaseCSOWeapon
 				else
 				{
 					m_iState = STATE_END;
-					if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_END );
+					if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 					else Overheat_Begin();
-					//else self.SendWeaponAnim( ANIM_SFIRE_END );
+					//else self.SendWeaponAnim( ANIM_SFIRE_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 					self.m_flTimeWeaponIdle = g_Engine.time + 2.5;
 					self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + 0.25;
@@ -513,7 +516,7 @@ class weapon_m134hero : CBaseCSOWeapon
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + (m_flFiringTime + 1.0);
 				self.m_flTimeWeaponIdle = g_Engine.time + 3.5;
 
-				self.SendWeaponAnim( ANIM_OH_START );
+				self.SendWeaponAnim( ANIM_OH_START, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 				ShowCooldownBar();
 				m_flCooldownRate = (m_flFiringTime + 1.0) / CSOW_HUD_MAXFRAME;
@@ -525,7 +528,7 @@ class weapon_m134hero : CBaseCSOWeapon
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + 0.25;
 				self.m_flTimeWeaponIdle = g_Engine.time + 2.5;
 
-				self.SendWeaponAnim( ANIM_SFIRE_END );
+				self.SendWeaponAnim( ANIM_SFIRE_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			}
 		}
 		else
@@ -533,7 +536,7 @@ class weapon_m134hero : CBaseCSOWeapon
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + 0.25;
 			self.m_flTimeWeaponIdle = g_Engine.time + 2.5;
 
-			self.SendWeaponAnim( ANIM_SFIRE_END );
+			self.SendWeaponAnim( ANIM_SFIRE_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		}
 	}
 
@@ -544,7 +547,7 @@ class weapon_m134hero : CBaseCSOWeapon
 		m_flCooldownRate = 0.0;
 		m_flFiringTime = 0.0;
 
-		self.SendWeaponAnim( ANIM_OH_END );
+		self.SendWeaponAnim( ANIM_OH_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + 2.0;
 		self.m_flTimeWeaponIdle = g_Engine.time + 2.5;

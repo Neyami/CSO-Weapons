@@ -95,6 +95,8 @@ class weapon_janus9 : CBaseCSOWeapon
 		m_iMode = -1;
 		m_flResetMode = 0;
 		m_flRemoveTrigger = 0;
+		g_iCSOWHands = HANDS_SVENCOOP;
+		m_bSwitchHands = true;
 
 		self.FallInit();
 	}
@@ -152,8 +154,8 @@ class weapon_janus9 : CBaseCSOWeapon
 		bool bResult;
 		{
 			string pmodel = m_iMode <= 0 ? MODEL_PLAYER1 : MODEL_PLAYER2;
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(pmodel), m_iMode <= 0 ? ANIM_DRAW : ANIM_DRAW_SIGNAL, CSOW_ANIMEXT );
-			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(pmodel), m_iMode <= 0 ? ANIM_DRAW : ANIM_DRAW_SIGNAL, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 
 			return bResult;
 		}
@@ -188,8 +190,8 @@ class weapon_janus9 : CBaseCSOWeapon
 
 		switch( (m_iSwing++) % 2 )
 		{
-			case 0: self.SendWeaponAnim( ANIM_STAB1 ); break;
-			case 1: self.SendWeaponAnim( ANIM_STAB2 ); break;
+			case 0: self.SendWeaponAnim( ANIM_STAB1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
+			case 1: self.SendWeaponAnim( ANIM_STAB2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
 		}
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SLASH2_SIGNAL], 1, ATTN_NORM );
@@ -199,7 +201,7 @@ class weapon_janus9 : CBaseCSOWeapon
 
 		m_iMode = -1;
 
-		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_DELAY2;
+		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_DELAY2;
 	}
 
 	void AOEDamage()
@@ -292,11 +294,11 @@ class weapon_janus9 : CBaseCSOWeapon
 
 				switch( (m_iSwing++) % 2 )
 				{
-					case 0: self.SendWeaponAnim( ANIM_SLASH1 + Math.clamp(0, 2, m_iMode) ); break;
-					case 1: self.SendWeaponAnim( ANIM_SLASH2 + Math.clamp(0, 2, m_iMode) ); break;
+					case 0: self.SendWeaponAnim( ANIM_SLASH1 + Math.clamp(0, 2, m_iMode), 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
+					case 1: self.SendWeaponAnim( ANIM_SLASH2 + Math.clamp(0, 2, m_iMode), 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
 				}
 
-				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DELAY_MISS;
+				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY_MISS;
 
 				g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[ (m_iMode <= 0 ? SND_SLASH1 : SND_SLASH2_SIGNAL)], 1, ATTN_NORM );
 
@@ -314,8 +316,8 @@ class weapon_janus9 : CBaseCSOWeapon
 
 			switch( (m_iSwing++) % 2 )
 			{
-				case 0: self.SendWeaponAnim( ANIM_SLASH1 + Math.clamp(0, 2, m_iMode) ); break;
-				case 1: self.SendWeaponAnim( ANIM_SLASH2 + Math.clamp(0, 2, m_iMode) ); break;
+				case 0: self.SendWeaponAnim( ANIM_SLASH1 + Math.clamp(0, 2, m_iMode), 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
+				case 1: self.SendWeaponAnim( ANIM_SLASH2 + Math.clamp(0, 2, m_iMode), 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
 			}
 
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
@@ -335,7 +337,7 @@ class weapon_janus9 : CBaseCSOWeapon
 
 			if( pEntity !is null )
 			{
-				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DELAY_HIT;
+				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY_HIT;
 
 				if( pEntity.Classify() != CLASS_NONE and pEntity.Classify() != CLASS_MACHINE and pEntity.BloodColor() != DONT_BLEED )
 				{
@@ -359,7 +361,7 @@ class weapon_janus9 : CBaseCSOWeapon
 			{
 				g_SoundSystem.PlayHitSound( tr, vecSrc, vecSrc + (vecEnd - vecSrc) * 2, BULLET_PLAYER_CROWBAR );
 
-				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DELAY_HIT_WORLD;
+				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY_HIT_WORLD;
 
 				string sTexture = g_Utility.TraceTexture( null, vecSrc, vecSrc + g_Engine.v_forward * 128 );
 				char cType = g_SoundSystem.FindMaterialType(sTexture);
@@ -385,7 +387,7 @@ class weapon_janus9 : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( m_iMode < 1 ? ANIM_IDLE : ANIM_IDLE_SIGNAL );
+		self.SendWeaponAnim( m_iMode < 1 ? ANIM_IDLE : ANIM_IDLE_SIGNAL, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + Math.RandomFloat( CSOW_TIME_IDLE1, CSOW_TIME_IDLE2 );
 	}
 
@@ -422,3 +424,8 @@ void Register()
 }
 
 } //namespace janus9 END
+
+/*TODO
+Remove aoetrigger
+
+*/

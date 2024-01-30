@@ -83,6 +83,8 @@ class weapon_augex : CBaseCSOWeapon
 
 		m_flAccuracy = 0.2;
 		m_iShotsFired = 0;
+		g_iCSOWHands = HANDS_SVENCOOP;
+		m_bSwitchHands = true;
 
 		self.FallInit();
 	}
@@ -167,7 +169,7 @@ class weapon_augex : CBaseCSOWeapon
 			m_flAccuracy = 0.2;
 			m_iShotsFired = 0;
 
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flNextPrimaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 			self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_DRAW*2);
 
@@ -192,7 +194,7 @@ class weapon_augex : CBaseCSOWeapon
 			m_pPlayer.m_iWeaponFlash = BRIGHT_GUN_FLASH;
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 			m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH; //Needed??
-			self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2) );
+			self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM, 0, 94 + Math.RandomLong(0, 15) );
 
 			Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
@@ -210,9 +212,9 @@ class weapon_augex : CBaseCSOWeapon
 			HandleRecoil( CSOW_RECOIL_STANDING_X, CSOW_RECOIL_STANDING_Y, CSOW_RECOIL_DUCKING_X, CSOW_RECOIL_DUCKING_Y );
 
 			if( m_pPlayer.pev.fov == 0 )
-				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DELAY1;
+				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY1;
 			else
-				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 0.135;
+				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + 0.135;
 
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE1;
 		}
@@ -249,7 +251,7 @@ class weapon_augex : CBaseCSOWeapon
 		int iPenetration = USE_PENETRATION ? 2 : 0;
 		Vector vecDir = cso::FireBullets3( vecSrc, g_Engine.v_forward, flSpread, 8192, iPenetration, BULLET_PLAYER_556MM, CSOW_DAMAGE, 0.96, EHandle(m_pPlayer), false, m_pPlayer.random_seed );
 
-		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2) );
+		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x + g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell );
 
@@ -258,7 +260,7 @@ class weapon_augex : CBaseCSOWeapon
 		//m_pPlayer.FireBullets( 1, vecSrc, g_Engine.v_forward, vecShootCone, 8192.0, BULLET_PLAYER_SAW, 4, 0 );
 		DoDecalGunshot( vecSrc, g_Engine.v_forward, vecDir.x, vecDir.y, BULLET_PLAYER_SAW, true );
 
-		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + flCycleTime;
+		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + flCycleTime;
 
 		HandleAmmoReduction();
 
@@ -288,17 +290,17 @@ class weapon_augex : CBaseCSOWeapon
 		if( m_pPlayer.m_rgAmmo(self.m_iSecondaryAmmoType) > 0 )
 		{
 			LaunchGrenade();
-			self.SendWeaponAnim( ANIM_SHOOT_GRENADE );
+			self.SendWeaponAnim( ANIM_SHOOT_GRENADE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_ITEM, pCSOWSounds[SND_SHOOT_GRENADE], VOL_NORM, ATTN_NORM );
-			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DELAY2;
+			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY2;
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE2;
 		}
 		else
 		{
 			LaunchGrenade();
-			self.SendWeaponAnim( ANIM_SHOOT_GRENADE_EMPTY );
+			self.SendWeaponAnim( ANIM_SHOOT_GRENADE_EMPTY, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_ITEM, pCSOWSounds[SND_SHOOT_GRENADE_EMPTY], VOL_NORM, ATTN_NORM );
-			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + (CSOW_TIME_DELAY2-0.4);
+			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + (CSOW_TIME_DELAY2-0.4);
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE3;
 		}
 
@@ -336,7 +338,7 @@ class weapon_augex : CBaseCSOWeapon
 		m_iShotsFired = 0;
 		m_bDelayFire = false;
 
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD );
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
 		BaseClass.Reload();
@@ -351,35 +353,38 @@ class weapon_augex : CBaseCSOWeapon
 			return;
 
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
-		self.SendWeaponAnim( ANIM_IDLE );
+		self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 	}
 
 	void ItemPostFrame()
 	{
-		if( m_pPlayer.pev.button & (IN_ATTACK | IN_ATTACK2) == 0 )
+		if( USE_CSLIKE_RECOIL )
 		{
-			if( m_bDelayFire )
+			if( m_pPlayer.pev.button & (IN_ATTACK | IN_ATTACK2) == 0 )
 			{
-				m_bDelayFire = false;
-
-				if( m_iShotsFired > 15 )
-					m_iShotsFired = 15;
-
-				m_flDecreaseShotsFired = g_Engine.time + 0.4;
-			}
-
-			self.m_bFireOnEmpty = false;
-
-			if( m_iShotsFired > 0 )
-			{
-				if( g_Engine.time > m_flDecreaseShotsFired )
+				if( m_bDelayFire )
 				{
-					m_iShotsFired--;
-					m_flDecreaseShotsFired = g_Engine.time + 0.0225;
-				}
-			}
+					m_bDelayFire = false;
 
-			WeaponIdle();
+					if( m_iShotsFired > 15 )
+						m_iShotsFired = 15;
+
+					m_flDecreaseShotsFired = g_Engine.time + 0.4;
+				}
+
+				self.m_bFireOnEmpty = false;
+
+				if( m_iShotsFired > 0 )
+				{
+					if( g_Engine.time > m_flDecreaseShotsFired )
+					{
+						m_iShotsFired--;
+						m_flDecreaseShotsFired = g_Engine.time + 0.0225;
+					}
+				}
+
+				WeaponIdle();
+			}
 		}
 
 		BaseClass.ItemPostFrame();

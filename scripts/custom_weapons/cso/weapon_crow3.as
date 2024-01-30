@@ -71,6 +71,8 @@ class weapon_crow3 : CBaseCSOWeapon
 		self.m_iDefaultAmmo = CSOW_DEFAULT_GIVE;
 
 		m_iReloadState = STATE_NONE;
+		g_iCSOWHands = HANDS_SVENCOOP;
+		m_bSwitchHands = true;
 
 		self.FallInit();
 	}
@@ -145,8 +147,8 @@ class weapon_crow3 : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT );
-			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 
 			return bResult;
 		}
@@ -177,10 +179,10 @@ class weapon_crow3 : CBaseCSOWeapon
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM );
 
-		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2) );
+		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
-		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DELAY;
+		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY;
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE;
 
 		m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH;
@@ -201,7 +203,7 @@ class weapon_crow3 : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( ANIM_IDLE );
+		self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
 	}
 
@@ -214,9 +216,9 @@ class weapon_crow3 : CBaseCSOWeapon
 				case STATE_NONE:
 				{
 					m_iReloadState = STATE_RELOAD_START;
-					self.SendWeaponAnim( ANIM_RELOAD_START );
+					self.SendWeaponAnim( ANIM_RELOAD_START, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
-					self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD1;
+					self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD1;
 					SetThink( ThinkFunction(this.ReloadThink) );
 					pev.nextthink = g_Engine.time + 0.6;
 					break;
@@ -225,7 +227,7 @@ class weapon_crow3 : CBaseCSOWeapon
 				case STATE_RELOAD_MID:
 				{
 					m_iReloadState = STATE_RELOAD_QUICK;
-					self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 1.0;
+					self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 1.0;
 					SetThink( ThinkFunction(this.ReloadThink) );
 					pev.nextthink = g_Engine.time;
 					break;
@@ -249,7 +251,7 @@ class weapon_crow3 : CBaseCSOWeapon
 
 			case STATE_RELOAD_MID:
 			{
-				self.SendWeaponAnim( ANIM_RELOAD_END_NORMAL );
+				self.SendWeaponAnim( ANIM_RELOAD_END_NORMAL, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				m_iReloadState = STATE_RELOAD_END;
 				pev.nextthink = g_Engine.time + 2.0;
 				break;
@@ -257,7 +259,7 @@ class weapon_crow3 : CBaseCSOWeapon
 
 			case STATE_RELOAD_QUICK:
 			{
-				self.SendWeaponAnim( ANIM_RELOAD_END_QUICK );
+				self.SendWeaponAnim( ANIM_RELOAD_END_QUICK, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				m_iReloadState = STATE_RELOAD_END;
 				pev.nextthink = g_Engine.time + 1.0;
 				break;
