@@ -25,7 +25,8 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 `#include "../custom_weapons/cso/csocommon"`  
 
 Set bUseDroppedItemEffect to true in csocommon.as if you want to use CSO-like dropped weapons  
-Change USE_CSLIKE_RECOIL and USE_PENETRATION in weapon_aug and weapon_augex to your preference.
+Change USE_CSLIKE_RECOIL and USE_PENETRATION in weapon_aug and weapon_augex to your preference.  
+Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be switched with TertiaryAttack
 
 <BR>
 
