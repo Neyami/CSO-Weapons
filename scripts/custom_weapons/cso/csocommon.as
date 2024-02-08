@@ -20,9 +20,6 @@ const int THANATOS9_POSITION		= 15;
 const int RIPPER_SLOT						= 1;
 const int RIPPER_POSITION				= 16;
 
-const int DUALSWORD_SLOT				= 1;
-const int DUALSWORD_POSITION		= 17;
-
 const int DCLAW_WEIGHT					= 10;
 const int BEAMSWORD_WEIGHT			= 10;
 const int BALROG9_WEIGHT				= 10;
@@ -90,13 +87,10 @@ const int M95_SLOT							= 6;
 const int M95_POSITION					= 11;
 const int SAVERY_SLOT					= 6;
 const int SAVERY_POSITION				= 12;
-const int M95TIGER_SLOT					= 6;
-const int M95TIGER_POSITION			= 13;
 
 const int AWP_WEIGHT						= 30;
 const int M95_WEIGHT						= 35;
 const int SAVERY_WEIGHT					= 15;
-const int M95TIGER_WEIGHT				= 40;
 
 //Machine Guns
 const int AEOLIS_SLOT						= 7;
