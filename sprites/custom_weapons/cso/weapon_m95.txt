@@ -1,0 +1,6 @@
+5
+weapon			640 custom_weapons/cso/640hud53	0	90	170	45
+weapon_s		640 custom_weapons/cso/640hud53	0	135	170	45
+ammo			640 custom_weapons/cso/640hud7	192	205	24	24
+crosshair			640 crosshairs	24	0	24	24
+zoom			640 custom_weapons/cso/sniper_scope	0	0	256	256
