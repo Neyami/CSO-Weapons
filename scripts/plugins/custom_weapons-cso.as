@@ -9,6 +9,7 @@
 #include "../custom_weapons/cso/weapon_thanatos9"
 #include "../custom_weapons/cso/weapon_dualwaki"
 #include "../custom_weapons/cso/weapon_beamsword"
+#include "../custom_weapons/cso/weapon_ripper"
 
 //Pistols
 #include "../custom_weapons/cso/weapon_desperado"
@@ -31,12 +32,14 @@
 #include "../custom_weapons/cso/weapon_failnaught"
 #include "../custom_weapons/cso/weapon_augex"
 
+//Sniper Rifles
+#include "../custom_weapons/cso/weapon_awp"
+#include "../custom_weapons/cso/weapon_m95"
+#include "../custom_weapons/cso/weapon_savery"
+
 //Machine Guns
 #include "../custom_weapons/cso/weapon_aeolis"
 #include "../custom_weapons/cso/weapon_m134hero"
-
-//Sniper Rifles
-#include "../custom_weapons/cso/weapon_savery"
 
 void PluginInit()
 {
@@ -52,6 +55,7 @@ void MapInit()
 	cso_thanatos9::Register();
 	cso_dualwaki::Register();
 	cso_beamsword::Register();
+	cso_ripper::Register();
 	cso_desperado::Register();
 	cso_m950::Register();
 	cso_skull2::Register();
@@ -65,7 +69,9 @@ void MapInit()
 	cso_bow::Register();
 	cso_failnaught::Register();
 	cso_augex::Register();
+	cso_awp::Register();
+	cso_m95::Register();
+	cso_savery::Register();
 	cso_aeolis::Register();
 	cso_m134hero::Register();
-	cso_savery::Register();
 }
