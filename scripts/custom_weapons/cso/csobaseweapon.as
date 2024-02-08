@@ -12,6 +12,13 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 	}
 
 	protected EHandle m_eDropEffect;
+	/*protected EHandle m_hDropEffect;
+	protected CBaseEntity@ m_pDropEffect
+	{
+		get const { return cast<CBaseEntity@>(m_hDropEffect.GetEntity()); }
+		set { m_hDropEffect = EHandle(@value); }
+	}*/
+
 	int m_iWeaponType;
 	int m_iShell;
 	bool m_bSwitchHands = false; //limit to models with all 3 hands for now
@@ -41,14 +48,20 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		}
 	}
 
-	void EjectBrass( Vector vecOrigin, int iShell, int iBounce = TE_BOUNCE_SHELL, bool bRight = true )
+	void EjectBrass( Vector vecOrigin, int iShell, int iBounce = TE_BOUNCE_SHELL, bool bRight = true, bool bUpBoost = false )
 	{
 		Vector vecVelocity;
+		float flUpBoost;
+
+		if( bUpBoost )
+			flUpBoost = Math.RandomFloat(100, 150);
+		else
+			flUpBoost = Math.RandomFloat(50, 75);
 
 		if( bRight )
-			vecVelocity = m_pPlayer.pev.velocity + g_Engine.v_right * Math.RandomFloat(50, 70) + g_Engine.v_up * Math.RandomFloat(50, 75) + g_Engine.v_forward * 25;
+			vecVelocity = m_pPlayer.pev.velocity + g_Engine.v_right * Math.RandomFloat(50, 70) + g_Engine.v_up * flUpBoost + g_Engine.v_forward * 25;
 		else
-			vecVelocity = m_pPlayer.pev.velocity - g_Engine.v_right * Math.RandomFloat(50, 70) + g_Engine.v_up * Math.RandomFloat(50, 75) + g_Engine.v_forward * 25;
+			vecVelocity = m_pPlayer.pev.velocity - g_Engine.v_right * Math.RandomFloat(50, 70) + g_Engine.v_up * flUpBoost + g_Engine.v_forward * 25;
 
 		NetworkMessage m1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
 			m1.WriteByte( TE_MODEL );
@@ -115,6 +128,16 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 				}
 			}
 		}
+	}
+
+	void DoMuzzleflash( string szSprite, float flForward, float flRight, float flUp, float flScale, float flRenderamt, float flFramerate )
+	{
+		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
+		CSprite@ pSprite = g_EntityFuncs.CreateSprite( szSprite, m_pPlayer.GetGunPosition() + g_Engine.v_forward * flForward + g_Engine.v_right * flRight + g_Engine.v_up * flUp, true );
+		pSprite.SetScale( flScale );
+		pSprite.pev.rendermode = kRenderTransAdd;
+		pSprite.pev.renderamt = flRenderamt;
+		pSprite.AnimateAndDie( flFramerate );
 	}
 
 	void HandleAmmoReduction()
