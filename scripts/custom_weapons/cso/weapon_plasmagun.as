@@ -349,7 +349,7 @@ class plasmaball : ScriptBaseEntity
 		m2.End();
 
 		g_SoundSystem.EmitSound( self.edict(), CHAN_BODY, pCSOWSounds[SND_EXPLODE], VOL_NORM, ATTN_NORM );
-		g_WeaponFuncs.RadiusDamage( vecOrigin, self.pev, pev.owner.vars, pev.dmg, CSOW_DAMAGE_RADIUS, CLASS_PLAYER_ALLY, DMG_ACID );
+		g_WeaponFuncs.RadiusDamage( vecOrigin, self.pev, pev.owner.vars, pev.dmg, CSOW_DAMAGE_RADIUS, CLASS_PLAYER_ALLY, DMG_ENERGYBEAM | DMG_NEVERGIB );
 
 		g_EntityFuncs.Remove( self );
 	}
