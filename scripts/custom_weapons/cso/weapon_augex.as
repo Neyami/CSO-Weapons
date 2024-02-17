@@ -303,13 +303,6 @@ class weapon_augex : CBaseCSOWeapon
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + (CSOW_TIME_DELAY2-0.4);
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE3;
 		}
-
-		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
-		CSprite@ pSprite = g_EntityFuncs.CreateSprite( cso::pSmokeSprites[SMOKE_AUGEX], m_pPlayer.GetGunPosition() + g_Engine.v_forward * 16 + g_Engine.v_right * 4 + g_Engine.v_up * -4, true );
-		pSprite.SetScale(0.05);
-		pSprite.pev.rendermode = kRenderTransAdd;
-		pSprite.pev.renderamt = 128;
-		pSprite.AnimateAndDie(20.0);
 	}
 
 	void LaunchGrenade()
