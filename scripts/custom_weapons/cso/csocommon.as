@@ -27,7 +27,6 @@ const int JANUS9_WEIGHT					= 10;
 const int DWAKI_WEIGHT					= 10;
 const int THANATOS9_WEIGHT			= 10;
 const int RIPPER_WEIGHT					= 10;
-const int DUALSWORD_WEIGHT			= 10;
 
 //Pistols
 const int M950_SLOT						= 2;
@@ -131,18 +130,6 @@ const float CSO_AZ_MULTIPLIER	= 1.2f; //Anti-Zombie
 const string CSO_ITEMDISPLAY_MODEL	= "models/custom_weapons/cso/ef_gundrop.mdl";
 const bool bUseDroppedItemEffect = true;
 
-enum sniperZoom
-{
-	MODE_NOZOOM,
-	MODE_ZOOM1,
-	MODE_ZOOM2
-}
-
-enum cso_dmg
-{
-	DMG_ANTIZOMBIE = 268435456
-}
-
 const array<string> g_arrsZombies =
 {
 	"monster_gonome",
@@ -166,14 +153,14 @@ void DoGunSmoke( Vector vecSrc, int iSmokeType )
 	szGunSmoke = pSmokeSprites[iSmokeType];
 
 	NetworkMessage gunsmoke( MSG_PVS, NetworkMessages::SVC_TEMPENTITY, vecSrc );
-			gunsmoke.WriteByte( TE_EXPLOSION );
-			gunsmoke.WriteCoord( vecSrc.x );
-			gunsmoke.WriteCoord( vecSrc.y );
-			gunsmoke.WriteCoord( vecSrc.z );
-			gunsmoke.WriteShort( g_EngineFuncs.ModelIndex(szGunSmoke) );
-			gunsmoke.WriteByte( 1 );//scale in 0.1s
-			gunsmoke.WriteByte( 16 );//framerate
-			gunsmoke.WriteByte( TE_EXPLFLAG_NODLIGHTS|TE_EXPLFLAG_NOSOUND|TE_EXPLFLAG_NOPARTICLES );//flags
+		gunsmoke.WriteByte( TE_EXPLOSION );
+		gunsmoke.WriteCoord( vecSrc.x );
+		gunsmoke.WriteCoord( vecSrc.y );
+		gunsmoke.WriteCoord( vecSrc.z );
+		gunsmoke.WriteShort( g_EngineFuncs.ModelIndex(szGunSmoke) );
+		gunsmoke.WriteByte( 1 );//scale in 0.1s
+		gunsmoke.WriteByte( 16 );//framerate
+		gunsmoke.WriteByte( TE_EXPLFLAG_NODLIGHTS|TE_EXPLFLAG_NOSOUND|TE_EXPLFLAG_NOPARTICLES );//flags
 	gunsmoke.End();
 
 /*
@@ -411,7 +398,7 @@ CBaseEntity@ ShootCustomProjectile( string classname, string mdl, Vector origin,
 
 //From cstrike Vector CBaseEntity::FireBullets3(Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, int iDamage, float flRangeModifier, entvars_t *pevAttacker, bool bPistol, int shared_rand)
 //FireBullets3( vecSrc, vecAiming, 0, 4096, 2, BULLET_PLAYER_50AE, 54, 0.81f, m_pPlayer.edict(), true, m_pPlayer.random_seed );
-Vector FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, float flDamage, float flRangeModifier, EHandle &in ePlayer, bool bPistol, int shared_rand, bool bCountMobsKilled = false, Vector vecMuzzleOrigin = g_vecZero )
+int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, float flDamage, float flRangeModifier, EHandle &in ePlayer, bool bPistol, int shared_rand, Vector vecMuzzleOrigin = g_vecZero )
 {
 	CBasePlayer@ pPlayer = null;
 
@@ -434,6 +421,7 @@ Vector FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float
 		vecTrailOrigin = vecTrailOrigin + g_Engine.v_forward * vecMuzzleOrigin.x + g_Engine.v_right * vecMuzzleOrigin.y + g_Engine.v_up * vecMuzzleOrigin.z;
 
 	int iBulletDecal = BULLET_NONE;
+	int iEnemiesHit = 0;
 
 	switch( iBulletType )
 	{
@@ -569,14 +557,17 @@ Vector FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float
 
 	float x, y;
 
-	x = g_PlayerFuncs.SharedRandomFloat(shared_rand, -0.5f, 0.5f) + g_PlayerFuncs.SharedRandomFloat(shared_rand + 1, -0.5f, 0.5f);
-	y = g_PlayerFuncs.SharedRandomFloat(shared_rand + 2, -0.5f, 0.5f) + g_PlayerFuncs.SharedRandomFloat(shared_rand + 3, -0.5f, 0.5f);
+	x = g_PlayerFuncs.SharedRandomFloat(shared_rand, -0.5, 0.5) + g_PlayerFuncs.SharedRandomFloat(shared_rand + 1, -0.5, 0.5);
+	y = g_PlayerFuncs.SharedRandomFloat(shared_rand + 2, -0.5, 0.5) + g_PlayerFuncs.SharedRandomFloat(shared_rand + 3, -0.5, 0.5);
+
+	//x = Math.RandomFloat( -0.5, 0.5 ) + Math.RandomFloat( -0.5, 0.5 );
+	//y = Math.RandomFloat( -0.5, 0.5 ) + Math.RandomFloat( -0.5, 0.5 );
 
 	Vector vecDir = vecDirShooting + x * flSpread * vecRight + y * flSpread * vecUp;
 	Vector vecEnd = vecSrc + vecDir * flDistance;
 	Vector vecOldSrc;
 	Vector vecNewSrc;
-	float flDamageModifier = 0.5f;
+	float flDamageModifier = 0.5;
 
 	while( iPenetration > 0 ) //!= 0 seems unsafe
 	{
@@ -591,7 +582,8 @@ Vector FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float
 		if( pBPTextures.find( sTexture ) != -1 )
 		{
 			g_Utility.Ricochet( tr.vecEndPos, 1.0f );
-			return tr.vecEndPos;
+			return 0;
+			//return tr.vecEndPos;
 		}
 
 		if( cTextureType == CHAR_TEX_METAL )
@@ -692,16 +684,22 @@ Vector FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float
 
 				pEntity.TraceAttack( pPlayer.pev, flCurrentDamage, vecDir, tr, (DMG_BULLET|DMG_NEVERGIB) );
 
-				NetworkMessage m1( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, tr.vecEndPos );
-					m1.WriteByte( TE_EXPLOSION );
-					m1.WriteCoord( tr.vecEndPos.x );
-					m1.WriteCoord( tr.vecEndPos.y );
-					m1.WriteCoord( tr.vecEndPos.z - 10.0 );
-					m1.WriteShort( g_EngineFuncs.ModelIndex(cso::pSmokeSprites[Math.RandomLong(1, 4)]) );
-					m1.WriteByte( 2 ); //scale
-					m1.WriteByte( 50 ); //framerate
-					m1.WriteByte( TE_EXPLFLAG_NODLIGHTS|TE_EXPLFLAG_NOSOUND|TE_EXPLFLAG_NOPARTICLES );
-				m1.End();
+				//Wall smoke puff
+				if( iTrail == TRAIL_NONE )
+				{
+					NetworkMessage m1( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, tr.vecEndPos );
+						m1.WriteByte( TE_EXPLOSION );
+						m1.WriteCoord( tr.vecEndPos.x );
+						m1.WriteCoord( tr.vecEndPos.y );
+						m1.WriteCoord( tr.vecEndPos.z - 10.0 );
+						m1.WriteShort( g_EngineFuncs.ModelIndex(cso::pSmokeSprites[Math.RandomLong(1, 4)]) );
+						m1.WriteByte( 2 ); //scale
+						m1.WriteByte( 50 ); //framerate
+						m1.WriteByte( TE_EXPLFLAG_NODLIGHTS|TE_EXPLFLAG_NOSOUND|TE_EXPLFLAG_NOPARTICLES );
+					m1.End();
+				}
+				else
+					DoTrailExplosion( iTrail, tr.vecEndPos );
 
 				//g_Game.AlertMessage( at_notice, "Hit SOLID_BSP: %1 with damage: %2\n", tr.pHit.vars.classname, flCurrentDamage );
 
@@ -720,6 +718,10 @@ Vector FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float
 
 				pEntity.TraceAttack( pPlayer.pev, flCurrentDamage, vecDir, tr, (DMG_BULLET|DMG_NEVERGIB) );
 
+				if( iTrail > TRAIL_NONE )
+					DoTrailExplosion( iTrail, tr.vecEndPos );
+
+				iEnemiesHit++;
 				//g_Game.AlertMessage( at_notice, "Hit entity: %1 with damage: %2\n", tr.pHit.vars.classname, flCurrentDamage );
 
 				flCurrentDamage *= 0.75f;
@@ -735,11 +737,10 @@ Vector FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float
 	{
 		if( iPenetration <= 0 )
 			DoTrail( iTrail, vecTrailOrigin, tr.vecEndPos );
-
-		DoTrailExplosion( iTrail, tr.vecEndPos );
 	}
 
-	return Vector(x * flSpread, y * flSpread, 0);
+	return iEnemiesHit;
+	//return Vector(x * flSpread, y * flSpread, 0);
 }
 
 void DoTrail( int iTrail, Vector vecTrailstart, Vector vecTrailend )
@@ -832,20 +833,29 @@ void DoTrailExplosion( int iTrail, Vector vecTrailend )
 	{
 		case TRAIL_FAILNAUGHT:
 		{
-			NetworkMessage m1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
-				m1.WriteByte( TE_SPRITE );
+			NetworkMessage m1( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, vecTrailend );
+				m1.WriteByte( TE_EXPLOSION );
 				m1.WriteCoord( vecTrailend.x );
 				m1.WriteCoord( vecTrailend.y );
 				m1.WriteCoord( vecTrailend.z );
 				m1.WriteShort( g_EngineFuncs.ModelIndex(SPRITE_TRAIL_FAILNAUGHT_EXPLODE) );
-				m1.WriteByte( 5 ); // scale * 10
-				m1.WriteByte( 150 ); // brightness
-			m1.End();			
+				m1.WriteByte( 5 ); //scale
+				m1.WriteByte( 30 ); //framerate
+				m1.WriteByte( TE_EXPLFLAG_NODLIGHTS|TE_EXPLFLAG_NOSOUND|TE_EXPLFLAG_NOPARTICLES );
+			m1.End();
 
 			break;
 		}
 	}
 }
+
+double MetersToUnits( float flMeters ) { return flMeters/0.0254; }
+double InchesToUnits( float flInches ) { return flInches/1.00000054; }
+double FeetToUnits( float flFeet ) { return flFeet/0.08333232; }
+
+double UnitsToMeters( float flUnits ) { return flUnits*0.0254; }
+double UnitsToInches( float flUnits ) { return flUnits*1.00000054; }
+double UnitsToFeet( float flUnits ) { return flUnits*0.08333232; }
 
 class ef_gundrop : ScriptBaseAnimating
 {

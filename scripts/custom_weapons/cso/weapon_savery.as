@@ -58,7 +58,7 @@ class weapon_savery : CBaseCSOWeapon
 		self.Precache();
 		g_EntityFuncs.SetModel( self, MODEL_WORLD );
 		self.m_iDefaultAmmo = SAVERY_DEFAULT_GIVE*4;
-		m_iZoomMode = cso::MODE_NOZOOM;
+		m_iZoomMode = MODE_NOZOOM;
 		self.FallInit();
 	}
 
@@ -143,7 +143,7 @@ class weapon_savery : CBaseCSOWeapon
 	{
 		g_SoundSystem.StopSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_IDLE] );
 		self.m_fInReload = false;
-		m_iZoomMode = cso::MODE_NOZOOM;
+		m_iZoomMode = MODE_NOZOOM;
 		ToggleZoom( 0 );
 
 		SetThink(null);
@@ -164,8 +164,8 @@ class weapon_savery : CBaseCSOWeapon
 		int playerState = 0;//standing
 
 		if( m_pPlayer.pev.flags & FL_DUCKING != 0 ) playerState++;
-		if( m_iZoomMode == cso::MODE_ZOOM1 ) playerState++;
-		if( m_iZoomMode == cso::MODE_ZOOM2 ) playerState += 2;
+		if( m_iZoomMode == MODE_ZOOM1 ) playerState++;
+		if( m_iZoomMode == MODE_ZOOM2 ) playerState += 2;
 
 		Vector vecShootCone = g_vecShootCone[playerState];
 
@@ -212,25 +212,25 @@ class weapon_savery : CBaseCSOWeapon
     {
         switch( m_iZoomMode )
         {
-            case cso::MODE_NOZOOM:
+            case MODE_NOZOOM:
             {
-                m_iZoomMode = cso::MODE_ZOOM1;
+                m_iZoomMode = MODE_ZOOM1;
                 ToggleZoom( 30 );
                 m_pPlayer.m_szAnimExtension = "sniperscope";
                 break;
             }
         
-            case cso::MODE_ZOOM1:
+            case MODE_ZOOM1:
             {
-                m_iZoomMode = cso::MODE_ZOOM2;
+                m_iZoomMode = MODE_ZOOM2;
                 ToggleZoom( 10 );
                 m_pPlayer.m_szAnimExtension = "sniperscope";
                 break;
             }
             
-            case cso::MODE_ZOOM2:
+            case MODE_ZOOM2:
             {
-                m_iZoomMode = cso::MODE_NOZOOM;
+                m_iZoomMode = MODE_NOZOOM;
                 ToggleZoom( 0 );
                 m_pPlayer.m_szAnimExtension = "sniper";
                 break;
@@ -247,7 +247,7 @@ class weapon_savery : CBaseCSOWeapon
 		if( m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 or self.m_iClip >= SAVERY_MAX_CLIP )
 			return;
 
-		m_iZoomMode = cso::MODE_NOZOOM;
+		m_iZoomMode = MODE_NOZOOM;
 		m_pPlayer.m_szAnimExtension = "sniper";
 		ToggleZoom( 0 );
 

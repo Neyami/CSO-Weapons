@@ -146,7 +146,7 @@ class weapon_aug : CBaseCSOWeapon
 			m_flAccuracy = 0.2;
 			m_iShotsFired = 0;
 
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 			self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_DRAW*2);
 
@@ -179,7 +179,7 @@ class weapon_aug : CBaseCSOWeapon
 			m_pPlayer.m_iWeaponFlash = BRIGHT_GUN_FLASH;
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 			m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH; //Needed??
-			self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2) );
+			self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM, 0, 94 + Math.RandomLong(0, 15) );
 
 			Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
@@ -190,7 +190,7 @@ class weapon_aug : CBaseCSOWeapon
 			//m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, CSOW_DAMAGE );
 			int iPenetration = USE_PENETRATION ? 2 : 0;
 			cso::FireBullets3( vecSrc, g_Engine.v_forward, 0, 8192, iPenetration, BULLET_PLAYER_556MM, CSOW_DAMAGE, 1.0, EHandle(m_pPlayer), false, m_pPlayer.random_seed );
-			DoDecalGunshot( vecSrc, g_Engine.v_forward, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, true );
+			//DoDecalGunshot( vecSrc, g_Engine.v_forward, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, true );
 
 			EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x + g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell );
 
@@ -234,16 +234,15 @@ class weapon_aug : CBaseCSOWeapon
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
 		Vector vecSrc = m_pPlayer.GetGunPosition();
 		int iPenetration = USE_PENETRATION ? 2 : 0;
-		Vector vecDir = cso::FireBullets3( vecSrc, g_Engine.v_forward, flSpread, 8192, iPenetration, BULLET_PLAYER_556MM, CSOW_DAMAGE, 0.96, EHandle(m_pPlayer), false, m_pPlayer.random_seed );
+		cso::FireBullets3( vecSrc, g_Engine.v_forward, flSpread, 8192, iPenetration, BULLET_PLAYER_556MM, CSOW_DAMAGE, 0.96, EHandle(m_pPlayer), false, m_pPlayer.random_seed );
 
-		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT3) );
+		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT3), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x + g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell );
 
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM, 0, 94 + Math.RandomLong(0, 15) );
 
 		//m_pPlayer.FireBullets( 1, vecSrc, g_Engine.v_forward, vecShootCone, 8192.0, BULLET_PLAYER_SAW, 4, 0 );
-		DoDecalGunshot( vecSrc, g_Engine.v_forward, vecDir.x, vecDir.y, BULLET_PLAYER_SAW, true );
 
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + flCycleTime;
 
@@ -283,7 +282,7 @@ class weapon_aug : CBaseCSOWeapon
 		m_iShotsFired = 0;
 		m_bDelayFire = false;
 
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD );
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
 		BaseClass.Reload();
@@ -298,7 +297,7 @@ class weapon_aug : CBaseCSOWeapon
 			return;
 
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
-		self.SendWeaponAnim( ANIM_IDLE );
+		self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 	}
 
 	void ItemPostFrame()

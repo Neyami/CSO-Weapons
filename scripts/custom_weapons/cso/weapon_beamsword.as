@@ -88,13 +88,6 @@ enum csowmode_e
 	MODE_ON
 };
 
-enum csowhit_e
-{
-	HIT_NOTHING = 0,
-	HIT_ENEMY,
-	HIT_WALL
-};
-
 class weapon_beamsword : CBaseCSOWeapon
 {
 	private int m_iMode;
@@ -266,7 +259,7 @@ class weapon_beamsword : CBaseCSOWeapon
 
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 ); 
 
-		int iTarget = CheckAttack( CSOW_RADIUS_ON, 48.0, flDamage );
+		int iTarget = MeleeAttack( CSOW_RADIUS_ON, flDamage );
 		if( iTarget == HIT_ENEMY ) g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[Math.RandomLong(SND_HIT1, SND_HIT2)], VOL_NORM, ATTN_NORM );
 		else if( iTarget == HIT_WALL ) g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[Math.RandomLong(SND_WALL1, SND_WALL2)], VOL_NORM, ATTN_NORM );
 
@@ -282,7 +275,7 @@ class weapon_beamsword : CBaseCSOWeapon
 
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 ); 
 
-		int iTarget = CheckAttack( float(CSOW_RADIUS_ON), 48.0, flDamage );
+		int iTarget = MeleeAttack( CSOW_RADIUS_ON, flDamage );
 		if( iTarget == HIT_ENEMY ) g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[Math.RandomLong(SND_HIT1, SND_HIT2)], VOL_NORM, ATTN_NORM );
 		else if( iTarget == HIT_WALL ) g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[Math.RandomLong(SND_WALL1, SND_WALL2)], VOL_NORM, ATTN_NORM );
 
@@ -305,7 +298,7 @@ class weapon_beamsword : CBaseCSOWeapon
 
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 ); 
 
-		int iTarget = CheckAttack( float(CSOW_RADIUS_OFF), 24.0, flDamage );
+		int iTarget = MeleeAttack( CSOW_RADIUS_OFF, flDamage );
 		if( iTarget == HIT_ENEMY ) g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_OFF_HIT], VOL_NORM, ATTN_NORM );
 		else if( iTarget == HIT_WALL ) g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[Math.RandomLong(SND_OFF_WALL1, SND_OFF_WALL2)], VOL_NORM, ATTN_NORM );
 
@@ -313,20 +306,15 @@ class weapon_beamsword : CBaseCSOWeapon
 		pev.nextthink = g_Engine.time + 1.25;
 	}
 
-	int CheckAttack( float flRadius, float flPointDisIn, float flDamage )
+	int MeleeAttack( float flRadius, float flDamage )
 	{
-		float flMaxDistance, flTBDistance, flPointDis;
-		array<Vector> vecPoints(4);
+		float flMaxDistance, flTBDistance;
 
-		flPointDis = flPointDisIn;
 		flMaxDistance = flRadius;
 		flTBDistance = flMaxDistance / 4.0;
 
 		Vector vecTargetOrigin, vecMyOrigin;
 		vecMyOrigin = m_pPlayer.pev.origin;
-
-		for( int i = 0; i < 4; i++ )
-			get_position( flTBDistance * (i + 1), 0.0, 0.0, vecPoints[i] );
 
 		int iHitSomething = HIT_NOTHING;
 		CBaseEntity@ pTarget = null;
@@ -353,13 +341,14 @@ class weapon_beamsword : CBaseCSOWeapon
 
 		if( iHitSomething != HIT_ENEMY )
 		{
+			Vector vecWallCheck;
 			vecMyOrigin.z += 26.0f;
-			get_position( flRadius - 5.0, 0.0, 0.0, vecPoints[0] );
+			get_position( flRadius - 5.0, 0.0, 0.0, vecWallCheck );
 
 			TraceResult tr;
-			g_Utility.TraceLine( vecMyOrigin, vecPoints[0], ignore_monsters, m_pPlayer.edict(), tr );
+			g_Utility.TraceLine( vecMyOrigin, vecWallCheck, ignore_monsters, m_pPlayer.edict(), tr );
 
-			if( (vecPoints[0] - tr.vecEndPos).Length() > 0 )
+			if( (vecWallCheck - tr.vecEndPos).Length() > 0 )
 			{
 				CBaseEntity@ pEntity = g_EntityFuncs.Instance(tr.pHit);
 

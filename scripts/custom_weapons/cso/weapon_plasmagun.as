@@ -1,5 +1,6 @@
 namespace cso_plasmagun
 {
+	
 const int CSOW_DEFAULT_GIVE					= 45;
 const int CSOW_MAX_CLIP 						= 45;
 const int CSOW_MAX_AMMO						= 200;

@@ -75,7 +75,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 			m1.WriteShort( iShell );
 			m1.WriteByte( iBounce );
 			m1.WriteByte( 7 );
-		m1.End();		
+		m1.End();
 	}
 
 	void DoDecalGunshot( Vector vecSrc, Vector vecAiming, float flConeX, float flConeY, int iBulletType, EHandle &in ePlayer, bool bSmokePuff = false )
@@ -130,14 +130,41 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		}
 	}
 
-	void DoMuzzleflash( string szSprite, float flForward, float flRight, float flUp, float flScale, float flRenderamt, float flFramerate )
+	void DoMuzzleflash( string szSprite, float flForward, float flRight, float flUp, float flScale, float flRenderamt, float flFramerate, float flRotation = 0.0 )
 	{
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
-		CSprite@ pSprite = g_EntityFuncs.CreateSprite( szSprite, m_pPlayer.GetGunPosition() + g_Engine.v_forward * flForward + g_Engine.v_right * flRight + g_Engine.v_up * flUp, true );
-		pSprite.SetScale( flScale );
-		pSprite.pev.rendermode = kRenderTransAdd;
-		pSprite.pev.renderamt = flRenderamt;
-		pSprite.AnimateAndDie( flFramerate );
+		CSprite@ pMuzzle = g_EntityFuncs.CreateSprite( szSprite, m_pPlayer.GetGunPosition() + g_Engine.v_forward * flForward + g_Engine.v_right * flRight + g_Engine.v_up * flUp, true );
+		pMuzzle.SetScale( flScale );
+		pMuzzle.SetTransparency( kRenderTransAdd, 255, 255, 255, int(flRenderamt), kRenderFxNone );
+
+		if( flRotation > 0.0 )
+		{
+			pMuzzle.KeyValue( "vp_type", "VP_TYPE::VP_ORIENTATED" );
+			pMuzzle.pev.angles = Vector( 0.0, 0.0, flRotation );
+		}
+
+		//pMuzzle.pev.sequence = VP_TYPE::VP_ORIENTATED; //next update ??
+		//pMuzzle.pev.effects = EF_SPRITE_CUSTOM_VP; //next update ??
+		pMuzzle.AnimateAndDie( flFramerate );
+
+/*
+void Cmd_Type (void)
+{
+	GetToken (false);
+	if (!strcmp (token, "vp_parallel_upright"))
+		sprite.type = SPR_VP_PARALLEL_UPRIGHT;
+	else if (!strcmp (token, "facing_upright"))
+		sprite.type = SPR_FACING_UPRIGHT;
+	else if (!strcmp (token, "vp_parallel"))
+		sprite.type = SPR_VP_PARALLEL;
+	else if (!strcmp (token, "oriented"))
+		sprite.type = SPR_ORIENTED;
+	else if (!strcmp (token, "vp_parallel_oriented"))
+		sprite.type = SPR_VP_PARALLEL_ORIENTED;
+	else
+		Error ("Bad sprite type\n");
+}
+*/
 	}
 
 	void HandleAmmoReduction()
@@ -249,6 +276,10 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		g_Utility.TraceLine( start, end, ignore_monsters, ignore_ent, ptr );
 
 		return (end - ptr.vecEndPos).Length() > 0;
+	}
+
+	void xs_vec_sub()
+	{
 	}
 
 	//legacy support only

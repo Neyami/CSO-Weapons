@@ -51,3 +51,15 @@ enum csowmeleehit_e
 	HIT_ENEMY,
 	HIT_WALL
 };
+
+enum sniperZoom
+{
+	MODE_NOZOOM,
+	MODE_ZOOM1,
+	MODE_ZOOM2
+}
+
+enum cso_dmg
+{
+	DMG_ANTIZOMBIE = 268435456
+}

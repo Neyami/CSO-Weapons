@@ -27,6 +27,7 @@ const Vector2D CSOW_RECOIL_DUCKING_Y	= Vector2D(0, 0);
 const Vector CSOW_CONE_STANDING			= VECTOR_CONE_2DEGREES;
 const Vector CSOW_CONE_CROUCHING		= VECTOR_CONE_1DEGREES;
 const Vector CSOW_SHELL_ORIGIN				= Vector(17.0, 14.0, -8.0); //forward, right, up
+const Vector CSOW_MUZZLE_ORIGIN			= Vector(16.0, 4.0, -4.0); //forward, right, up
 
 const string CSOW_ANIMEXT						= "m16"; //rifle
 
@@ -40,6 +41,7 @@ const string SPRITE_BEAM							= "sprites/laserbeam.spr";
 const string SPRITE_EXPLOSION1				= "sprites/fexplo.spr";
 const string SPRITE_EXPLOSION2				= "sprites/eexplo.spr";
 const string SPRITE_SMOKE						= "sprites/steam1.spr";
+const string SPRITE_MUZZLE						= "sprites/custom_weapons/cso/muzzleflash12.spr";
 
 enum csow_e
 {
@@ -101,6 +103,7 @@ class weapon_augex : CBaseCSOWeapon
 		g_Game.PrecacheModel( SPRITE_EXPLOSION1 );
 		g_Game.PrecacheModel( SPRITE_EXPLOSION2 );
 		g_Game.PrecacheModel( SPRITE_SMOKE );
+		g_Game.PrecacheModel( SPRITE_MUZZLE );
 
 		m_iShell = g_Game.PrecacheModel( MODEL_SHELL );
 
@@ -205,7 +208,7 @@ class weapon_augex : CBaseCSOWeapon
 			//m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, CSOW_DAMAGE );
 			int iPenetration = USE_PENETRATION ? 2 : 0;
 			cso::FireBullets3( vecSrc, g_Engine.v_forward, 0, 8192, iPenetration, BULLET_PLAYER_556MM, CSOW_DAMAGE, 1.0, EHandle(m_pPlayer), false, m_pPlayer.random_seed );
-			DoDecalGunshot( vecSrc, g_Engine.v_forward, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, true );
+			//DoDecalGunshot( vecSrc, g_Engine.v_forward, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, true );
 
 			EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x + g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell );
 
@@ -249,7 +252,7 @@ class weapon_augex : CBaseCSOWeapon
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
 		Vector vecSrc = m_pPlayer.GetGunPosition();
 		int iPenetration = USE_PENETRATION ? 2 : 0;
-		Vector vecDir = cso::FireBullets3( vecSrc, g_Engine.v_forward, flSpread, 8192, iPenetration, BULLET_PLAYER_556MM, CSOW_DAMAGE, 0.96, EHandle(m_pPlayer), false, m_pPlayer.random_seed );
+		/*Vector vecDir = */cso::FireBullets3( vecSrc, g_Engine.v_forward, flSpread, 8192, iPenetration, BULLET_PLAYER_556MM, CSOW_DAMAGE, 0.96, EHandle(m_pPlayer), false, m_pPlayer.random_seed );
 
 		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
@@ -258,7 +261,7 @@ class weapon_augex : CBaseCSOWeapon
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM, 0, 94 + Math.RandomLong(0, 15) );
 
 		//m_pPlayer.FireBullets( 1, vecSrc, g_Engine.v_forward, vecShootCone, 8192.0, BULLET_PLAYER_SAW, 4, 0 );
-		DoDecalGunshot( vecSrc, g_Engine.v_forward, vecDir.x, vecDir.y, BULLET_PLAYER_SAW, true );
+		//DoDecalGunshot( vecSrc, g_Engine.v_forward, vecDir.x, vecDir.y, BULLET_PLAYER_SAW, true );
 
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + flCycleTime;
 
@@ -303,6 +306,8 @@ class weapon_augex : CBaseCSOWeapon
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + (CSOW_TIME_DELAY2-0.4);
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE3;
 		}
+
+		DoMuzzleflash( SPRITE_MUZZLE, CSOW_MUZZLE_ORIGIN.x, CSOW_MUZZLE_ORIGIN.y, CSOW_MUZZLE_ORIGIN.z, 0.05, 128, 20.0 );
 	}
 
 	void LaunchGrenade()
