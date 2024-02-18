@@ -219,15 +219,6 @@ class weapon_bloodhunter : CBaseCSOWeapon
 		BaseClass.Holster( skipLocal );
 	}
 
-	~weapon_bloodhunter()
-	{
-		self.m_fInReload = false;
-		SetThink(null);
-		m_flRedrawTime = 0.0;
-		m_flThrowGrenade = 0.0;
-		g_Game.AlertMessage( at_console, "weapon_bloodhunter has been destroyed via ~ \n");
-	}
-
 	void PrimaryAttack()
 	{
 		float flCycleTime = CSOW_TIME_DELAY1;
