@@ -6,9 +6,6 @@ Sven Co-op hands courtesy of DNIO071
 AS Plugins by me, sometimes with code converted from various AMXX plugins.
 
 
-There might be changes made to the game that cause the scripts to fail and there's nothing I can do about it at this time. 
-But the fixes should be simple.
-
 Some of the weapons aren't 100% finished but they're mostly tweaks such as muzzleflashes, animations, bulletspread, damage, and such.
 
 It'll look really messy but should be relatively easy to use anyway.
