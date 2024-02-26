@@ -202,8 +202,8 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
     * ENTITIES
     * `weapon_plasmagun` - Weapon
-    * `plasmaball` - Projectile
     * `ammo_plasmashell` - Ammo
+    * `plasmaball` - Projectile
  
     * AMMO NAME
     * `plasma`
@@ -216,8 +216,8 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
     * ENTITIES
     * `weapon_csobow` - Weapon
-    * `csoarrow` - Projectile
     * `ammo_csoarrows` - Ammo
+    * `csoarrow` - Projectile
  
     * AMMO NAME
     * `csoarrows`
@@ -254,6 +254,55 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 <BR>
 
 
+# SNIPER RIFLES
+* Accuracy International AWP
+
+    * ENTITIES
+    * `weapon_awp` - Weapon
+ 
+    * AMMO NAME
+    * `m40a1`
+
+<BR>
+
+
+* Barrett M95
+
+    * ENTITIES
+    * `weapon_m95` - Weapon
+    * `ammo_50bmg` - Ammo
+ 
+    * AMMO NAME
+    * `50bmg`
+
+<BR>
+
+
+* Savery
+
+    * ENTITIES
+    * `weapon_savery` - Weapon
+ 
+    * AMMO NAME
+    * `m40a1`
+
+<BR>
+
+
+* Barrett M95 White Tiger
+
+    * ENTITIES
+    * `weapon_m95tiger` - Weapon
+    * `ammo_50bmg` - Ammo
+    * `net_shot` - Net Projectile
+    * `net_hit` - Net Holding Mobs
+    * `m95_tiger` - Skill Tiger
+    * `ef_claw` - Skill Hit Effect
+ 
+    * AMMO NAME
+    * `50bmg`
+
+<BR>
 
 
 # MACHINE GUNS
@@ -280,16 +329,3 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
  
     * AMMO NAME
     * `762mg`
-
-
-<BR>
-
-
-# SNIPER RIFLES
-* Savery
-
-    * ENTITIES
-    * `weapon_savery` - Weapon
- 
-    * AMMO NAME
-    * `m40a1`
