@@ -374,7 +374,7 @@ class weapon_failnaught : CBaseCSOWeapon
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_CHARGE_SHOOT], VOL_NORM, ATTN_NORM );
 
-		cso::FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, 0, 4096, 4, BULLET_PLAYER_FAILNAUGHT, CSOW_DAMAGE2, 1.0, EHandle(m_pPlayer), false, m_pPlayer.random_seed );
+		cso::FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, 0, 4096, 4, BULLET_PLAYER_FAILNAUGHT, CSOW_DAMAGE2, 1.0, EHandle(m_pPlayer), m_pPlayer.random_seed );
 
 		Vector2D vec2dRecoilX = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_X : CSOW_RECOIL_STANDING_X;
 		Vector2D vec2dRecoilY = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_Y : CSOW_RECOIL_STANDING_Y;
@@ -461,7 +461,7 @@ class weapon_failnaught : CBaseCSOWeapon
 
 		while( (@pTarget = g_EntityFuncs.FindEntityInSphere(pTarget, m_pPlayer.pev.origin, flRange, "*", "classname")) !is null )
 		{
-			if( !string(pTarget.GetClassname()).StartsWith("monster_") or !pTarget.IsAlive() )
+			if( !pTarget.pev.FlagBitSet(FL_MONSTER) or !pTarget.IsAlive() )
 				continue;
 
 			bSee = false;

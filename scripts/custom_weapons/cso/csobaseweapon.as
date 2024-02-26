@@ -23,10 +23,16 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 	int m_iShell;
 	bool m_bSwitchHands = false; //limit to models with all 3 hands for now
 
-	int m_iShotsFired; //For CS-Like
-	bool m_bDirection; //For CS-Like
-	bool m_bDelayFire; //For CS-Like
-	float m_flDecreaseShotsFired; //For CS-Like
+	//For CS-Like
+	int m_iShotsFired;
+	bool m_bDirection;
+	bool m_bDelayFire;
+	float m_flDecreaseShotsFired;
+	float m_flSpreadJumping;
+	float m_flSpreadRunning;
+	float m_flSpreadWalking;
+	float m_flSpreadStanding;
+	float m_flSpreadDucking;
 
 	void TertiaryAttack()
 	{
@@ -146,25 +152,6 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		//pMuzzle.pev.sequence = VP_TYPE::VP_ORIENTATED; //next update ??
 		//pMuzzle.pev.effects = EF_SPRITE_CUSTOM_VP; //next update ??
 		pMuzzle.AnimateAndDie( flFramerate );
-
-/*
-void Cmd_Type (void)
-{
-	GetToken (false);
-	if (!strcmp (token, "vp_parallel_upright"))
-		sprite.type = SPR_VP_PARALLEL_UPRIGHT;
-	else if (!strcmp (token, "facing_upright"))
-		sprite.type = SPR_FACING_UPRIGHT;
-	else if (!strcmp (token, "vp_parallel"))
-		sprite.type = SPR_VP_PARALLEL;
-	else if (!strcmp (token, "oriented"))
-		sprite.type = SPR_ORIENTED;
-	else if (!strcmp (token, "vp_parallel_oriented"))
-		sprite.type = SPR_VP_PARALLEL_ORIENTED;
-	else
-		Error ("Bad sprite type\n");
-}
-*/
 	}
 
 	void HandleAmmoReduction()
@@ -222,6 +209,20 @@ void Cmd_Type (void)
 
 		if( Math.RandomLong(0, direction_change) == 0 )
 			m_bDirection = !m_bDirection;
+	}
+
+	float GetWeaponSpread()
+	{
+		if( !m_pPlayer.pev.FlagBitSet(FL_ONGROUND) )
+			return m_flSpreadJumping;
+		else if( m_pPlayer.pev.velocity.Length2D() > 140 )
+			return m_flSpreadRunning;
+		else if( m_pPlayer.pev.velocity.Length2D() > 10 )
+			return m_flSpreadWalking;
+		else if( m_pPlayer.pev.FlagBitSet(FL_DUCKING) )
+			return m_flSpreadDucking;
+		else
+			return m_flSpreadStanding;
 	}
 
 	void Think()

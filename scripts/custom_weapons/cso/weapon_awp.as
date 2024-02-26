@@ -201,7 +201,7 @@ class weapon_awp : CBaseCSOWeapon
 			flDamage = self.m_flCustomDmg;
 
 		Vector vecSrc = m_pPlayer.GetGunPosition();
-		cso::FireBullets3( vecSrc, g_Engine.v_forward, flSpread, 8192, 3, BULLET_PLAYER_338MAG, flDamage, 0.99, EHandle(m_pPlayer), true, m_pPlayer.random_seed );
+		cso::FireBullets3( vecSrc, g_Engine.v_forward, flSpread, 8192, 3, BULLET_PLAYER_338MAG, flDamage, 0.99, EHandle(m_pPlayer), m_pPlayer.random_seed, CSOF_ALWAYSDECAL );
 
 		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT3), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 

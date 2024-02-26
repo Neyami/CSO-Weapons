@@ -2,21 +2,21 @@ namespace cso_desperado
 {
 
 const int CSOW_DEFAULT_GIVE				= 7;
-const int CSOW_MAX_CLIP 					= 7;
+const int CSOW_MAX_CLIP 						= 7;
 const int CSOW_MAX_AMMO					= 999;
-const float CSOW_DAMAGE					= 35;
-const float CSOW_TIME_DELAY				= 0.12f;
+const float CSOW_DAMAGE						= 35;
+const float CSOW_TIME_DELAY				= 0.12;
 const float CSOW_TIME_DRAW				= 0.2f;
-const float CSOW_TIME_IDLE					= 3.0f;
-const float CSOW_TIME_IDLE_RUN			= 0.6f;
-const float CSOW_TIME_FIRE_TO_IDLE	= 0.6f;
-const float CSOW_TIME_RELOAD			= 0.7f;
-const float CSOW_TIME_SWAP				= 0.2f;
-const Vector2D CSOW_RECOIL_STANDING_X	= Vector2D(-1, -3);
-const Vector2D CSOW_RECOIL_STANDING_Y	= Vector2D(0, 0);
-const Vector2D CSOW_RECOIL_DUCKING_X	= Vector2D(0, -1);
-const Vector2D CSOW_RECOIL_DUCKING_Y	= Vector2D(0, 0);
-const Vector CSOW_CONE						= VECTOR_CONE_2DEGREES;
+const float CSOW_TIME_IDLE					= 3.0;
+const float CSOW_TIME_IDLE_RUN			= 0.6;
+const float CSOW_TIME_FIRE_TO_IDLE	= 0.6;
+const float CSOW_TIME_RELOAD			= 0.7;
+const float CSOW_TIME_SWAP				= 0.2;
+const float CSOW_SPREAD_JUMPING		= 0.20;
+const float CSOW_SPREAD_RUNNING		= 0.15;
+const float CSOW_SPREAD_WALKING		= 0.1;
+const float CSOW_SPREAD_STANDING	= 0.05;
+const float CSOW_SPREAD_DUCKING		= 0.02;
 
 const string CSOW_ANIMEXT					= "onehanded";
 
@@ -73,13 +73,22 @@ class weapon_desperado : CBaseCSOWeapon
 
 	void Spawn()
 	{
-		self.Precache();
+		Precache();
 		g_EntityFuncs.SetModel( self, MODEL_WORLD );
 		self.m_iDefaultAmmo = CSOW_DEFAULT_GIVE;
-		self.FallInit();
+		self.m_flCustomDmg = pev.dmg;
+		
 		m_iMode = MODE_RIGHT;
 		g_iCSOWHands = HANDS_SVENCOOP;
 		m_bSwitchHands = true;
+
+		m_flSpreadJumping = CSOW_SPREAD_JUMPING;
+		m_flSpreadRunning = CSOW_SPREAD_RUNNING;
+		m_flSpreadWalking = CSOW_SPREAD_WALKING;
+		m_flSpreadStanding = CSOW_SPREAD_STANDING;
+		m_flSpreadDucking = CSOW_SPREAD_DUCKING;
+
+		self.FallInit();
 	}
 
 	void Precache()
@@ -170,7 +179,7 @@ class weapon_desperado : CBaseCSOWeapon
 	void PrimaryAttack()
 	{
 		if( m_iMode == MODE_RIGHT )
-			Fire();
+			Fire( GetWeaponSpread() );
 		else if( m_iMode == MODE_LEFT )
 		{
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_SWAP;
@@ -192,10 +201,10 @@ class weapon_desperado : CBaseCSOWeapon
 			FastReload();
 		}
 		else if( m_iMode == MODE_LEFT )
-			Fire();
+			Fire( GetWeaponSpread() );
 	}
 
-	void Fire()
+	void Fire( float flSpread )
 	{
 		if( m_pPlayer.pev.waterlevel == WATERLEVEL_HEAD or self.m_iClip <= 0 )
 		{
@@ -208,64 +217,27 @@ class weapon_desperado : CBaseCSOWeapon
 		m_pPlayer.m_iWeaponVolume = LOUD_GUN_VOLUME;
 		m_pPlayer.m_iWeaponFlash = BRIGHT_GUN_FLASH;
 
-		--self.m_iClip;
-
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], 1, ATTN_NORM );
 
 		self.SendWeaponAnim( ANIM_SHOOT_R + m_iMode, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
+		float flDamage = CSOW_DAMAGE;
+		if( self.m_flCustomDmg > 0 )
+			flDamage = self.m_flCustomDmg;
+
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
 		Vector vecSrc = m_pPlayer.GetGunPosition();
 		Vector vecAiming = g_Engine.v_forward;
 
-		m_pPlayer.FireBullets( 1, vecSrc, vecAiming, CSOW_CONE, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, 0 );
+		cso::FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, flSpread, 8192, 2, BULLET_PLAYER_44MAG, flDamage, 5, EHandle(m_pPlayer), m_pPlayer.random_seed, (CSOF_ALWAYSDECAL | CSOF_HITMARKER) );
 
-		if( self.m_iClip == 0 and m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
-			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
-
-		Vector2D vec2dRecoilX = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_X : CSOW_RECOIL_STANDING_X;
-		Vector2D vec2dRecoilY = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_Y : CSOW_RECOIL_STANDING_Y;
-
-		m_pPlayer.pev.punchangle.x = Math.RandomFloat( vec2dRecoilX.x, vec2dRecoilX.y );
-		m_pPlayer.pev.punchangle.y = Math.RandomFloat( vec2dRecoilY.x, vec2dRecoilY.y );
+		HandleAmmoReduction();
 
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY;
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE;
 
 		m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH;
-
-		TraceResult tr;
-
-		float x, y;
-
-		g_Utility.GetCircularGaussianSpread( x, y );
-
-		Vector vecDir = vecAiming 
-						+ x * (CSOW_CONE.x) * g_Engine.v_right 
-						+ y * (CSOW_CONE.y) * g_Engine.v_up;
-
-		Vector vecEnd = vecSrc + vecDir * 8192;
-
-		g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr );
-
-		if( tr.flFraction < 1.0f )
-		{
-			if( tr.pHit !is null )
-			{
-				CBaseEntity@ pHit = g_EntityFuncs.Instance( tr.pHit );
-
-				if( pHit is null or pHit.IsBSPModel() == true )
-					g_WeaponFuncs.DecalGunshot( tr, BULLET_PLAYER_MP5 );
-
-				g_WeaponFuncs.ClearMultiDamage();
-
-				if( pHit.pev.takedamage != DAMAGE_NO )
-					pHit.TraceAttack( m_pPlayer.pev, CSOW_DAMAGE, vecDir, tr, DMG_BULLET | DMG_NEVERGIB );
-
-				g_WeaponFuncs.ApplyMultiDamage( m_pPlayer.pev, m_pPlayer.pev );	
-			}
-		}
 	}
 
 	void Reload()
@@ -333,8 +305,6 @@ class weapon_desperado : CBaseCSOWeapon
 
 	void WeaponIdle()
 	{
-		//self.ResetEmptySound(); //ORIGINAL! Lets the EmptySound get played while holding the trigger
-
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
@@ -359,7 +329,7 @@ class weapon_desperado : CBaseCSOWeapon
 			{
 				self.SendWeaponAnim( ANIM_RUN_START_R + m_iMode, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				m_iInRun = 1;
-				self.m_flTimeWeaponIdle = g_Engine.time + 0.3f; //CSOW_TIME_IDLE_RUN
+				self.m_flTimeWeaponIdle = g_Engine.time + 0.3; //CSOW_TIME_IDLE_RUN
 			}
 			else if( m_iInRun == 1 )
 			{
@@ -384,6 +354,9 @@ void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_desperado::weapon_desperado", "weapon_desperado" );
 	g_ItemRegistry.RegisterWeapon( "weapon_desperado", "custom_weapons/cso", "44FD" ); //.44 Fast Draw
+
+	if( !g_CustomEntityFuncs.IsCustomEntity( "cso_buffhit" ) ) 
+		cso::RegisterBuffHit();
 }
 
 } //namespace cso_desperado END

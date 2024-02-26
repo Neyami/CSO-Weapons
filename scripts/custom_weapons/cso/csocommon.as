@@ -1,7 +1,11 @@
-#include "csoenums"
+#include "includes/csoenums"
+#include "includes/csoentities"
+#include "includes/csoammo"
 
 namespace cso
 {
+
+const bool bUseDroppedItemEffect = true;
 
 //Weapon slots, positions, and weights (Auto-switch priority).
 //Melee
@@ -20,6 +24,9 @@ const int THANATOS9_POSITION		= 15;
 const int RIPPER_SLOT						= 1;
 const int RIPPER_POSITION				= 16;
 
+const int DUALSWORD_SLOT				= 1;
+const int DUALSWORD_POSITION		= 17;
+
 const int DCLAW_WEIGHT					= 10;
 const int BEAMSWORD_WEIGHT			= 10;
 const int BALROG9_WEIGHT				= 10;
@@ -27,6 +34,7 @@ const int JANUS9_WEIGHT					= 10;
 const int DWAKI_WEIGHT					= 10;
 const int THANATOS9_WEIGHT			= 10;
 const int RIPPER_WEIGHT					= 10;
+const int DUALSWORD_WEIGHT			= 10;
 
 //Pistols
 const int M950_SLOT						= 2;
@@ -86,10 +94,13 @@ const int M95_SLOT							= 6;
 const int M95_POSITION					= 11;
 const int SAVERY_SLOT					= 6;
 const int SAVERY_POSITION				= 12;
+const int M95TIGER_SLOT					= 6;
+const int M95TIGER_POSITION			= 13;
 
 const int AWP_WEIGHT						= 30;
 const int M95_WEIGHT						= 35;
 const int SAVERY_WEIGHT					= 15;
+const int M95TIGER_WEIGHT				= 40;
 
 //Machine Guns
 const int AEOLIS_SLOT						= 7;
@@ -103,18 +114,10 @@ const int M134HERO_WEIGHT				= 40;
 //Special/Miscellaneous (Equipment)
 
 
-//Ammo
-const string MODEL_BMG					= "models/custom_weapons/cso/w_50bmg.mdl";
-const string MODEL_762MG				= "models/custom_weapons/cs16/w_762natobox_big.mdl";
-const string MODEL_GASOLINE			= "models/hunger/w_gas.mdl";
-
-const int GASOLINE_MAXCARRY			= 600;
-const int GASOLINE_GIVE					= 50;
-
 
 //FireBullets3
-const string SPRITE_TRAIL_CSOBOW					= "sprites/laserbeam.spr";
-const string SPRITE_TRAIL_FAILNAUGHT				= "sprites/custom_weapons/cso/ef_huntbow_trail.spr";
+const string SPRITE_TRAIL_CSOBOW						= "sprites/laserbeam.spr";
+const string SPRITE_TRAIL_FAILNAUGHT					= "sprites/custom_weapons/cso/ef_huntbow_trail.spr";
 const string SPRITE_TRAIL_FAILNAUGHT_EXPLODE	= "sprites/custom_weapons/cso/ef_huntbow_explo.spr";
 
 //Bullet-Proof Textures
@@ -126,9 +129,6 @@ const array<string> pBPTextures =
 
 
 const float CSO_AZ_MULTIPLIER	= 1.2f; //Anti-Zombie
-
-const string CSO_ITEMDISPLAY_MODEL	= "models/custom_weapons/cso/ef_gundrop.mdl";
-const bool bUseDroppedItemEffect = true;
 
 const array<string> g_arrsZombies =
 {
@@ -301,41 +301,6 @@ Vector AngleRecoil( CBasePlayer@ m_pPlayer, float &in x, float &in y, float &in 
 	return m_pPlayer.pev.angles;
 }
 
-class cso_aoetrigger : ScriptBaseEntity
-{
-	void Spawn()
-	{
-		pev.solid = SOLID_TRIGGER;
-		pev.movetype = MOVETYPE_NONE;
-		g_EntityFuncs.SetOrigin( self, self.GetOrigin() );
-		SetThink( null );
-		//pev.nextthink = g_Engine.time + 0.1f;
-	}
-/*
-	void Think()
-	{
-		DrawDebugBox( pev.absmin, pev.absmax, 25, Math.RandomLong( 0, 255 ), Math.RandomLong( 0, 255 ), Math.RandomLong( 0, 255 ) );
-		SetThink( null );
-	}
-
-	void DrawDebugBox( Vector &in mins, Vector &in maxs, uint time, int r, int g, int b )
-	{
-		NetworkMessage box( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY, null );
-			box.WriteByte( TE_BOX );
-			box.WriteCoord( mins.x );
-			box.WriteCoord( mins.y );
-			box.WriteCoord( mins.z );
-			box.WriteCoord( maxs.x );
-			box.WriteCoord( maxs.y );
-			box.WriteCoord( maxs.z );
-			box.WriteShort( time );
-			box.WriteByte( r );
-			box.WriteByte( g );
-			box.WriteByte( b );
-		box.End();
-	}*/
-}
-
 void fake_smoke( TraceResult tr, int spriteIndex )
 {
 	Vector origin;
@@ -398,7 +363,9 @@ CBaseEntity@ ShootCustomProjectile( string classname, string mdl, Vector origin,
 
 //From cstrike Vector CBaseEntity::FireBullets3(Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, int iDamage, float flRangeModifier, entvars_t *pevAttacker, bool bPistol, int shared_rand)
 //FireBullets3( vecSrc, vecAiming, 0, 4096, 2, BULLET_PLAYER_50AE, 54, 0.81f, m_pPlayer.edict(), true, m_pPlayer.random_seed );
-int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, float flDamage, float flRangeModifier, EHandle &in ePlayer, bool bPistol, int shared_rand, Vector vecMuzzleOrigin = g_vecZero )
+//TODO make bullet decals on the otherside of a penetrated wall
+//TODO make bullet decals and smoke when hitting a wall that is further than flCurrentDistance ??
+int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, float flDamage, float flRangeModifier, EHandle &in ePlayer, int shared_rand, int iFlags = 0, Vector vecMuzzleOrigin = g_vecZero )
 {
 	CBasePlayer@ pPlayer = null;
 
@@ -514,6 +481,16 @@ int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float fl
 			break;
 		}
 
+		case BULLET_PLAYER_44MAG:
+		{
+			flPenetrationPower = 25;
+			flPenetrationDistance = 800;
+			//iSparksAmount = 20;
+			//flCurrentDamage += (-4 + Math.RandomLong(0, 8));
+			iBulletDecal = BULLET_PLAYER_EAGLE;
+			break;
+		}
+
 		case BULLET_PLAYER_CSOBOW:
 		{
 			flPenetrationPower = 30;
@@ -559,9 +536,6 @@ int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float fl
 
 	x = g_PlayerFuncs.SharedRandomFloat(shared_rand, -0.5, 0.5) + g_PlayerFuncs.SharedRandomFloat(shared_rand + 1, -0.5, 0.5);
 	y = g_PlayerFuncs.SharedRandomFloat(shared_rand + 2, -0.5, 0.5) + g_PlayerFuncs.SharedRandomFloat(shared_rand + 3, -0.5, 0.5);
-
-	//x = Math.RandomFloat( -0.5, 0.5 ) + Math.RandomFloat( -0.5, 0.5 );
-	//y = Math.RandomFloat( -0.5, 0.5 ) + Math.RandomFloat( -0.5, 0.5 );
 
 	Vector vecDir = vecDirShooting + x * flSpread * vecRight + y * flSpread * vecUp;
 	Vector vecEnd = vecSrc + vecDir * flDistance;
@@ -673,7 +647,7 @@ int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float fl
 
 			if( tr.pHit.vars.solid == SOLID_BSP and iPenetration != 0 )
 			{
-				if( bPistol )
+				if( (iFlags & CSOF_ALWAYSDECAL) != 0 )
 					g_WeaponFuncs.DecalGunshot( tr, iBulletDecal/*, false, pev, bHitMetal*/ );
 				else if( Math.RandomLong(0, 3) == 1 )
 					g_WeaponFuncs.DecalGunshot( tr, iBulletDecal/*, true, pev, bHitMetal*/ );
@@ -705,12 +679,15 @@ int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float fl
 
 				flCurrentDamage *= flDamageModifier;
 			}
-			else
+			else if( (tr.pHit.vars.flags & FL_MONSTER) != 0 )
 			{
-				if( bPistol )
-					g_WeaponFuncs.DecalGunshot( tr, iBulletDecal/*, false, pev, bHitMetal*/ );
-				else if( Math.RandomLong(0, 3) == 1 )
-					g_WeaponFuncs.DecalGunshot( tr, iBulletDecal/*, true, pev, bHitMetal*/ );
+				if( (iFlags & CSOF_HITMARKER) != 0 )
+				{
+					Vector vecOrigin = pPlayer.pev.origin;
+					get_position( pPlayer.edict(), 50.0, -0.05, 1.0, vecOrigin );
+
+					CBaseEntity@ pHitConfirm = g_EntityFuncs.Create( "cso_buffhit", vecOrigin, g_vecZero, false, pPlayer.edict() );
+				}
 
 				vecSrc = tr.vecEndPos + (vecDir * 42);
 				flDistance = (flDistance - flCurrentDistance) * 0.75f;
@@ -857,154 +834,19 @@ double UnitsToMeters( float flUnits ) { return flUnits*0.0254; }
 double UnitsToInches( float flUnits ) { return flUnits*1.00000054; }
 double UnitsToFeet( float flUnits ) { return flUnits*0.08333232; }
 
-class ef_gundrop : ScriptBaseAnimating
+void get_position( edict_t@ pOwner, float flForward, float flRight, float flUp, Vector &out vecOut )
 {
-	EHandle m_hOwner;
+	Vector vecOrigin, vecAngle, vecForward, vecRight, vecUp;
 
-	void Spawn()
-	{
-		Precache();
+	vecOrigin = pOwner.vars.origin;
+	vecUp = pOwner.vars.view_ofs; //GetGunPosition() ??
+	vecOrigin = vecOrigin + vecUp;
 
-		g_EntityFuncs.SetModel( self, CSO_ITEMDISPLAY_MODEL );
-		g_EntityFuncs.SetOrigin( self, self.pev.origin );
-		g_EntityFuncs.SetSize( self.pev, g_vecZero, g_vecZero );
+	vecAngle = pOwner.vars.v_angle; //if normal entity: use pev.angles
 
-		pev.solid		= SOLID_NOT;
-		pev.framerate	= 1.0;
+	g_EngineFuncs.AngleVectors( vecAngle, vecForward, vecRight, vecUp );
 
-		self.pev.frame = 0;
-		self.ResetSequenceInfo();
-
-		SetThink( ThinkFunction(this.IdleThink) );
-		pev.nextthink = g_Engine.time + 0.1;
-	}
-
-	void Precache()
-	{
-		g_Game.PrecacheModel( CSO_ITEMDISPLAY_MODEL );
-	}
-
-	void IdleThink()
-	{
-		if( m_hOwner.IsValid() )
-		{
-			self.StudioFrameAdvance();
-
-			if( m_hOwner.GetEntity().pev.owner !is null )
-				g_EntityFuncs.Remove( self );
-		}
-		else g_EntityFuncs.Remove( self );
-
-		pev.nextthink = g_Engine.time + 0.1;
-	}
-}
-
-void RegisterGunDrop()
-{
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso::ef_gundrop", "ef_gundrop" );
-	g_Game.PrecacheOther( "ef_gundrop" );
-}
-
-class ammo_762mg : ScriptBasePlayerAmmoEntity
-{
-	void Spawn()
-	{ 
-		Precache();
-
-		g_EntityFuncs.SetModel( self, MODEL_762MG );
-
-		BaseClass.Spawn();
-	}
-
-	void Precache()
-	{
-		g_Game.PrecacheModel( MODEL_762MG );
-	}
-
-	bool AddAmmo( CBaseEntity@ pOther )
-	{ 
-		if( pOther.GiveAmmo( 100, "762mg", 600 ) != -1)
-		{
-			g_SoundSystem.EmitSound( self.edict(), CHAN_ITEM, "items/9mmclip1.wav", VOL_NORM, ATTN_NORM );
-			return true;
-		}
-
-		return false;
-	}
-}
-
-void Register762MG()
-{
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso::ammo_762mg", "ammo_762mg" );
-	g_Game.PrecacheOther( "ammo_762mg" );
-}
-
-class ammo_50bmg : ScriptBasePlayerAmmoEntity
-{
-	void Spawn()
-	{
-		Precache();
-
-		g_EntityFuncs.SetModel( self, MODEL_BMG );
-
-		BaseClass.Spawn();
-	}
-
-	void Precache()
-	{
-		g_Game.PrecacheModel( MODEL_BMG );
-	}
-
-	bool AddAmmo( CBaseEntity@ pOther )
-	{ 
-		if( pOther.GiveAmmo( 10, "50bmg", 50 ) != -1)
-		{
-			g_SoundSystem.EmitSound( self.edict(), CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM );
-			return true;
-		}
-
-		return false;
-	}
-}
-
-void Register50BMG()
-{
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso::ammo_50bmg", "ammo_50bmg" );
-	g_Game.PrecacheOther( "ammo_50bmg" );
-}
-
-class ammo_gasoline : ScriptBasePlayerAmmoEntity
-{
-	void Spawn()
-	{
-		Precache();
-
-		g_EntityFuncs.SetModel( self, MODEL_GASOLINE );
-
-		BaseClass.Spawn();
-	}
-
-	void Precache()
-	{
-		g_Game.PrecacheModel( MODEL_GASOLINE );
-	}
-
-	bool AddAmmo( CBaseEntity@ pOther )
-	{ 
-		if( pOther.GiveAmmo( GASOLINE_GIVE, "gasoline", GASOLINE_MAXCARRY ) != -1)
-		{
-			g_SoundSystem.EmitSound( self.edict(), CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM );
-			return true;
-		}
-
-		return false;
-	}
-}
-
-void RegisterGasoline()
-{
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso::ammo_gasoline", "ammo_gasoline" );
-	g_Game.PrecacheOther( "ammo_gasoline" );
+	vecOut = vecOrigin + vecForward * flForward + vecRight * flRight + vecUp * flUp;
 }
 
 } //namespace cso END

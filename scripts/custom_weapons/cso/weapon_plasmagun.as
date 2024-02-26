@@ -160,7 +160,6 @@ class weapon_plasmagun : CBaseCSOWeapon
 	{
 		g_SoundSystem.StopSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_IDLE] );
 		self.m_fInReload = false;
-		//SetThink(null);
 
 		if( self.m_fInZoom )
 			SecondaryAttack();
@@ -168,14 +167,11 @@ class weapon_plasmagun : CBaseCSOWeapon
 		BaseClass.Holster( skipLocal );
 	}
 
-	~weapon_plasmagun()
+	void UpdateOnRemove()
 	{
 		g_SoundSystem.StopSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_IDLE] );
-		self.m_fInReload = false;
-		//SetThink(null);
 
-		if( self.m_fInZoom )
-			SecondaryAttack();
+		BaseClass.UpdateOnRemove();
 	}
 
 	void PrimaryAttack()

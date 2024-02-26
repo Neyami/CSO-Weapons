@@ -189,7 +189,7 @@ class weapon_aug : CBaseCSOWeapon
 
 			//m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, CSOW_DAMAGE );
 			int iPenetration = USE_PENETRATION ? 2 : 0;
-			cso::FireBullets3( vecSrc, g_Engine.v_forward, 0, 8192, iPenetration, BULLET_PLAYER_556MM, CSOW_DAMAGE, 1.0, EHandle(m_pPlayer), false, m_pPlayer.random_seed );
+			cso::FireBullets3( vecSrc, g_Engine.v_forward, 0, 8192, iPenetration, BULLET_PLAYER_556MM, CSOW_DAMAGE, 1.0, EHandle(m_pPlayer), m_pPlayer.random_seed );
 			//DoDecalGunshot( vecSrc, g_Engine.v_forward, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, true );
 
 			EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x + g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell );
@@ -234,7 +234,7 @@ class weapon_aug : CBaseCSOWeapon
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
 		Vector vecSrc = m_pPlayer.GetGunPosition();
 		int iPenetration = USE_PENETRATION ? 2 : 0;
-		cso::FireBullets3( vecSrc, g_Engine.v_forward, flSpread, 8192, iPenetration, BULLET_PLAYER_556MM, CSOW_DAMAGE, 0.96, EHandle(m_pPlayer), false, m_pPlayer.random_seed );
+		cso::FireBullets3( vecSrc, g_Engine.v_forward, flSpread, 8192, iPenetration, BULLET_PLAYER_556MM, CSOW_DAMAGE, 0.96, EHandle(m_pPlayer), m_pPlayer.random_seed );
 
 		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT3), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
