@@ -36,6 +36,7 @@
 #include "../custom_weapons/cso/weapon_awp"
 #include "../custom_weapons/cso/weapon_m95"
 #include "../custom_weapons/cso/weapon_savery"
+#include "../custom_weapons/cso/weapon_m95tiger"
 
 //Machine Guns
 #include "../custom_weapons/cso/weapon_aeolis"
@@ -56,22 +57,29 @@ void MapInit()
 	cso_dualwaki::Register();
 	cso_beamsword::Register();
 	cso_ripper::Register();
+
 	cso_desperado::Register();
 	cso_m950::Register();
 	cso_skull2::Register();
 	cso_bloodhunter::Register();
+
 	cso_blockas::Register();
 	cso_volcano::Register();
 	cso_mk3a1::Register();
+
 	cso_crow3::Register();
+
 	cso_aug::Register();
 	cso_plasmagun::Register();
 	cso_bow::Register();
 	cso_failnaught::Register();
 	cso_augex::Register();
+
 	cso_awp::Register();
 	cso_m95::Register();
 	cso_savery::Register();
+	cso_m95tiger::Register();
+
 	cso_aeolis::Register();
 	cso_m134hero::Register();
 }
