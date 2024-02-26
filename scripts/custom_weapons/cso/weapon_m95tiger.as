@@ -381,14 +381,6 @@ class weapon_m95tiger : CBaseCSOWeapon
 		self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DELAY2;
 	}
 
-	void TertiaryAttack()
-	{
-		m_bSkillActive = true;
-		LaunchTiger();
-		self.m_flNextTertiaryAttack = g_Engine.time + 0.5;
-		self.m_flTimeWeaponIdle = g_Engine.time + 1.0;
-	}
-
 	void Reload()
 	{
 		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 or self.m_iClip >= CSOW_MAX_CLIP or m_flEjectBrass > 0.0 )
