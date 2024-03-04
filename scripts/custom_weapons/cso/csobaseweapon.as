@@ -279,10 +279,6 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		return (end - ptr.vecEndPos).Length() > 0;
 	}
 
-	void xs_vec_sub()
-	{
-	}
-
 	//legacy support only
 	void CS16GetDefaultShellInfo( EHandle ePlayer, Vector& out ShellVelocity, Vector& out ShellOrigin, float forwardScale, float rightScale, float upScale, bool leftShell, bool downShell )
 	{
