@@ -75,6 +75,13 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
 <BR>
 
+* Dual Sword Phantom Slayer
+    * ENTITIES
+    * `weapon_dualsword` - Weapon
+    * `ef_dualsword` - Various Effects
+
+<BR>
+
 
 # PISTOLS
 * Calico M950
