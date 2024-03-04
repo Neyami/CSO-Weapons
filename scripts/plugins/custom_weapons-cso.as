@@ -10,6 +10,7 @@
 #include "../custom_weapons/cso/weapon_dualwaki"
 #include "../custom_weapons/cso/weapon_beamsword"
 #include "../custom_weapons/cso/weapon_ripper"
+#include "../custom_weapons/cso/weapon_dualsword"
 
 //Pistols
 #include "../custom_weapons/cso/weapon_desperado"
@@ -57,6 +58,7 @@ void MapInit()
 	cso_dualwaki::Register();
 	cso_beamsword::Register();
 	cso_ripper::Register();
+	cso_dualsword::Register();
 
 	cso_desperado::Register();
 	cso_m950::Register();
