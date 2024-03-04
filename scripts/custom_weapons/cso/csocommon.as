@@ -23,7 +23,6 @@ const int THANATOS9_SLOT				= 1;
 const int THANATOS9_POSITION		= 15;
 const int RIPPER_SLOT						= 1;
 const int RIPPER_POSITION				= 16;
-
 const int DUALSWORD_SLOT				= 1;
 const int DUALSWORD_POSITION		= 17;
 
