@@ -191,6 +191,17 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
 <BR>
 
+* FN P90
+
+    * ENTITIES
+    * `weapon_p90` - Weapon
+    * `ammo_57mm` - Ammo
+ 
+    * AMMO NAME
+    * `57mm`
+
+<BR>
+
 
 # ASSAULT RIFLES
 * Steyr AUG A1
