@@ -25,6 +25,7 @@
 
 //Submachine Guns
 #include "../custom_weapons/cso/weapon_crow3"
+#include "../custom_weapons/cso/weapon_p90"
 
 //Assault Rifles
 #include "../custom_weapons/cso/weapon_aug"
@@ -70,6 +71,7 @@ void MapInit()
 	cso_mk3a1::Register();
 
 	cso_crow3::Register();
+	cso_p90::Register();
 
 	cso_aug::Register();
 	cso_plasmagun::Register();
