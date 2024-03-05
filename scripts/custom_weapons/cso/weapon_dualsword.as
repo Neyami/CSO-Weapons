@@ -142,8 +142,7 @@ enum csowmode_e
 
 enum csoweffect_e
 {
-	EFFECT_SLASH = 0,
-	EFFECT_SKILL_START,
+	EFFECT_SKILL_START = 0,
 	EFFECT_SKILL_END,
 	EFFECT_SKILLFX1,
 	EFFECT_SKILLFX2
@@ -162,8 +161,9 @@ class weapon_dualsword : CBaseCSOWeapon
 	private int m_iState;
 	private int m_iMode;
 	private int m_iStabState;
-	int m_iSlashState;
-	int m_iComboState;
+	private int m_iSlashState;
+	private int m_iComboState;
+	private float m_flSlashSound;
 	private float m_flComboReset;
 	private float m_flSkillStart;
 	private float m_flSkillEnd;
@@ -282,6 +282,7 @@ class weapon_dualsword : CBaseCSOWeapon
 
 	void PrimaryAttack()
 	{
+		m_pPlayer.pev.viewmodel = MODEL_VIEW;
 		m_pPlayer.pev.weaponmodel = MODEL_PLAYER_B;
 		m_pPlayer.m_szAnimExtension = CSOW_ANIMEXT2;
 		SetThink( null );
@@ -345,13 +346,10 @@ class weapon_dualsword : CBaseCSOWeapon
 		m_iSlashState = 0;
 		m_iState = STATE_SLASH;
 
-		if( m_iMode == MODE_STAB ) self.SendWeaponAnim( ANIM_SWAP_TO_A, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		m_iMode = MODE_SLASH;
-		
+
 		SetThink( ThinkFunction(this.SlashThink) );
 		pev.nextthink = g_Engine.time + 0.1;
-
-		CreateSlash( 0 );
 
 		self.m_flNextPrimaryAttack = g_Engine.time + 0.2;
 		self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY2;
@@ -360,13 +358,14 @@ class weapon_dualsword : CBaseCSOWeapon
 
 	void SlashThink()
 	{
-		self.SendWeaponAnim( ANIM_SLASH1 + m_iSlashState, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		m_pPlayer.pev.viewmodel = MODEL_SLASH;
+		self.SendWeaponAnim( m_iSlashState, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+
 		m_iSlashState++;
 
 		if( m_iSlashState >= 0 and m_iSlashState <= 3 )
 		{
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
-			CreateSlash( m_iSlashState-1 );
 			CheckMeleeAttack( CSOW_RANGE_SLASH, CSOW_RADIUS_SLASH, CSOW_DAMAGE_SLASH1+(m_iSlashState-1) );
 
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SLASH1+(m_iSlashState -1)], VOL_NORM, ATTN_NORM );
@@ -377,18 +376,20 @@ class weapon_dualsword : CBaseCSOWeapon
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 			ComboCheck( COMBO_SLASH_END );
 
-			CreateSlash( 3 );
 			CheckMeleeAttack( CSOW_RANGE_SLASH, CSOW_RADIUS_SLASH, CSOW_DAMAGE_SLASH4 );
 
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SLASH4], VOL_NORM, ATTN_NORM );
-			self.m_flNextPrimaryAttack = g_Engine.time + 0.6;
-			pev.nextthink = g_Engine.time + 0.8;
+			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 0.6;
+			pev.nextthink = g_Engine.time + 0.9;
+			m_flSlashSound = g_Engine.time + 0.5;
 		}
 		else if( m_iSlashState == 5 )
 		{
 			pev.nextthink = g_Engine.time + 0.5;
 			SetThink( null );
 			m_pPlayer.m_szAnimExtension = CSOW_ANIMEXT1;
+			m_pPlayer.pev.viewmodel = MODEL_VIEW;
+			self.SendWeaponAnim( ANIM_SLASH_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		}
 	}
 
@@ -575,6 +576,15 @@ class weapon_dualsword : CBaseCSOWeapon
 
 	void ItemPostFrame()
 	{
+		if( m_flSlashSound > 0.0 and m_flSlashSound < g_Engine.time)
+		{
+			int iSound = SND_SLASH_TWINKLE;
+			if( m_iComboState == 4 ) iSound = SND_SKILL_TRIGGER;
+
+			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_ITEM, pCSOWSounds[iSound], VOL_NORM, ATTN_NORM );
+			m_flSlashSound = 0.0;
+		}
+
 		if( m_flComboReset > 0.0 and m_flComboReset < g_Engine.time )
 		{
 			m_iComboState = 0;
@@ -596,34 +606,11 @@ class weapon_dualsword : CBaseCSOWeapon
 		g_SoundSystem.StopSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[(m_iMode == MODE_SLASH) ? SND_IDLE_A : SND_IDLE_B] );
 	}
 
-	void CreateSlash( int iSequence )
-	{
-		Vector vecAngles = m_pPlayer.pev.v_angle;
-		vecAngles.x = -vecAngles.x;
-
-		CBaseEntity@ cbeSlashEffect = g_EntityFuncs.Create( "ef_dualsword", m_pPlayer.GetGunPosition(), vecAngles, true, m_pPlayer.edict() );
-		ef_dualsword@ pSlashEffect = cast<ef_dualsword@>(CastToScriptClass(cbeSlashEffect));
-		pSlashEffect.m_iEffectType = EFFECT_SLASH;
-		pSlashEffect.m_ePlayer = EHandle(m_pPlayer);
-		pSlashEffect.m_eWeapon = EHandle(self);
-
-		if( iSequence < 3 )
-			pSlashEffect.m_flKillTime = g_Engine.time + 0.1;
-		else if( iSequence == 3 )
-		{
-			pSlashEffect.m_flSlashSound = g_Engine.time + 0.4;
-			pSlashEffect.m_flKillTime = g_Engine.time + 1.0;
-		}
-
-		pSlashEffect.pev.sequence = iSequence;
-
-		g_EntityFuncs.DispatchSpawn( pSlashEffect.self.edict() );
-	}
-
 	void SkillStart()
 	{
 		m_iState = STATE_SKILL_START;
 
+		m_pPlayer.pev.viewmodel = MODEL_VIEW;
 		self.SendWeaponAnim( ANIM_SKILL_START, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_SKILL_LOOP + 1.30;
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_SKILL_LOOP + 1.30;
@@ -879,12 +866,7 @@ class ef_dualsword : ScriptBaseAnimating
 	{
 		Precache();
 
-		if( m_iEffectType == EFFECT_SLASH )
-		{
-			g_EntityFuncs.SetModel( self, MODEL_SLASH );
-			pev.rendermode	= kRenderTransAdd;
-		}
-		else if( m_iEffectType == EFFECT_SKILL_START )
+		if( m_iEffectType == EFFECT_SKILL_START )
 		{
 			g_EntityFuncs.SetModel( self, MODEL_SKILL );
 			g_SoundSystem.EmitSound( self.edict(), CHAN_ITEM, pCSOWSounds[SND_SKILL_START], VOL_NORM, ATTN_NORM );
@@ -937,48 +919,7 @@ class ef_dualsword : ScriptBaseAnimating
 			return;
 		}
 
-		if( m_iEffectType == EFFECT_SLASH )
-		{
-			CBasePlayerWeapon@ pWeapon = null;
-
-			if( m_eWeapon.IsValid() )
-				@pWeapon = cast<CBasePlayerWeapon@>( m_eWeapon.GetEntity() );
-
-			weapon_dualsword@ pDualSword = cast<weapon_dualsword@>(CastToScriptClass(pWeapon));
-
-			Vector vecOrigin, vecAngles;
-			vecOrigin = pOwner.GetGunPosition();
-			vecAngles = pOwner.pev.v_angle;
-			vecAngles.x = -vecAngles.x;
-
-			g_EntityFuncs.SetOrigin( self, vecOrigin );
-			pev.angles = vecAngles;
-
-			if( pDualSword is null or pDualSword.m_iSlashState == 0 or (m_flKillTime > 0.0 and m_flKillTime < g_Engine.time) )
-			{
-				float flRenderAmount = pev.renderamt;
-
-				flRenderAmount -= 9.0;
-
-				if( flRenderAmount <= 5.0 )
-				{
-					g_EntityFuncs.Remove( self );
-					return;
-				}
-
-				pev.renderamt = flRenderAmount;
-			}
-
-			if( m_flSlashSound > 0.0 and m_flSlashSound < g_Engine.time)
-			{
-				int iSound = SND_SLASH_TWINKLE;
-				if( pDualSword.m_iComboState == 4 ) iSound = SND_SKILL_TRIGGER;
-
-				g_SoundSystem.EmitSound( pOwner.edict(), CHAN_WEAPON, pCSOWSounds[iSound], VOL_NORM, ATTN_NORM );
-				m_flSlashSound = 0.0;
-			}
-		}
-		else if( m_iEffectType == EFFECT_SKILL_START or m_iEffectType == EFFECT_SKILL_END )
+		if( m_iEffectType == EFFECT_SKILL_START or m_iEffectType == EFFECT_SKILL_END )
 		{
 			if( m_flKillTime > 0.0 and m_flKillTime < g_Engine.time )
 			{
@@ -1034,5 +975,5 @@ void Register()
 Make use of ef_dualsword_left.spr and ef_dualsword_right.spr
 Limit the amount of ef_dualsword spawned during skill?
 Use tempentity for the skillfx?
-Somehow make the slashes invisible to other players
+Somehow keep the SecondaryAttack slashes on screen without making them visible to other players ??
 */
