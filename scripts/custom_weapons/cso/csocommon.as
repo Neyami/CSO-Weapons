@@ -13,16 +13,16 @@ const int DCLAW_SLOT						= 1;
 const int DCLAW_POSITION				= 10;
 const int BEAMSWORD_SLOT				= 1;
 const int BEAMSWORD_POSITION		= 11;
-const int BALROG9_SLOT					= 1;
+const int BALROG9_SLOT						= 1;
 const int BALROG9_POSITION				= 12;
 const int JANUS9_SLOT						= 1;
 const int JANUS9_POSITION				= 13;
-const int DWAKI_SLOT						= 1;
-const int DWAKI_POSITION				= 14;
-const int THANATOS9_SLOT				= 1;
-const int THANATOS9_POSITION		= 15;
+const int DWAKI_SLOT							= 1;
+const int DWAKI_POSITION					= 14;
+const int THANATOS9_SLOT					= 1;
+const int THANATOS9_POSITION			= 15;
 const int RIPPER_SLOT						= 1;
-const int RIPPER_POSITION				= 16;
+const int RIPPER_POSITION					= 16;
 const int DUALSWORD_SLOT				= 1;
 const int DUALSWORD_POSITION		= 17;
 
@@ -36,27 +36,27 @@ const int RIPPER_WEIGHT					= 10;
 const int DUALSWORD_WEIGHT			= 10;
 
 //Pistols
-const int M950_SLOT						= 2;
+const int M950_SLOT							= 2;
 const int M950_POSITION					= 10;
 const int SKULL2_SLOT						= 2;
 const int SKULL2_POSITION				= 12;
 const int BLOODHUNTER_SLOT			= 2;
-const int BLOODHUNTER_POSITION		= 13;
+const int BLOODHUNTER_POSITION	= 13;
 const int DESPERADO_SLOT				= 2;
 const int DESPERADO_POSITION			= 14;
 
-const int M950_WEIGHT					= 10;
+const int M950_WEIGHT						= 10;
 const int SKULL2_WEIGHT					= 10;
 const int BLOODHUNTER_WEIGHT		= 10;
 const int DESPERADO_WEIGHT			= 10;
 
 //Shotguns
-const int BLOCKAS_SLOT					= 3;
+const int BLOCKAS_SLOT						= 3;
 const int BLOCKAS_POSITION				= 10;
-const int MK3A1_SLOT						= 3;
-const int MK3A1_POSITION				= 11;
+const int MK3A1_SLOT							= 3;
+const int MK3A1_POSITION					= 11;
 const int VOLCANO_SLOT					= 3;
-const int VOLCANO_POSITION			= 12;
+const int VOLCANO_POSITION				= 12;
 
 const int BLOCKAS_WEIGHT				= 20;
 const int MK3A1_WEIGHT					= 20;
@@ -65,20 +65,23 @@ const int VOLCANO_WEIGHT				= 20;
 //SMGs
 const int CROW3_SLOT						= 4;
 const int CROW3_POSITION				= 10;
+const int P90_SLOT								= 4;
+const int P90_POSITION						= 11;
 
 const int CROW3_WEIGHT					= 10;
+const int P90_WEIGHT							= 10;
 
 //Assault Rifles
-const int AUG_SLOT							= 5;
-const int AUG_POSITION					= 10;
+const int AUG_SLOT								= 5;
+const int AUG_POSITION						= 10;
 const int PLASMAGUN_SLOT				= 5;
 const int PLASMAGUN_POSITION			= 11;
-const int CSOBOW_SLOT					= 5;
+const int CSOBOW_SLOT						= 5;
 const int CSOBOW_POSITION				= 12;
 const int FAILNAUGHT_SLOT				= 5;
 const int FAILNAUGHT_POSITION		= 13;
-const int AUGEX_SLOT						= 5;
-const int AUGEX_POSITION				= 14;
+const int AUGEX_SLOT							= 5;
+const int AUGEX_POSITION					= 14;
 
 const int AUG_WEIGHT						= 25;
 const int PLASMAGUN_WEIGHT			= 20;
@@ -88,10 +91,10 @@ const int AUGEX_WEIGHT					= 30;
 
 //Sniper Rifles
 const int AWP_SLOT							= 6;
-const int AWP_POSITION					= 10;
-const int M95_SLOT							= 6;
-const int M95_POSITION					= 11;
-const int SAVERY_SLOT					= 6;
+const int AWP_POSITION						= 10;
+const int M95_SLOT								= 6;
+const int M95_POSITION						= 11;
+const int SAVERY_SLOT						= 6;
 const int SAVERY_POSITION				= 12;
 const int M95TIGER_SLOT					= 6;
 const int M95TIGER_POSITION			= 13;
