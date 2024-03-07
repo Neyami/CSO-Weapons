@@ -681,7 +681,7 @@ int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float fl
 
 				flCurrentDamage *= flDamageModifier;
 			}
-			else if( (tr.pHit.vars.flags & FL_MONSTER) != 0 )
+			else if( tr.pHit.vars.takedamage != DAMAGE_NO/*tr.pHit.vars.FlagBitSet(FL_MONSTER)*/ ) //barnacles don't have FL_MONSTER :aRage:
 			{
 				if( (iFlags & CSOF_HITMARKER) != 0 )
 				{
