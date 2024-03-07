@@ -67,9 +67,12 @@ const int CROW3_SLOT						= 4;
 const int CROW3_POSITION				= 10;
 const int P90_SLOT								= 4;
 const int P90_POSITION						= 11;
+const int THOMPSON_SLOT					= 4;
+const int THOMPSON_POSITION			= 12;
 
 const int CROW3_WEIGHT					= 10;
-const int P90_WEIGHT							= 10;
+const int P90_WEIGHT							= 26;
+const int THOMPSON_WEIGHT				= 10;
 
 //Assault Rifles
 const int AUG_SLOT								= 5;
@@ -363,7 +366,7 @@ CBaseEntity@ ShootCustomProjectile( string classname, string mdl, Vector origin,
 	return shootEnt;
 }
 
-//From cstrike Vector CBaseEntity::FireBullets3(Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, int iDamage, float flRangeModifier, entvars_t *pevAttacker, bool bPistol, int shared_rand)
+//From cstrike combat.cpp Vector CBaseEntity::FireBullets3(Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, int iDamage, float flRangeModifier, entvars_t *pevAttacker, bool bPistol, int shared_rand)
 //FireBullets3( vecSrc, vecAiming, 0, 4096, 2, BULLET_PLAYER_50AE, 54, 0.81f, m_pPlayer.edict(), true, m_pPlayer.random_seed );
 //TODO make bullet decals on the otherside of a penetrated wall
 //TODO make bullet decals and smoke when hitting a wall that is further than flCurrentDistance ??
@@ -647,7 +650,7 @@ int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float fl
 				break;
 			}
 
-			if( tr.pHit.vars.solid == SOLID_BSP and iPenetration != 0 )
+			if( tr.pHit.vars.solid == SOLID_BSP /*and iPenetration != 0*/ ) //prevents the last hit from causing decals
 			{
 				if( (iFlags & CSOF_ALWAYSDECAL) != 0 )
 					g_WeaponFuncs.DecalGunshot( tr, iBulletDecal/*, false, pev, bHitMetal*/ );
@@ -681,7 +684,7 @@ int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float fl
 
 				flCurrentDamage *= flDamageModifier;
 			}
-			else if( tr.pHit.vars.takedamage != DAMAGE_NO/*tr.pHit.vars.FlagBitSet(FL_MONSTER)*/ ) //barnacles don't have FL_MONSTER :aRage:
+			else// if( tr.pHit.vars.takedamage != DAMAGE_NO/*tr.pHit.vars.FlagBitSet(FL_MONSTER)*/ ) //barnacles don't have FL_MONSTER :aRage:
 			{
 				if( (iFlags & CSOF_HITMARKER) != 0 )
 				{
