@@ -234,9 +234,6 @@ class weapon_failnaught : CBaseCSOWeapon
 			return;
 		}
 
-		m_pPlayer.m_iWeaponVolume = QUIET_GUN_VOLUME; //none!
-		m_pPlayer.m_iWeaponFlash = DIM_GUN_FLASH; //none!
-
 		if( m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
 			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
 
