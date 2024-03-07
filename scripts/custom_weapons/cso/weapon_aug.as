@@ -272,7 +272,7 @@ class weapon_aug : CBaseCSOWeapon
 
 	void Reload()
 	{
-		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 or self.m_iClip >= CSOW_MAX_CLIP )
+		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 or self.m_iClip >= CSOW_MAX_CLIP or (m_pPlayer.pev.button & IN_ATTACK) != 0 )
 			return;
 
 		if( m_pPlayer.m_iFOV != 0 )

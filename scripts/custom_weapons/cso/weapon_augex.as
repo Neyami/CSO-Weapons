@@ -201,14 +201,12 @@ class weapon_augex : CBaseCSOWeapon
 			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM, 0, 94 + Math.RandomLong(0, 15) );
 
 			Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
-			Vector vecSrc = m_pPlayer.GetGunPosition();
-			Vector vecAiming = g_Engine.v_forward;
 			Vector vecShootCone = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_CONE_CROUCHING : CSOW_CONE_STANDING;
 
-			//m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, CSOW_DAMAGE );
+			//m_pPlayer.FireBullets( 1, m_pPlayer.GetGunPosition(), g_Engine.v_forward, vecShootCone, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, CSOW_DAMAGE );
 			int iPenetration = USE_PENETRATION ? 2 : 0;
-			cso::FireBullets3( vecSrc, g_Engine.v_forward, 0, 8192, iPenetration, BULLET_PLAYER_556MM, CSOW_DAMAGE, 1.0, EHandle(m_pPlayer), m_pPlayer.random_seed );
-			//DoDecalGunshot( vecSrc, g_Engine.v_forward, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, true );
+			cso::FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, 0, 8192, iPenetration, BULLET_PLAYER_556MM, CSOW_DAMAGE, 1.0, EHandle(m_pPlayer), m_pPlayer.random_seed );
+			//DoDecalGunshot( m_pPlayer.GetGunPosition(), g_Engine.v_forward, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, true );
 
 			EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x + g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell );
 
@@ -329,7 +327,7 @@ class weapon_augex : CBaseCSOWeapon
 
 	void Reload()
 	{
-		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 or self.m_iClip >= CSOW_MAX_CLIP )
+		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 or self.m_iClip >= CSOW_MAX_CLIP or (m_pPlayer.pev.button & IN_ATTACK) != 0 )
 			return;
 
 		m_flAccuracy = 0;
