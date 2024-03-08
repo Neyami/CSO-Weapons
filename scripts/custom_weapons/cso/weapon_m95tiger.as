@@ -160,7 +160,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 
 	bool GetItemInfo( ItemInfo& out info )
 	{
-		info.iMaxAmmo1 	= cso::BMG50_MAXCARRY;
+		info.iMaxAmmo1 	= cso::MAXCARRY_BMG50;
 		info.iMaxClip 		= CSOW_MAX_CLIP;
 		info.iAmmo1Drop	= CSOW_DEFAULT_GIVE; 
 		info.iMaxAmmo2 	= CSOW_MAX_AMMO2;
@@ -383,7 +383,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 
 	void Reload()
 	{
-		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 or self.m_iClip >= CSOW_MAX_CLIP or m_flEjectBrass > 0.0 )
+		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 or self.m_iClip >= CSOW_MAX_CLIP or m_flEjectBrass > 0.0 or (m_pPlayer.pev.button & IN_ATTACK) != 0 )
 			return;
 
 		if( m_pPlayer.m_iFOV != 0 )
@@ -826,4 +826,7 @@ void Register()
 /*
 TODO
 Fix ammo pickup sound spam
+Make use of ef_m95tiger_start
+Make use of ef_m95tiger_eye1 and ef_m95tiger_eye2
+Find a use for ef_m95tiger_net ??
 */
