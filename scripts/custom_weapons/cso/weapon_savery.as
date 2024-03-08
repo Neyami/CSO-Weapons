@@ -244,7 +244,7 @@ class weapon_savery : CBaseCSOWeapon
 
 	void Reload()
 	{
-		if( m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 or self.m_iClip >= SAVERY_MAX_CLIP )
+		if( m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 or self.m_iClip >= SAVERY_MAX_CLIP or (m_pPlayer.pev.button & IN_ATTACK) != 0 )
 			return;
 
 		m_iZoomMode = MODE_NOZOOM;

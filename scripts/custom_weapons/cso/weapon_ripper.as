@@ -122,11 +122,11 @@ class weapon_ripper : CBaseCSOWeapon
 
 	bool GetItemInfo( ItemInfo& out info )
 	{
-		info.iMaxAmmo1	= cso::GASOLINE_MAXCARRY;
+		info.iMaxAmmo1	= cso::MAXCARRY_GASOLINE;
 		info.iMaxClip		= CSOW_MAX_CLIP;
-		info.iSlot			= cso::RIPPER_SLOT - 1;
+		info.iSlot				= cso::RIPPER_SLOT - 1;
 		info.iPosition		= cso::RIPPER_POSITION - 1;
-		info.iWeight		= cso::RIPPER_WEIGHT;
+		info.iWeight			= cso::RIPPER_WEIGHT;
 		info.iFlags			= ITEM_FLAG_SELECTONEMPTY | ITEM_FLAG_NOAUTOSWITCHEMPTY;
 
 		return true;
