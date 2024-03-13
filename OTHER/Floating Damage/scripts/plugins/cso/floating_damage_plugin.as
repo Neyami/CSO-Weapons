@@ -1,4 +1,5 @@
 //Unusable until TraceAttack and TakeDamage hooks are added
+#include "csofloatingdamage"
 
 void PluginInit()
 {
@@ -7,6 +8,11 @@ void PluginInit()
 
 	//g_Hooks.RegisterHook( Hooks::Game::EntityTakedamage, @cso_fldamage::EntityTakedamage );
 	//g_Hooks.RegisterHook( Hooks::Game::EntityTraceAttack, @cso_fldamage::EntityTraceAttack );
+}
+
+void MapInit()
+{
+	cso::RegisterFLDMG();
 }
 
 namespace cso_fldamage
