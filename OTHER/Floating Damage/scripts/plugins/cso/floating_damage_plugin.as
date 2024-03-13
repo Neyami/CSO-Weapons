@@ -12,7 +12,7 @@ void PluginInit()
 
 void MapInit()
 {
-	cso::RegisterFLDMG();
+	cso::RegisterFLDamage();
 }
 
 namespace cso_fldamage
