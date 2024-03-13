@@ -6,6 +6,9 @@ namespace cso
 const int iFloatingDamageSkin = 0;
 const bool bCumulativeDamage = false;
 
+const string MODEL_FLDAMAGE = "models/cso/floating_damage.mdl";
+const bool bEnableFDRotation = true;
+
 void SpawnFloatingDamage( CBaseEntity@ pAttacker, CBaseEntity@ pVictim, Vector vecOrigin, float flDamage, bool bHeadShot )
 {
 	int iDamagerSkin = iFloatingDamageSkin;
@@ -175,6 +178,78 @@ float GetScaleForMonster( CBaseEntity@ pMonster, float flBaseScale, float flMinS
 	else flScale = flBaseScale;
 
 	return Math.clamp( flMinScale, flMaxScale, flScale );
+}
+
+class cso_fldamage : ScriptBaseEntity
+{
+	EHandle m_hMonster;
+	Vector m_vecStartVelocity;
+
+	void Spawn()
+	{
+		Precache();
+
+		g_EntityFuncs.SetModel( self, MODEL_FLDAMAGE );
+
+		pev.solid = SOLID_NOT;
+		pev.movetype = MOVETYPE_NOCLIP;
+		pev.renderfx = kRenderFxNone;
+		pev.rendercolor = Vector(255.0, 255.0, 255.0);
+		pev.rendermode = kRenderTransAdd;
+		pev.renderamt = 255.0;
+
+		SetThink( ThinkFunction(this.FDThink) );
+		pev.nextthink = g_Engine.time + 0.05;
+
+		//g_Game.AlertMessage( at_notice, "cso_fldamage spawned with dmg: %1, body: %2\n", pev.dmg, pev.body );
+	}
+
+	void Precache()
+	{
+		g_Game.PrecacheModel( MODEL_FLDAMAGE );
+	}
+
+	void FDThink()
+	{
+		if( pev.owner is null )
+		{
+			g_EntityFuncs.Remove( self );
+			return;
+		}
+
+		if( bEnableFDRotation )
+		{
+			Vector vecAngles = pev.owner.vars.v_angle;
+
+			vecAngles.y -= 180.0;
+			pev.angles = vecAngles;
+		}
+
+		if( pev.sequence != 1 )
+		{
+			pev.frame = 0;
+			pev.framerate = 0.33;
+			pev.animtime = g_Engine.time; //NEEDED ??
+			pev.sequence = 1;
+		}
+
+		float flRenderAmt = pev.renderamt;
+		flRenderAmt -= 15.0;
+		if( flRenderAmt <= 15.0 )
+		{
+			g_EntityFuncs.Remove( self );
+			return;
+		}
+
+		pev.renderamt = flRenderAmt;
+		pev.nextthink = g_Engine.time + 0.05;
+	}
+}
+
+void RegisterFLDamage()
+{
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso::cso_fldamage", "cso_fldamage" );
+	g_Game.PrecacheOther( "cso_fldamage" );
 }
 
 } //namespace cso END
