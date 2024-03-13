@@ -3,7 +3,7 @@
 namespace cso
 {
 
-const int iFloatingDamageSkin = 0;
+const int iFloatingDamageSkin = 0; //0-18 only put even numbers here, odd numbers are for crits (headshots)
 const bool bCumulativeDamage = false;
 
 const string MODEL_FLDAMAGE = "models/cso/floating_damage.mdl";
