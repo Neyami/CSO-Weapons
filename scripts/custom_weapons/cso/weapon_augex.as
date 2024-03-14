@@ -191,7 +191,7 @@ class weapon_augex : CBaseCSOWeapon
 
 		if( !USE_CSLIKE_RECOIL )
 		{
-			HandleAmmoReduction();
+			HandleAmmoReduction( 1 );
 
 			m_pPlayer.m_iWeaponVolume = NORMAL_GUN_VOLUME;
 			m_pPlayer.m_iWeaponFlash = BRIGHT_GUN_FLASH;
@@ -263,7 +263,7 @@ class weapon_augex : CBaseCSOWeapon
 
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + flCycleTime;
 
-		HandleAmmoReduction();
+		HandleAmmoReduction( 1 );
 
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE1;
 
@@ -286,7 +286,7 @@ class weapon_augex : CBaseCSOWeapon
 			return;
 		}
 
-		m_pPlayer.m_rgAmmo( self.m_iSecondaryAmmoType, m_pPlayer.m_rgAmmo(self.m_iSecondaryAmmoType) - 1 );
+		HandleAmmoReduction( 0, 0, 0, 1 );
 
 		if( m_pPlayer.m_rgAmmo(self.m_iSecondaryAmmoType) > 0 )
 		{
@@ -316,7 +316,7 @@ class weapon_augex : CBaseCSOWeapon
 		Vector vecOrigin = m_pPlayer.GetGunPosition() + g_Engine.v_forward * 8 + g_Engine.v_right * 4 + g_Engine.v_up * -2;
 		Vector vecAngles = m_pPlayer.pev.v_angle;
 
-		vecAngles.x = 360.0f - vecAngles.x;
+		vecAngles.x = 360.0 - vecAngles.x;
 
 		CBaseEntity@ cbeGrenade = g_EntityFuncs.Create( "augex_grenade", vecOrigin, vecAngles, false, m_pPlayer.edict() ); 
 		augex_grenade@ pGrenade = cast<augex_grenade@>(CastToScriptClass(cbeGrenade));

@@ -2,6 +2,7 @@ namespace cso_thompson
 {
 
 const bool USE_PENETRATION							= true;
+const string CSOW_NAME								= "weapon_thompson";
 
 const int CSOW_DEFAULT_GIVE						= 50;
 const int CSOW_MAX_CLIP 								= 50;
@@ -119,7 +120,7 @@ class weapon_thompson : CBaseCSOWeapon
 		@m_pPlayer = pPlayer;
 
 		NetworkMessage m( MSG_ONE, NetworkMessages::WeapPickup, pPlayer.edict() );
-			m.WriteLong( g_ItemRegistry.GetIdForName("weapon_thompson") );
+			m.WriteLong( g_ItemRegistry.GetIdForName(CSOW_NAME) );
 		m.End();
 
 		return true;
@@ -156,18 +157,17 @@ class weapon_thompson : CBaseCSOWeapon
 			return;
 		}
 
-		HandleAmmoReduction();
+		HandleAmmoReduction( 1 );
 
 		m_pPlayer.m_iWeaponVolume = LOUD_GUN_VOLUME;
 		m_pPlayer.m_iWeaponFlash = BRIGHT_GUN_FLASH;
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
-		m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH; //Needed??
+		m_pPlayer.pev.effects |= EF_MUZZLEFLASH; //Needed??
+
 		self.SendWeaponAnim( ANIM_SHOOT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, 0.64, 0, 94 + Math.RandomLong(0, 15) );
 
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
-		Vector vecSrc = m_pPlayer.GetGunPosition();
-		Vector vecAiming = g_Engine.v_forward;
 
 		float flDamage = CSOW_DAMAGE;
 		if( self.m_flCustomDmg > 0 )
@@ -209,8 +209,8 @@ class weapon_thompson : CBaseCSOWeapon
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_thompson::weapon_thompson", "weapon_thompson" );
-	g_ItemRegistry.RegisterWeapon( "weapon_thompson", "custom_weapons/cso", "45acp", "", "ammo_45acp" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_thompson::weapon_thompson", CSOW_NAME );
+	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "45acp", "", "ammo_45acp" );
 
 	if( !g_CustomEntityFuncs.IsCustomEntity( "ammo_45acp" ) ) 
 		cso::Register45ACP();

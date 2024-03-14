@@ -209,7 +209,7 @@ class weapon_m95 : CBaseCSOWeapon
 
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + flCycleTime;
 
-		HandleAmmoReduction();
+		HandleAmmoReduction( 1 );
 
 		self.m_flTimeWeaponIdle = g_Engine.time + 2.0;
 		m_pPlayer.pev.punchangle.x -= CSOW_RECOIL;

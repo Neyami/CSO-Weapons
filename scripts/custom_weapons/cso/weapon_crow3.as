@@ -171,7 +171,7 @@ class weapon_crow3 : CBaseCSOWeapon
 			return;
 		}
 
-		HandleAmmoReduction();
+		HandleAmmoReduction( 1 );
 		HandleRecoil( CSOW_RECOIL_STANDING_X, CSOW_RECOIL_STANDING_Y, CSOW_RECOIL_DUCKING_X, CSOW_RECOIL_DUCKING_Y );
 
 		m_pPlayer.m_iWeaponVolume = NORMAL_GUN_VOLUME;
@@ -209,7 +209,7 @@ class weapon_crow3 : CBaseCSOWeapon
 
 	void ItemPreFrame()
 	{
-		if( (m_pPlayer.pev.button & IN_RELOAD) == 0 and (m_pPlayer.pev.oldbuttons & IN_RELOAD) != 0 and self.m_iClip < CSOW_MAX_CLIP and m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) > 0 )
+		if( (m_pPlayer.pev.button & IN_RELOAD) == 0 and (m_pPlayer.pev.oldbuttons & IN_RELOAD) != 0 and self.m_iClip < CSOW_MAX_CLIP and m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) > 0 and (m_pPlayer.pev.button & IN_ATTACK) == 0 ) // make sure you can't reload while shooting ??
 		{
 			switch( m_iReloadState )
 			{

@@ -95,14 +95,20 @@ const int AUGEX_WEIGHT					= 30;
 //Sniper Rifles
 const int AWP_SLOT							= 6;
 const int AWP_POSITION						= 10;
+const int SVD_SLOT								= 6;
+const int SVD_POSITION						= 11;
+const int SVDEX_SLOT							= 6;
+const int SVDEX_POSITION					= 12;
 const int M95_SLOT								= 6;
-const int M95_POSITION						= 11;
+const int M95_POSITION						= 13;
 const int SAVERY_SLOT						= 6;
-const int SAVERY_POSITION				= 12;
+const int SAVERY_POSITION				= 14;
 const int M95TIGER_SLOT					= 6;
-const int M95TIGER_POSITION			= 13;
+const int M95TIGER_POSITION			= 15;
 
 const int AWP_WEIGHT						= 30;
+const int SVD_WEIGHT						= 30;
+const int SVDEX_WEIGHT					= 30;
 const int M95_WEIGHT						= 35;
 const int SAVERY_WEIGHT					= 15;
 const int M95TIGER_WEIGHT				= 40;

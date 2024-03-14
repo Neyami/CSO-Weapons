@@ -173,7 +173,7 @@ class weapon_aug : CBaseCSOWeapon
 
 		if( !USE_CSLIKE_RECOIL )
 		{
-			HandleAmmoReduction();
+			HandleAmmoReduction( 1 );
 
 			m_pPlayer.m_iWeaponVolume = NORMAL_GUN_VOLUME;
 			m_pPlayer.m_iWeaponFlash = BRIGHT_GUN_FLASH;
@@ -246,7 +246,7 @@ class weapon_aug : CBaseCSOWeapon
 
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + flCycleTime;
 
-		HandleAmmoReduction();
+		HandleAmmoReduction( 1 );
 
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE1;
 

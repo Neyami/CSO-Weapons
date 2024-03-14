@@ -232,7 +232,7 @@ class weapon_desperado : CBaseCSOWeapon
 
 		cso::FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, flSpread, 8192, 2, BULLET_PLAYER_44MAG, flDamage, 5, EHandle(m_pPlayer), m_pPlayer.random_seed, (CSOF_ALWAYSDECAL | CSOF_HITMARKER) );
 
-		HandleAmmoReduction();
+		HandleAmmoReduction( 1 );
 
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY;
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE;
@@ -242,7 +242,7 @@ class weapon_desperado : CBaseCSOWeapon
 
 	void Reload()
 	{
-		if( self.m_iClip >= CSOW_MAX_CLIP ) return;
+		if( self.m_iClip >= CSOW_MAX_CLIP or (m_pPlayer.pev.button & IN_ATTACK) != 0 ) return;
 
 		if( !m_bInfiniteAmmo )
 		{

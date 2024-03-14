@@ -297,7 +297,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM, 0, 94 + Math.RandomLong(0, 15) );
 
-		HandleAmmoReduction();
+		HandleAmmoReduction( 1 );
 		DoMuzzleflash( SPRITE_MUZZLE1, CSOW_MUZZLE_ORIGIN.x, CSOW_MUZZLE_ORIGIN.y, CSOW_MUZZLE_ORIGIN.z, Math.RandomFloat(0.08, 0.09), 150, 30.0, 240.0 );
 
 		self.m_flTimeWeaponIdle = g_Engine.time + 2.0;
@@ -317,7 +317,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT_NET], VOL_NORM, ATTN_NORM, 0, 94 + Math.RandomLong(0, 15) );
 
-		m_pPlayer.m_rgAmmo( self.m_iSecondaryAmmoType, m_pPlayer.m_rgAmmo(self.m_iSecondaryAmmoType) - 1 );
+		HandleAmmoReduction( 0, 0, 0, 1 );
 		DoMuzzleflash( SPRITE_MUZZLE2, CSOW_MUZZLE_ORIGIN.x, CSOW_MUZZLE_ORIGIN.y, CSOW_MUZZLE_ORIGIN.z, Math.RandomFloat(0.13, 0.14), 150, 30.0, 240.0 );
 
 		FireNet();

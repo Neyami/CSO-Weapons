@@ -154,12 +154,36 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		pMuzzle.AnimateAndDie( flFramerate );
 	}
 
-	void HandleAmmoReduction()
+	void HandleAmmoReduction( int iPrimaryClip = 0, int iPrimaryAmmo = 0, int iSecondaryClip = 0, int iSecondaryAmmo = 0 )
 	{
-		self.m_iClip--;
+		if( iPrimaryClip > 0 )
+		{
+			self.m_iClip -= iPrimaryClip;
 
-		if( self.m_iClip <= 0 and m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
-			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
+			if( self.m_iClip <= 0 and m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
+				m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
+		}
+		else if( iPrimaryAmmo > 0 )
+		{
+			m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType, m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) - iPrimaryAmmo );
+
+			if( m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
+				m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
+		}
+		else if( iSecondaryClip > 0 )
+		{
+			self.m_iClip2 -= iSecondaryClip;
+
+			if( self.m_iClip2 <= 0 and m_pPlayer.m_rgAmmo( self.m_iSecondaryAmmoType ) <= 0 )
+				m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
+		}
+		else if( iSecondaryAmmo > 0 )
+		{
+			m_pPlayer.m_rgAmmo( self.m_iSecondaryAmmoType, m_pPlayer.m_rgAmmo(self.m_iSecondaryAmmoType) - iSecondaryAmmo );
+
+			if( m_pPlayer.m_rgAmmo( self.m_iSecondaryAmmoType ) <= 0 )
+				m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
+		}
 	}
 
 	void HandleRecoil( Vector2D vec2dRecoilStandingX, Vector2D vec2dRecoilStandingY, Vector2D vec2dRecoilDuckingX, Vector2D vec2dRecoilDuckingY )

@@ -448,7 +448,7 @@ class weapon_m134hero : CBaseCSOWeapon
 					m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, CSOW_DAMAGE );
 					DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, true );
 
-					HandleAmmoReduction();
+					HandleAmmoReduction( 1 );
 				}
 				else
 				{
@@ -473,7 +473,7 @@ class weapon_m134hero : CBaseCSOWeapon
 			{
 				if( self.m_iClip > 0 )
 				{
-					//HandleAmmoReduction(); //Putting the ammo reduction here instead makes it reduce at a much slower rate
+					//HandleAmmoReduction( 1 ); //Putting the ammo reduction here instead makes it reduce at a much slower rate
 
 					if( self.m_iClip <= 0 and m_bRapidMode )
 					{

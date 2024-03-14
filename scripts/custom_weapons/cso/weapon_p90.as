@@ -157,7 +157,7 @@ class weapon_p90 : CBaseCSOWeapon
 			return;
 		}
 
-		HandleAmmoReduction();
+		HandleAmmoReduction( 1 );
 
 		m_pPlayer.m_iWeaponVolume = NORMAL_GUN_VOLUME;
 		m_pPlayer.m_iWeaponFlash = DIM_GUN_FLASH;

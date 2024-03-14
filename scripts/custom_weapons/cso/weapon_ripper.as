@@ -210,7 +210,7 @@ class weapon_ripper : CBaseCSOWeapon
 
 				m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
-				HandleAmmoReduction();
+				HandleAmmoReduction( 1 );
 				self.m_flNextPrimaryAttack = g_Engine.time + CSOW_TIME_DELAY1;
 				self.m_flTimeWeaponIdle = self.m_flNextSecondaryAttack = g_Engine.time + 0.5;
 
