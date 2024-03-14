@@ -36,6 +36,8 @@
 
 //Sniper Rifles
 #include "../custom_weapons/cso/weapon_awp"
+#include "../custom_weapons/cso/weapon_svd"
+#include "../custom_weapons/cso/weapon_svdex"
 #include "../custom_weapons/cso/weapon_m95"
 #include "../custom_weapons/cso/weapon_savery"
 #include "../custom_weapons/cso/weapon_m95tiger"
@@ -80,6 +82,8 @@ void MapInit()
 	cso_augex::Register();
 
 	cso_awp::Register();
+	cso_svd::Register();
+	cso_svdex::Register();
 	cso_m95::Register();
 	cso_savery::Register();
 	cso_m95tiger::Register();
