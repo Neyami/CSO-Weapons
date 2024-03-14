@@ -323,6 +323,31 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 <BR>
 
 
+* Dragunov SVD
+
+    * ENTITIES
+    * `weapon_svd` - Weapon
+ 
+    * AMMO NAME
+    * `m40a1`
+
+<BR>
+
+
+* SVD Custom
+    * [Video](https://youtu.be/yWXAxLXlhNU)
+
+    * ENTITIES
+    * `weapon_svdex` - Weapon
+    * `svd_rocket` - Projectile
+ 
+    * AMMO NAME
+    * `m40a1`
+    * `ARgrenades`
+
+<BR>
+
+
 # MACHINE GUNS
 * Aeolis
     * [Video](https://youtu.be/Komeh8zz1Jc)
