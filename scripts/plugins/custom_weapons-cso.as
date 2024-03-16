@@ -20,8 +20,9 @@
 
 //Shotguns
 #include "../custom_weapons/cso/weapon_blockas"
-#include "../custom_weapons/cso/weapon_volcano"
 #include "../custom_weapons/cso/weapon_mk3a1"
+#include "../custom_weapons/cso/weapon_volcano"
+#include "../custom_weapons/cso/weapon_qbarrel"
 
 //Submachine Guns
 #include "../custom_weapons/cso/weapon_crow3"
@@ -69,8 +70,9 @@ void MapInit()
 	cso_bloodhunter::Register();
 
 	cso_blockas::Register();
-	cso_volcano::Register();
 	cso_mk3a1::Register();
+	cso_volcano::Register();
+	cso_qbarrel::Register();
 
 	cso_crow3::Register();
 	cso_p90::Register();
