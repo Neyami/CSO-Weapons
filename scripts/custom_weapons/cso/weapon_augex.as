@@ -136,6 +136,7 @@ class weapon_augex : CBaseCSOWeapon
 		info.iSlot			= cso::AUGEX_SLOT - 1;
 		info.iPosition		= cso::AUGEX_POSITION - 1;
 		info.iWeight		= cso::AUGEX_WEIGHT;
+		info.iFlags			= ITEM_FLAG_SELECTONEMPTY | ITEM_FLAG_NOAUTOSWITCHEMPTY;
 
 		return true;
 	}
