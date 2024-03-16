@@ -150,6 +150,7 @@ class weapon_svdex : CBaseCSOWeapon
 		info.iSlot				= cso::SVDEX_SLOT - 1;
 		info.iPosition		= cso::SVDEX_POSITION - 1;
 		info.iWeight			= cso::SVDEX_WEIGHT;
+		info.iFlags			= ITEM_FLAG_SELECTONEMPTY | ITEM_FLAG_NOAUTOSWITCHEMPTY;
 
 		return true;
 	}
