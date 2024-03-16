@@ -101,6 +101,7 @@ class weapon_desperado : CBaseCSOWeapon
 		g_Game.PrecacheModel( MODEL_PLAYER_R );
 		g_Game.PrecacheModel( MODEL_PLAYER_L );
 		g_Game.PrecacheModel( MODEL_WORLD );
+		g_Game.PrecacheModel( cso::SPRITE_HITMARKER );
 
 		for( i = 0; i < pCSOWSounds.length(); ++i )
 			g_SoundSystem.PrecacheSound( pCSOWSounds[i] );
