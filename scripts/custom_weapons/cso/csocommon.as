@@ -36,8 +36,10 @@ const int RIPPER_WEIGHT					= 10;
 const int DUALSWORD_WEIGHT			= 10;
 
 //Pistols
+const int ELITES_SLOT							= 2;
+const int ELITES_POSITION					= 10;
 const int M950_SLOT							= 2;
-const int M950_POSITION					= 10;
+const int M950_POSITION					= 11;
 const int SKULL2_SLOT						= 2;
 const int SKULL2_POSITION				= 12;
 const int BLOODHUNTER_SLOT			= 2;
@@ -45,6 +47,7 @@ const int BLOODHUNTER_POSITION	= 13;
 const int DESPERADO_SLOT				= 2;
 const int DESPERADO_POSITION			= 14;
 
+const int ELITES_WEIGHT					= 5;
 const int M950_WEIGHT						= 10;
 const int SKULL2_WEIGHT					= 10;
 const int BLOODHUNTER_WEIGHT		= 10;
@@ -57,10 +60,13 @@ const int MK3A1_SLOT							= 3;
 const int MK3A1_POSITION					= 11;
 const int VOLCANO_SLOT					= 3;
 const int VOLCANO_POSITION				= 12;
+const int QBARREL_SLOT						= 3;
+const int QBARREL_POSITION				= 13;
 
 const int BLOCKAS_WEIGHT				= 20;
 const int MK3A1_WEIGHT					= 20;
 const int VOLCANO_WEIGHT				= 20;
+const int QBARREL_WEIGHT				= 20;
 
 //SMGs
 const int CROW3_SLOT						= 4;
@@ -690,7 +696,7 @@ int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float fl
 
 				flCurrentDamage *= flDamageModifier;
 			}
-			else// if( tr.pHit.vars.takedamage != DAMAGE_NO/*tr.pHit.vars.FlagBitSet(FL_MONSTER)*/ ) //barnacles don't have FL_MONSTER :aRage:
+			else
 			{
 				if( (iFlags & CSOF_HITMARKER) != 0 )
 				{
