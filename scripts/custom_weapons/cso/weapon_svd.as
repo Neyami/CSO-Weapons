@@ -141,7 +141,7 @@ class weapon_svd : CBaseCSOWeapon
 	void Holster( int skiplocal )
 	{
 		if( m_pPlayer.m_iFOV != 0 )
-			SecondaryAttack();
+			ResetZoom();
 
 		BaseClass.Holster( skiplocal );
 	}
@@ -202,7 +202,7 @@ class weapon_svd : CBaseCSOWeapon
 		{
 			case 0: m_pPlayer.pev.fov = m_pPlayer.m_iFOV = 40; m_pPlayer.m_szAnimExtension = "sniperscope"; break;
 			case 40: m_pPlayer.pev.fov = m_pPlayer.m_iFOV = 10; break;
-			default: m_pPlayer.pev.fov = m_pPlayer.m_iFOV = 0; m_pPlayer.m_szAnimExtension = "sniper"; break;
+			default: ResetZoom(); break;
 		}
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_ITEM, pCSOWSounds[SND_ZOOM], 0.2, 2.4 );
@@ -239,6 +239,12 @@ class weapon_svd : CBaseCSOWeapon
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
 			self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		}
+	}
+
+	void ResetZoom()
+	{
+		m_pPlayer.pev.fov = m_pPlayer.m_iFOV = 0;
+		m_pPlayer.m_szAnimExtension = "sniper";
 	}
 }
 
