@@ -13,10 +13,12 @@
 #include "../custom_weapons/cso/weapon_dualsword"
 
 //Pistols
+#include "../custom_weapons/cso/weapon_elites"
 #include "../custom_weapons/cso/weapon_desperado"
 #include "../custom_weapons/cso/weapon_m950"
 #include "../custom_weapons/cso/weapon_skull2"
 #include "../custom_weapons/cso/weapon_bloodhunter"
+#include "../custom_weapons/cso/weapon_gunkata"
 
 //Shotguns
 #include "../custom_weapons/cso/weapon_blockas"
@@ -64,10 +66,12 @@ void MapInit()
 	cso_ripper::Register();
 	cso_dualsword::Register();
 
+	cso_elites::Register();
 	cso_desperado::Register();
 	cso_m950::Register();
 	cso_skull2::Register();
 	cso_bloodhunter::Register();
+	cso_gunkata::Register();
 
 	cso_blockas::Register();
 	cso_mk3a1::Register();
