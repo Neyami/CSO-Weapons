@@ -21,9 +21,9 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 `#include "../custom_weapons/cso/csobaseweapon"`  
 `#include "../custom_weapons/cso/csocommon"`  
 
-Set bUseDroppedItemEffect to true in csocommon.as if you want to use CSO-like dropped weapons  
+Set bUseDroppedItemEffect to false in csocommon.as if you don't want to use CSO-like dropped weapons.  
 Change USE_CSLIKE_RECOIL and USE_PENETRATION in weapon_aug and weapon_augex to your preference.  
-Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be switched with TertiaryAttack
+Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be switched with TertiaryAttack.
 
 <BR>
 
@@ -84,6 +84,16 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
 
 # PISTOLS
+* Beretta 92G Elite II
+
+    * ENTITIES
+    * `weapon_elites` - Weapon
+ 
+    * AMMO NAME
+    * `9mm`
+
+<BR>
+
 * Calico M950
     * [Video](https://youtu.be/unMsubpPTUQ)
 
@@ -129,6 +139,22 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
     * `357`
 
 <BR>
+
+* Dual Beretta Gunslinger
+    * [Video](https://youtu.be/mQSxw8vazlg) - [Video2](https://youtu.be/dNz_p7xw-G0)
+
+    * ENTITIES
+    * `weapon_gunkata` - Weapon
+    * `ef_gunkata` - Wooshing Effect
+    * `ef_gunkatablast` - Blast effect
+    * `ef_gunkataweapon` - First person view extra weapon animations
+    * `ef_gunkatashadow` - Shadow Effect
+ 
+    * AMMO NAME
+    * `44MAG`
+
+<BR>
+
 
 
 # SHOTGUNS
