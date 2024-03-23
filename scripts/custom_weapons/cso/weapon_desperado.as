@@ -1,5 +1,6 @@
 namespace cso_desperado
 {
+const bool USE_INFINITE_AMMO				= true; //The original has infinite ammo
 
 const int CSOW_DEFAULT_GIVE				= 7;
 const int CSOW_MAX_CLIP 						= 7;
@@ -69,7 +70,6 @@ class weapon_desperado : CBaseCSOWeapon
 {
 	private uint8 m_iMode;
 	private uint8 m_iInRun;
-	private bool m_bInfiniteAmmo = true; //The original has infinite ammo
 
 	void Spawn()
 	{
@@ -121,11 +121,11 @@ class weapon_desperado : CBaseCSOWeapon
 
 	bool GetItemInfo( ItemInfo& out info )
 	{
-		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
+		info.iMaxAmmo1	= CSOW_MAX_AMMO;
 		info.iMaxClip 		= CSOW_MAX_CLIP;
-		info.iSlot			= cso::DESPERADO_SLOT - 1;
+		info.iSlot				= cso::DESPERADO_SLOT - 1;
 		info.iPosition		= cso::DESPERADO_POSITION - 1;
-		info.iWeight		= cso::DESPERADO_WEIGHT;
+		info.iWeight			= cso::DESPERADO_WEIGHT;
 		info.iFlags			= ITEM_FLAG_NOAUTOSWITCHEMPTY | ITEM_FLAG_SELECTONEMPTY;
 
 		return true;
@@ -137,8 +137,8 @@ class weapon_desperado : CBaseCSOWeapon
 			return false;
 
 		@m_pPlayer = pPlayer;
-		if( m_bInfiniteAmmo )
-			m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType, CSOW_MAX_AMMO );
+		if( USE_INFINITE_AMMO )
+			m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType, 999 );
 
 		NetworkMessage m( MSG_ONE, NetworkMessages::WeapPickup, pPlayer.edict() );
 			m.WriteLong( g_ItemRegistry.GetIdForName("weapon_desperado") );
@@ -245,7 +245,7 @@ class weapon_desperado : CBaseCSOWeapon
 	{
 		if( self.m_iClip >= CSOW_MAX_CLIP or (m_pPlayer.pev.button & IN_ATTACK) != 0 ) return;
 
-		if( !m_bInfiniteAmmo )
+		if( !USE_INFINITE_AMMO )
 		{
 			if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 )
 				return;
@@ -275,7 +275,7 @@ class weapon_desperado : CBaseCSOWeapon
 
 	void FastReload()
 	{
-		if( !m_bInfiniteAmmo )
+		if( !USE_INFINITE_AMMO )
 		{
 			int ammo = m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType );
 

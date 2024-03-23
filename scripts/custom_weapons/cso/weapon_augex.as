@@ -133,9 +133,9 @@ class weapon_augex : CBaseCSOWeapon
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO1;
 		info.iMaxAmmo2 	= CSOW_MAX_AMMO2;
 		info.iMaxClip 		= CSOW_MAX_CLIP;
-		info.iSlot			= cso::AUGEX_SLOT - 1;
+		info.iSlot				= cso::AUGEX_SLOT - 1;
 		info.iPosition		= cso::AUGEX_POSITION - 1;
-		info.iWeight		= cso::AUGEX_WEIGHT;
+		info.iWeight			= cso::AUGEX_WEIGHT;
 		info.iFlags			= ITEM_FLAG_SELECTONEMPTY | ITEM_FLAG_NOAUTOSWITCHEMPTY;
 
 		return true;

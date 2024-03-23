@@ -140,6 +140,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 	{
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
 		CSprite@ pMuzzle = g_EntityFuncs.CreateSprite( szSprite, m_pPlayer.GetGunPosition() + g_Engine.v_forward * flForward + g_Engine.v_right * flRight + g_Engine.v_up * flUp, true );
+		@pMuzzle.pev.owner = m_pPlayer.edict();
 		pMuzzle.SetScale( flScale );
 		pMuzzle.SetTransparency( kRenderTransAdd, 255, 255, 255, int(flRenderamt), kRenderFxNone );
 

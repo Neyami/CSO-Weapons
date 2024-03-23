@@ -223,16 +223,6 @@ class weapon_m134hero : CBaseCSOWeapon
 		BaseClass.Holster( skipLocal );
 	}
 
-	~weapon_m134hero()
-	{
-		self.m_fInReload = false;
-		SetThink(null);
-		m_iState = STATE_NONE;
-		m_bOverheated = false;
-		m_bRapidMode = false;
-		g_PlayerFuncs.HudToggleElement( m_pPlayer, CSOW_HUD_CHANNEL_CD, false );
-	}
-
 	void PrimaryAttack()
 	{
 		if( m_bOverheated ) return;

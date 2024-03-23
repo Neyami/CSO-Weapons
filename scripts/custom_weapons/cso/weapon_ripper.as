@@ -360,8 +360,12 @@ class weapon_ripper : CBaseCSOWeapon
 
 				pTarget.TakeDamage( m_pPlayer.pev, m_pPlayer.pev, flDamage, DMG_SLASH ); 
 				//pTarget.pev.solid = SOLID_NOT; //TODO if multiple mobs are close to each other, they don't get knocked back. Spawn an entity that checks if the mob is still alive and reset pev.solid ??
-				pTarget.pev.velocity = (pTarget.Center() - m_pPlayer.pev.origin).Normalize() * flKnockback;
-				pTarget.pev.velocity.z += 200.0;
+
+				if( cso::g_arrsKnockbackImmuneMobs.find(pTarget.GetClassname()) < 0 )
+				{
+					pTarget.pev.velocity = (pTarget.Center() - m_pPlayer.pev.origin).Normalize() * flKnockback;
+					pTarget.pev.velocity.z += 200.0;
+				}
 			}
 
 			g_Utility.BloodDrips( pTarget.Center(), g_vecZero, pTarget.BloodColor(), int(Math.min(Math.max(3,flDamage/10),16)) );

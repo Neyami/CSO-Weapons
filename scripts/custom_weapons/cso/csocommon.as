@@ -46,12 +46,15 @@ const int BLOODHUNTER_SLOT			= 2;
 const int BLOODHUNTER_POSITION	= 13;
 const int DESPERADO_SLOT				= 2;
 const int DESPERADO_POSITION			= 14;
+const int GUNKATA_SLOT						= 2;
+const int GUNKATA_POSITION				= 15;
 
 const int ELITES_WEIGHT					= 5;
 const int M950_WEIGHT						= 10;
 const int SKULL2_WEIGHT					= 10;
 const int BLOODHUNTER_WEIGHT		= 10;
 const int DESPERADO_WEIGHT			= 10;
+const int GUNKATA_WEIGHT				= 10;
 
 //Shotguns
 const int BLOCKAS_SLOT						= 3;
@@ -149,6 +152,10 @@ const float CSO_AZ_MULTIPLIER	= 1.2f; //Anti-Zombie
 
 const array<string> g_arrsZombies =
 {
+	"npc_zombienormal",
+	"npc_zombielight",
+	"npc_zombieheavy",
+	"npc_zombievenomsting",
 	"monster_gonome",
 	"monster_zombie",
 	"monster_zombie_barney",
@@ -696,9 +703,9 @@ int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, float fl
 
 				flCurrentDamage *= flDamageModifier;
 			}
-			else
+			else if( pEntity.pev.takedamage != DAMAGE_NO )
 			{
-				if( (iFlags & CSOF_HITMARKER) != 0 )
+				if( (iFlags & CSOF_HITMARKER) != 0 and (pEntity.pev.flags & FL_CLIENT) == 0 )
 				{
 					Vector vecOrigin = pPlayer.pev.origin;
 					get_position( pPlayer.edict(), 50.0, -0.05, 1.0, vecOrigin );
