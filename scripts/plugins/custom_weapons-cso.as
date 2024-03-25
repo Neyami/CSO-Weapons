@@ -36,6 +36,7 @@
 #include "../custom_weapons/cso/weapon_csobow"
 #include "../custom_weapons/cso/weapon_failnaught"
 #include "../custom_weapons/cso/weapon_augex"
+#include "../custom_weapons/cso/weapon_guitar"
 
 //Sniper Rifles
 #include "../custom_weapons/cso/weapon_awp"
@@ -78,14 +79,15 @@ void MapInit()
 	cso_volcano::Register();
 	cso_qbarrel::Register();
 
-	cso_crow3::Register();
 	cso_p90::Register();
+	cso_crow3::Register();
 
 	cso_aug::Register();
 	cso_plasmagun::Register();
 	cso_bow::Register();
 	cso_failnaught::Register();
 	cso_augex::Register();
+	cso_guitar::Register();
 
 	cso_awp::Register();
 	cso_svd::Register();
