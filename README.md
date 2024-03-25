@@ -22,7 +22,7 @@ If you don't use my plugin, then you'll have to put this in another plugin that 
 `#include "../custom_weapons/cso/csocommon"`  
 
 Set bUseDroppedItemEffect to false in csocommon.as if you don't want to use CSO-like dropped weapons.  
-Change USE_CSLIKE_RECOIL and USE_PENETRATION in weapon_aug and weapon_augex to your preference.  
+Change USE_CSLIKE_RECOIL and USE_PENETRATION in some weapons to your preference.  
 Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be switched with TertiaryAttack.
 
 <BR>
@@ -296,6 +296,20 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
 
 <BR>
+
+
+* Lightning AR-1
+    * [Video](https://youtu.be/jmp9SVYchD0)
+
+    * ENTITIES
+    * `weapon_guitar` - Weapon
+    * `ef_guitar` - Note effects
+ 
+    * AMMO NAME
+    * `556`
+
+<BR>
+
 
 
 # SNIPER RIFLES
