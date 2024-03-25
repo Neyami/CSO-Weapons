@@ -94,12 +94,15 @@ const int FAILNAUGHT_SLOT				= 5;
 const int FAILNAUGHT_POSITION		= 13;
 const int AUGEX_SLOT							= 5;
 const int AUGEX_POSITION					= 14;
+const int GUITAR_SLOT						= 5;
+const int GUITAR_POSITION				= 15;
 
 const int AUG_WEIGHT						= 25;
 const int PLASMAGUN_WEIGHT			= 20;
 const int CSOBOW_WEIGHT				= 10;
 const int FAILNAUGHT_WEIGHT			= 10;
 const int AUGEX_WEIGHT					= 30;
+const int GUITAR_WEIGHT					= 30;
 
 //Sniper Rifles
 const int AWP_SLOT							= 6;
