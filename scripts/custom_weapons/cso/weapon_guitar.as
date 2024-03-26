@@ -231,16 +231,6 @@ class weapon_guitar : CBaseCSOWeapon
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE;
 	}
 
-	void TertiaryAttack()
-	{
-		self.m_flNextTertiaryAttack = g_Engine.time + 0.5;
-
-		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
-		Vector vecOrigin = m_pPlayer.GetGunPosition() + g_Engine.v_forward * 64;
-
-		SpawnNote( vecOrigin, EFFECT_RELOAD );
-	}
-
 	void Reload()
 	{
 		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 or self.m_iClip >= CSOW_MAX_CLIP or (m_pPlayer.pev.button & IN_ATTACK) != 0 )
