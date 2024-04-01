@@ -7,6 +7,7 @@ const string CSOW_NAME								= "weapon_guitar";
 const int CSOW_DEFAULT_GIVE						= 30;
 const int CSOW_MAX_CLIP 								= 30;
 const int CSOW_MAX_AMMO							= 90;
+const int CSOW_TRACERFREQ							= 2;
 const float CSOW_DAMAGE								= 23; //23, 54, 61
 const float CSOW_TIME_DELAY						= 0.15;
 const float CSOW_TIME_DRAW						= 1.0;
@@ -22,10 +23,12 @@ const Vector2D CSOW_RECOIL_STANDING_X	= Vector2D(-0.5, -1);
 const Vector2D CSOW_RECOIL_STANDING_Y	= Vector2D(0, 0);
 const Vector2D CSOW_RECOIL_DUCKING_X	= Vector2D(0, 0);
 const Vector2D CSOW_RECOIL_DUCKING_Y	= Vector2D(0, 0);
-const Vector CSOW_SHELL_ORIGIN				= Vector(17.0, -8.0, -4.0); //forward, right, up
+//const Vector CSOW_SHELL_ORIGIN				= Vector(17.0, -8.0, -4.0); //forward, right, up
+const Vector CSOW_SHELL_ORIGIN				= Vector(14.963318, -5.269531, -2.839294); //forward, right, up
 const Vector CSOW_NOTE_OFFSET_DRAW		= Vector(24.0, -8.0, -4.0);
 const Vector CSOW_NOTE_OFFSET_SHOOT	= Vector(17.0, -8.0, -4.0);
 const Vector CSOW_NOTE_OFFSET_RELOAD	= Vector(24.0, -8.0, -4.0);
+const Vector CSOW_OFFSETS_MUZZLE			= Vector( 37.206451, 5.806274, -3.627472 );
 
 const string CSOW_ANIMEXT							= "m16"; //ak47
 
@@ -72,6 +75,14 @@ enum csoweffect_e
 	EFFECT_DRAW = 0,
 	EFFECT_SHOOT,
 	EFFECT_RELOAD
+};
+
+enum csowattach_e
+{
+	ATTACH_MUZZLE = 0,
+	ATTACH_SHELLEJECT,
+	ATTACH_NOTE1,
+	ATTACH_NOTE2
 };
 
 class weapon_guitar : CBaseCSOWeapon
@@ -181,6 +192,7 @@ class weapon_guitar : CBaseCSOWeapon
 
 			Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
 			Vector vecOrigin = m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_NOTE_OFFSET_DRAW.x - g_Engine.v_right * CSOW_NOTE_OFFSET_DRAW.y + g_Engine.v_up * CSOW_NOTE_OFFSET_DRAW.z;
+
 			SpawnNote( vecOrigin, EFFECT_DRAW );
 
 			return bResult;
@@ -215,7 +227,7 @@ class weapon_guitar : CBaseCSOWeapon
 			flDamage = self.m_flCustomDmg;
 
 		int iPenetration = USE_PENETRATION ? 2 : 1;
-		cso::FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), 8192, iPenetration, BULLET_PLAYER_556MM, flDamage, 1.0, EHandle(m_pPlayer), m_pPlayer.random_seed );
+		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), iPenetration, BULLET_PLAYER_556MM, CSOW_TRACERFREQ, flDamage, 1.0, CSOF_TRACER, CSOW_OFFSETS_MUZZLE );
 
 		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x - g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell, TE_BOUNCE_SHELL, false );
 

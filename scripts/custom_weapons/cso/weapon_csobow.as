@@ -1,5 +1,8 @@
 namespace cso_bow
 {
+
+const bool USE_PENETRATION					= true;
+
 const int CSOW_DEFAULT_GIVE					= 6;
 const int CSOW_MAX_AMMO						= 60;
 const float CSOW_DAMAGE1						= 70; //78
@@ -306,7 +309,8 @@ class weapon_csobow : CBaseCSOWeapon
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_CHARGE_SHOOT], VOL_NORM, ATTN_NORM );
 
-		cso::FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, 0, 4096, 2, BULLET_PLAYER_CSOBOW, CSOW_DAMAGE2, 1.0, EHandle(m_pPlayer), m_pPlayer.random_seed );
+		int iPenetration = USE_PENETRATION ? 2 : 1;
+		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, 0, iPenetration, BULLET_PLAYER_CSOBOW, 0, CSOW_DAMAGE2, 1.0 );
 		Vector2D vec2dRecoilX = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_X : CSOW_RECOIL_STANDING_X;
 		Vector2D vec2dRecoilY = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_Y : CSOW_RECOIL_STANDING_Y;
 

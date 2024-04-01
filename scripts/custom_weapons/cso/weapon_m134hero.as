@@ -416,6 +416,7 @@ class weapon_m134hero : CBaseCSOWeapon
 				{
 					m_bFired = true;
 
+					HandleAmmoReduction( 1 );
 					HandleRecoil( CSOW_RECOIL_STANDING_X, CSOW_RECOIL_STANDING_Y, CSOW_RECOIL_DUCKING_X, CSOW_RECOIL_DUCKING_Y );
 					HandleBrassEject();
 					g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, 0.52, 0, 94 + Math.RandomLong(0, 15) );
@@ -437,8 +438,6 @@ class weapon_m134hero : CBaseCSOWeapon
 
 					m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, CSOW_DAMAGE );
 					DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, true );
-
-					HandleAmmoReduction( 1 );
 				}
 				else
 				{

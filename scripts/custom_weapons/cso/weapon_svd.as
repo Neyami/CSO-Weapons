@@ -7,6 +7,7 @@ const string CSOW_NAME						= "weapon_svd";
 const int CSOW_DEFAULT_GIVE				= 10;
 const int CSOW_MAX_CLIP 						= 10;
 const int CSOW_MAX_AMMO					= 90;
+const int CSOW_TRACERFREQ					= 0;
 const float CSOW_DAMAGE						= 99;
 const float CSOW_TIME_DELAY1				= 0.6;
 const float CSOW_TIME_DELAY2				= 0.3;
@@ -184,8 +185,8 @@ class weapon_svd : CBaseCSOWeapon
 		if( self.m_flCustomDmg > 0 )
 			flDamage = self.m_flCustomDmg;
 
-		int iPenetration = USE_PENETRATION ? 2 : 0;
-		cso::FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), 8192, iPenetration, BULLET_PLAYER_762MM, flDamage, 1.0, EHandle(m_pPlayer), m_pPlayer.random_seed, CSOF_ALWAYSDECAL );
+		int iPenetration = USE_PENETRATION ? 2 : 1;
+		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), iPenetration, BULLET_PLAYER_762MM, CSOW_TRACERFREQ, flDamage, 1.0, CSOF_ALWAYSDECAL );
 
 		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x + g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell, TE_BOUNCE_SHELL, false, true );
 

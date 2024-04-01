@@ -1,24 +1,27 @@
 namespace cso_awp
 {
 
-const int CSOW_DEFAULT_GIVE					= 10;
-const int CSOW_MAX_CLIP 						= 10;
-const int CSOW_MAX_AMMO						= 30;
-const float CSOW_DAMAGE						= 112;
-const float CSOW_TIME_DELAY1					= 1.45;
-const float CSOW_TIME_DELAY2					= 0.3;
-const float CSOW_TIME_DRAW					= 1.45;
-const float CSOW_TIME_IDLE						= 60.0;
-const float CSOW_TIME_RELOAD				= 3.0;
-const float CSOW_RECOIL							= 2.0;
-const Vector CSOW_SHELL_ORIGIN				= Vector(16.0, 9.0, -9.0); //forward, right, up
+const bool USE_PENETRATION				= true;
 
-const string CSOW_ANIMEXT						= "sniper"; //rifle
+const int CSOW_DEFAULT_GIVE			= 10;
+const int CSOW_MAX_CLIP 					= 10;
+const int CSOW_MAX_AMMO				= 30;
+const int CSOW_TRACERFREQ				= 0;
+const float CSOW_DAMAGE					= 112;
+const float CSOW_TIME_DELAY1			= 1.45;
+const float CSOW_TIME_DELAY2			= 0.3;
+const float CSOW_TIME_DRAW			= 1.45;
+const float CSOW_TIME_IDLE				= 60.0;
+const float CSOW_TIME_RELOAD		= 3.0;
+const float CSOW_RECOIL					= 2.0;
+const Vector CSOW_SHELL_ORIGIN	= Vector(16.0, 9.0, -9.0); //forward, right, up
 
-const string MODEL_VIEW							= "models/custom_weapons/cso/v_awp.mdl";
-const string MODEL_PLAYER						= "models/custom_weapons/cso/p_awp.mdl";
-const string MODEL_WORLD						= "models/custom_weapons/cso/w_awp.mdl";
-const string MODEL_SHELL							= "models/custom_weapons/cso/rshell_big.mdl";
+const string CSOW_ANIMEXT				= "sniper"; //rifle
+
+const string MODEL_VIEW					= "models/custom_weapons/cso/v_awp.mdl";
+const string MODEL_PLAYER				= "models/custom_weapons/cso/p_awp.mdl";
+const string MODEL_WORLD				= "models/custom_weapons/cso/w_awp.mdl";
+const string MODEL_SHELL					= "models/custom_weapons/cso/rshell_big.mdl";
 
 enum csow_e
 {
@@ -201,7 +204,8 @@ class weapon_awp : CBaseCSOWeapon
 			flDamage = self.m_flCustomDmg;
 
 		Vector vecSrc = m_pPlayer.GetGunPosition();
-		cso::FireBullets3( vecSrc, g_Engine.v_forward, flSpread, 8192, 3, BULLET_PLAYER_338MAG, flDamage, 0.99, EHandle(m_pPlayer), m_pPlayer.random_seed, CSOF_ALWAYSDECAL );
+		int iPenetration = USE_PENETRATION ? 3 : 1;
+		FireBullets3( vecSrc, g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_338MAG, CSOW_TRACERFREQ, flDamage, 0.99, CSOF_ALWAYSDECAL );
 
 		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT3), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 

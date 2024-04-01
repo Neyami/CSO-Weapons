@@ -11,7 +11,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		set { self.m_hPlayer = EHandle(@value); }
 	}
 
-	protected EHandle m_eDropEffect;
+	protected EHandle m_hDropEffect;
 	/*protected EHandle m_hDropEffect;
 	protected CBaseEntity@ m_pDropEffect
 	{
@@ -19,8 +19,30 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		set { m_hDropEffect = EHandle(@value); }
 	}*/
 
+	protected EHandle m_hAttachEnt;
+	protected CBaseEntity@ m_pAttachEnt
+	{
+		get const { return m_hAttachEnt.GetEntity(); }
+		set { m_hAttachEnt = EHandle(@value); }
+	}
+
+	/*protected EHandle m_hDynamicEnt;
+	protected CBaseEntity@ m_pDynamicEnt
+	{
+		get const { return m_hDynamicEnt.GetEntity(); }
+		set { m_hDynamicEnt = EHandle(@value); }
+	}*/
+
+	protected EHandle m_hDynamicEnt;
+	protected CSprite@ m_pDynamicEnt
+	{
+		get const { return cast<CSprite@>(m_hDynamicEnt.GetEntity()); }
+		set { m_hDynamicEnt = EHandle(@value); }
+	}
+
 	int m_iWeaponType;
 	int m_iShell;
+	private int tracerCount = 0;
 	bool m_bSwitchHands = false; //limit to models with all 3 hands for now
 
 	//For CS-Like
@@ -155,6 +177,56 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		pMuzzle.AnimateAndDie( flFramerate );
 	}
 
+	/*void SpawnDynamicEnt( string szSprite, Vector vecOrigin, float m_flRemoveTime, float flScale, float flRenderamt, float flFramerate, float flRotation = 0.0 )
+	{
+		CBaseEntity@ pDynamicEnt = g_EntityFuncs.Create( "ent_dynamic", vecOrigin, g_vecZero, true, m_pPlayer.edict() );
+		//cso::ent_dynamic@ pDynamicEnt = cast<cso::ent_dynamic@>(CastToScriptClass(cbeDynamicEnt));
+
+		if( pDynamicEnt !is null )
+		{
+			g_EntityFuncs.SetModel( pDynamicEnt, szSprite );
+
+			pDynamicEnt.pev.scale = flScale;
+			pDynamicEnt.pev.rendermode = kRenderTransAdd;
+			pDynamicEnt.pev.renderamt = flRenderamt;
+			pDynamicEnt.pev.framerate = flFramerate;
+			//pDynamicEnt.m_flRemoveTime = g_Engine.time + m_flRemoveTime;
+			pDynamicEnt.pev.dmg = g_Engine.time + m_flRemoveTime;
+
+			if( flRotation > 0.0 )
+			{
+				pDynamicEnt.KeyValue( "vp_type", "VP_TYPE::VP_ORIENTATED" );
+				pDynamicEnt.pev.angles = Vector( 0.0, 0.0, flRotation );
+			}
+
+			g_EntityFuncs.DispatchSpawn( pDynamicEnt.edict() );
+
+			@m_pDynamicEnt = pDynamicEnt;
+		}
+	}*/
+
+	void SpawnDynamicEnt( string szSprite, Vector vecOrigin, float m_flRemoveTime, float flScale, float flRenderamt, float flFramerate, float flRotation = 0.0 )
+	{
+		@m_pDynamicEnt = g_EntityFuncs.CreateSprite( szSprite, vecOrigin, true, flFramerate);
+		@m_pDynamicEnt.pev.owner = m_pPlayer.edict();
+		m_pDynamicEnt.SetScale( flScale );
+		m_pDynamicEnt.SetTransparency( kRenderTransAdd, 255, 255, 255, int(flRenderamt), kRenderFxNone );
+
+		if( flRotation > 0.0 )
+		{
+			m_pDynamicEnt.KeyValue( "vp_type", "VP_TYPE::VP_ORIENTATED" );
+			m_pDynamicEnt.pev.angles = Vector( 0.0, 0.0, flRotation );
+		}
+
+		m_pDynamicEnt.AnimateAndDie( flFramerate );
+	}
+
+	void RemoveDynamicEnc()
+	{
+		if( m_pDynamicEnt !is null )
+			g_EntityFuncs.Remove( m_pDynamicEnt );
+	}
+
 	void HandleAmmoReduction( int iPrimaryClip = 0, int iPrimaryAmmo = 0, int iSecondaryClip = 0, int iSecondaryAmmo = 0 )
 	{
 		if( iPrimaryClip > 0 )
@@ -194,6 +266,43 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 
 		m_pPlayer.pev.punchangle.x = Math.RandomFloat( vec2dRecoilX.x, vec2dRecoilX.y );
 		m_pPlayer.pev.punchangle.y = Math.RandomFloat( vec2dRecoilY.x, vec2dRecoilY.y );
+	}
+
+	void PlayWeaponAnim( int iAnim, int skiplocal = 0, int body = 0 )
+	{
+		self.SendWeaponAnim( iAnim, 0, body );
+
+		if( m_pAttachEnt is null ) SpawnAttachmentEnt();
+
+		m_pAttachEnt.pev.sequence = iAnim;
+	}
+
+	void SpawnAttachmentEnt( int iAnim = -1 )
+	{
+		if( m_pAttachEnt !is null ) RemoveAttachmentEnt();
+
+		Vector vecSpawnAngles = m_pPlayer.pev.v_angle;
+		vecSpawnAngles.x = -vecSpawnAngles.x;
+
+		@m_pAttachEnt = g_EntityFuncs.Create( "ent_weaponattachment", m_pPlayer.GetGunPosition(), g_vecZero, true, m_pPlayer.edict() );
+
+		g_EntityFuncs.SetModel( m_pAttachEnt, m_pPlayer.pev.viewmodel );
+		g_EntityFuncs.DispatchSpawn( m_pAttachEnt.edict() );
+
+		if( iAnim >= 0 ) m_pAttachEnt.pev.sequence = iAnim;
+	}
+
+	void RemoveAttachmentEnt()
+	{
+		if( m_pAttachEnt !is null )
+			g_EntityFuncs.Remove( m_pAttachEnt );
+	}
+
+	void GetAttachment( int iAttachment, Vector &out vecOrigin, Vector &out vecAngles )
+	{
+		if( m_pAttachEnt is null ) SpawnAttachmentEnt();
+
+		g_EngineFuncs.GetAttachment( m_pAttachEnt.edict(), iAttachment, vecOrigin, vecAngles );
 	}
 
 	//For CS-Like
@@ -254,10 +363,10 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 	{
 		if( cso::bUseDroppedItemEffect )
 		{
-			if( pev.owner is null and m_eDropEffect.GetEntity() is null and pev.velocity == g_vecZero )
+			if( pev.owner is null and m_hDropEffect.GetEntity() is null and pev.velocity == g_vecZero )
 			{
 				CBaseEntity@ cbeGunDrop = g_EntityFuncs.Create( "ef_gundrop", pev.origin, g_vecZero, false, self.edict() );
-				m_eDropEffect = EHandle( cbeGunDrop );
+				m_hDropEffect = EHandle( cbeGunDrop );
 				cso::ef_gundrop@ pGunDrop = cast<cso::ef_gundrop@>(CastToScriptClass(cbeGunDrop));
 				pGunDrop.m_hOwner = EHandle( self );
 				pGunDrop.pev.movetype	= MOVETYPE_FOLLOW;
@@ -268,6 +377,523 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		}
 
 		BaseClass.Think();
+	}
+
+	//From cstrike combat.cpp Vector CBaseEntity::FireBullets3(Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, int iDamage, float flRangeModifier, entvars_t *pevAttacker, bool bPistol, int shared_rand)
+	//FireBullets3( vecSrc, vecAiming, 0, 4096, 2, BULLET_PLAYER_50AE, 54, 0.81f, m_pPlayer.edict(), true, m_pPlayer.random_seed );
+	//TODO make bullet decals on the otherside of a penetrated wall
+	//TODO make bullet decals and smoke when hitting a wall that is further than flCurrentDistance ??
+	int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, int iPenetration, int iBulletType, int iTracerFreq, float flDamage, float flRangeModifier, int iFlags = 0, Vector vecMuzzleOrigin = g_vecZero )
+	{
+		float flDistance = 8192.0;
+		int shared_rand = m_pPlayer.random_seed;
+
+		const int HITGROUP_SHIELD = HITGROUP_RIGHTLEG + 1;
+		float flPenetrationPower;
+		float flPenetrationDistance;
+		float flCurrentDamage = flDamage;
+		float flCurrentDistance;
+		TraceResult tr, tr2;
+		Vector vecRight = g_Engine.v_right;
+		Vector vecUp = g_Engine.v_up;
+		CBaseEntity@ pEntity;
+		bool bHitMetal = false;
+		//int iSparksAmount; //UNUSED??
+		int iTrail = TRAIL_NONE;
+		Vector vecTrailOrigin = vecSrc;
+		if( vecMuzzleOrigin != g_vecZero )
+			vecTrailOrigin = vecTrailOrigin + g_Engine.v_forward * vecMuzzleOrigin.x + g_Engine.v_right * vecMuzzleOrigin.y + g_Engine.v_up * vecMuzzleOrigin.z;
+
+		int iBulletDecal = BULLET_NONE;
+		int iEnemiesHit = 0;
+
+		switch( iBulletType )
+		{
+			case BULLET_PLAYER_9MM:
+			{
+				flPenetrationPower = 21;
+				flPenetrationDistance = 800;
+				//iSparksAmount = 15;
+				flCurrentDamage += (-4 + Math.RandomLong(0, 10));
+				iBulletDecal = BULLET_PLAYER_9MM;
+				break;
+			}
+
+			case BULLET_PLAYER_45ACP:
+			{
+				flPenetrationPower = 15;
+				flPenetrationDistance = 500;
+				//iSparksAmount = 20;
+				flCurrentDamage += (-2 + Math.RandomLong(0, 4));
+				break;
+			}
+
+			case BULLET_PLAYER_50AE:
+			{
+				flPenetrationPower = 30;
+				flPenetrationDistance = 1000;
+				//iSparksAmount = 20;
+				flCurrentDamage += (-4 + Math.RandomLong(0, 10));
+				iBulletDecal = BULLET_PLAYER_EAGLE;
+				break;
+			}
+
+			case BULLET_PLAYER_762MM:
+			{
+				flPenetrationPower = 39;
+				flPenetrationDistance = 5000;
+				//iSparksAmount = 30;
+				flCurrentDamage += (-2 + Math.RandomLong(0, 4));
+				iBulletDecal = BULLET_PLAYER_SNIPER;
+				break;
+			}
+
+			case BULLET_PLAYER_556MM:
+			{
+				flPenetrationPower = 35;
+				flPenetrationDistance = 4000;
+				//iSparksAmount = 30;
+				flCurrentDamage += (-3 + Math.RandomLong(0, 6));
+				iBulletDecal = BULLET_PLAYER_SAW;
+				break;
+			}
+
+			case BULLET_PLAYER_338MAG:
+			{
+				flPenetrationPower = 45;
+				flPenetrationDistance = 8000;
+				//iSparksAmount = 30;
+				flCurrentDamage += (-4 + Math.RandomLong(0, 8));
+				iBulletDecal = BULLET_PLAYER_SNIPER;
+				break;
+			}
+
+			case BULLET_PLAYER_50BMG:
+			{
+				flPenetrationPower = 112;
+				flPenetrationDistance = 8000;
+				//iSparksAmount = 35;
+				flCurrentDamage += (-2 + Math.RandomLong(4, 12));
+				iBulletDecal = BULLET_PLAYER_SNIPER;
+				break;
+			}
+
+			case BULLET_PLAYER_57MM:
+			{
+				flPenetrationPower = 30;
+				flPenetrationDistance = 2000;
+				//iSparksAmount = 20;
+				flCurrentDamage += (-4 + Math.RandomLong(0, 10));
+				iBulletDecal = BULLET_PLAYER_EAGLE;
+				break;
+			}
+
+			case BULLET_PLAYER_357SIG:
+			{
+				flPenetrationPower = 25;
+				flPenetrationDistance = 800;
+				//iSparksAmount = 20;
+				flCurrentDamage += (-4 + Math.RandomLong(0, 10));
+				iBulletDecal = BULLET_PLAYER_357;
+				break;
+			}
+
+			case BULLET_PLAYER_44MAG:
+			{
+				flPenetrationPower = 25;
+				flPenetrationDistance = 800;
+				//iSparksAmount = 20;
+				//flCurrentDamage += (-4 + Math.RandomLong(0, 8));
+				iBulletDecal = BULLET_PLAYER_EAGLE;
+				break;
+			}
+
+			case BULLET_PLAYER_CSOBOW:
+			{
+				flPenetrationPower = 30;
+				flPenetrationDistance = 1500;
+				//iSparksAmount = 20;
+				flCurrentDamage += (-2 + Math.RandomLong(0, 4));
+				iTrail = TRAIL_CSOBOW;
+				iBulletDecal = BULLET_PLAYER_MP5;
+				break;
+			}
+
+			case BULLET_PLAYER_FAILNAUGHT:
+			{
+				flPenetrationPower = 35;
+				flPenetrationDistance = 2000;
+				//iSparksAmount = 20;
+				flCurrentDamage += (-2 + Math.RandomLong(0, 4));
+				iTrail = TRAIL_FAILNAUGHT;
+				iBulletDecal = BULLET_PLAYER_MP5;
+				break;
+			}
+
+			case BULLET_PLAYER_M95TIGER:
+			{
+				flPenetrationPower = 112;
+				flPenetrationDistance = 8000;
+				//iSparksAmount = 35;
+				flCurrentDamage += (-2 + Math.RandomLong(4, 12));
+				iTrail = TRAIL_M95TIGER;
+				iBulletDecal = BULLET_PLAYER_SNIPER;
+				break;
+			}
+
+			default:
+			{
+				flPenetrationPower = 0;
+				flPenetrationDistance = 0;
+				break;
+			}
+		}
+
+		float x, y;
+
+		x = g_PlayerFuncs.SharedRandomFloat(shared_rand, -0.5, 0.5) + g_PlayerFuncs.SharedRandomFloat(shared_rand + 1, -0.5, 0.5);
+		y = g_PlayerFuncs.SharedRandomFloat(shared_rand + 2, -0.5, 0.5) + g_PlayerFuncs.SharedRandomFloat(shared_rand + 3, -0.5, 0.5);
+
+		Vector vecDir = vecDirShooting + x * flSpread * vecRight + y * flSpread * vecUp;
+		Vector vecEnd = vecSrc + vecDir * flDistance;
+		Vector vecOldSrc;
+		Vector vecNewSrc;
+		float flDamageModifier = 0.5;
+
+		while( iPenetration > 0 ) //!= 0 seems unsafe
+		{
+			g_WeaponFuncs.ClearMultiDamage();
+			g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr );
+
+			//char cTextureType = UTIL_TextureHit( tr, vecSrc, vecEnd );
+			string sTexture = g_Utility.TraceTexture( null, vecSrc, vecEnd );
+			char cTextureType = g_SoundSystem.FindMaterialType(sTexture);
+			bool bSparks = false;
+
+			if( cso::pBPTextures.find( sTexture ) != -1 )
+			{
+				g_Utility.Ricochet( tr.vecEndPos, 1.0f );
+				return 0;
+				//return tr.vecEndPos;
+			}
+
+			if( cTextureType == CHAR_TEX_METAL )
+			{
+				bSparks = true;
+				bHitMetal = true;
+				flPenetrationPower *= 0.15f;
+				flDamageModifier = 0.2f;
+			}
+			else if( cTextureType == CHAR_TEX_CONCRETE )
+			{
+				flPenetrationPower *= 0.25f;
+				flDamageModifier = 0.25f;
+			}
+			else if( cTextureType == CHAR_TEX_GRATE )
+			{
+				bSparks = true;
+				bHitMetal = true;
+				flPenetrationPower *= 0.5f;
+				flDamageModifier = 0.4f;
+			}
+			else if( cTextureType == CHAR_TEX_VENT )
+			{
+				bSparks = true;
+				bHitMetal = true;
+				flPenetrationPower *= 0.5f;
+				flDamageModifier = 0.45f;
+			}
+			else if( cTextureType == CHAR_TEX_TILE )
+			{
+				flPenetrationPower *= 0.65f;
+				flDamageModifier = 0.3f;
+			}
+			else if( cTextureType == CHAR_TEX_COMPUTER )
+			{
+				bSparks = true;
+				bHitMetal = true;
+				flPenetrationPower *= 0.4f;
+				flDamageModifier = 0.45f;
+			}
+			else if( cTextureType == CHAR_TEX_WOOD )
+			{
+				flPenetrationPower *= 1;
+				flDamageModifier = 0.6f;
+			}
+			else
+				bSparks = false;
+
+			if( tr.flFraction != 1.0f )
+			{
+				@pEntity = g_EntityFuncs.Instance(tr.pHit);
+				iPenetration--;
+
+				flCurrentDistance = tr.flFraction * flDistance;
+				flCurrentDamage *= pow(flRangeModifier, flCurrentDistance / 500);
+
+				if( flCurrentDistance > flPenetrationDistance )
+					iPenetration = 0;
+
+				if( tr.iHitgroup == HITGROUP_SHIELD )
+				{
+					iPenetration = 0;
+
+					if( tr.flFraction != 1.0f )
+					{
+						if( Math.RandomLong(0, 1) == 1 )
+							g_SoundSystem.EmitSound( pEntity.edict(), CHAN_VOICE, "custom_weapons/cso/ric_metal-1.wav", 1, ATTN_NORM );
+						else
+							g_SoundSystem.EmitSound( pEntity.edict(), CHAN_VOICE, "custom_weapons/cso/ric_metal-2.wav", 1, ATTN_NORM );
+
+						g_Utility.Sparks( tr.vecEndPos );
+
+						pEntity.pev.punchangle.x = flCurrentDamage * Math.RandomFloat(-0.15f, 0.15f);
+						pEntity.pev.punchangle.z = flCurrentDamage * Math.RandomFloat(-0.15f, 0.15f);
+
+						if( pEntity.pev.punchangle.x < 4 )
+							pEntity.pev.punchangle.x = 4;
+
+						if( pEntity.pev.punchangle.z < -5 )
+							pEntity.pev.punchangle.z = -5;
+						else if( pEntity.pev.punchangle.z > 5 )
+							pEntity.pev.punchangle.z = 5;
+					}
+
+					break;
+				}
+
+				if( tr.pHit.vars.solid == SOLID_BSP /*and iPenetration != 0*/ ) //prevents the last hit from causing decals
+				{
+					if( (iFlags & CSOF_ALWAYSDECAL) != 0 )
+						g_WeaponFuncs.DecalGunshot( tr, iBulletDecal/*, false, pev, bHitMetal*/ );
+					else if( Math.RandomLong(0, 3) == 1 )
+						g_WeaponFuncs.DecalGunshot( tr, iBulletDecal/*, true, pev, bHitMetal*/ );
+
+					vecSrc = tr.vecEndPos + (vecDir * flPenetrationPower);
+					flDistance = (flDistance - flCurrentDistance) * 0.5f;
+					vecEnd = vecSrc + (vecDir * flDistance);
+
+					pEntity.TraceAttack( m_pPlayer.pev, flCurrentDamage, vecDir, tr, (DMG_BULLET|DMG_NEVERGIB) );
+
+					//Wall smoke puff
+					if( iTrail == TRAIL_NONE )
+					{
+						NetworkMessage m1( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, tr.vecEndPos );
+							m1.WriteByte( TE_EXPLOSION );
+							m1.WriteCoord( tr.vecEndPos.x );
+							m1.WriteCoord( tr.vecEndPos.y );
+							m1.WriteCoord( tr.vecEndPos.z - 10.0 );
+							m1.WriteShort( g_EngineFuncs.ModelIndex(cso::pSmokeSprites[Math.RandomLong(1, 4)]) );
+							m1.WriteByte( 2 ); //scale
+							m1.WriteByte( 50 ); //framerate
+							m1.WriteByte( TE_EXPLFLAG_NODLIGHTS|TE_EXPLFLAG_NOSOUND|TE_EXPLFLAG_NOPARTICLES );
+						m1.End();
+
+						if( (iFlags & CSOF_ETHEREAL) != 0 )
+						{
+							NetworkMessage m2( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, tr.vecEndPos );
+								m2.WriteByte( TE_STREAK_SPLASH );
+								m2.WriteCoord( tr.vecEndPos.x );
+								m2.WriteCoord( tr.vecEndPos.y );
+								m2.WriteCoord( tr.vecEndPos.z );
+								m2.WriteCoord( tr.vecPlaneNormal.x * Math.RandomFloat(25.0, 30.0) );
+								m2.WriteCoord( tr.vecPlaneNormal.y * Math.RandomFloat(25.0, 30.0) );
+								m2.WriteCoord( tr.vecPlaneNormal.z * Math.RandomFloat(25.0, 30.0) );
+								m2.WriteByte( 0 ); //color
+								m2.WriteShort( 20 ); //count
+								m2.WriteShort( 3 ); //speed
+								m2.WriteShort( 90 ); //velocity
+							m2.End();
+						}
+					}
+					else
+						DoTrailExplosion( iTrail, tr.vecEndPos );
+
+					//g_Game.AlertMessage( at_notice, "Hit SOLID_BSP: %1 with damage: %2\n", tr.pHit.vars.classname, flCurrentDamage );
+
+					flCurrentDamage *= flDamageModifier;
+				}
+				else if( pEntity.pev.takedamage != DAMAGE_NO )
+				{
+					if( (iFlags & CSOF_HITMARKER) != 0 and (pEntity.pev.flags & FL_CLIENT) == 0 )
+					{
+						Vector vecOrigin = m_pPlayer.pev.origin;
+						get_position( 50.0, -0.05, 1.0, vecOrigin );
+
+						CBaseEntity@ pHitConfirm = g_EntityFuncs.Create( "cso_buffhit", vecOrigin, g_vecZero, false, m_pPlayer.edict() );
+					}
+
+					vecSrc = tr.vecEndPos + (vecDir * 42);
+					flDistance = (flDistance - flCurrentDistance) * 0.75f;
+					vecEnd = vecSrc + (vecDir * flDistance);
+
+					pEntity.TraceAttack( m_pPlayer.pev, flCurrentDamage, vecDir, tr, (DMG_BULLET|DMG_NEVERGIB) );
+
+					if( iTrail > TRAIL_NONE )
+						DoTrailExplosion( iTrail, tr.vecEndPos );
+
+					iEnemiesHit++;
+					//g_Game.AlertMessage( at_notice, "Hit entity: %1 with damage: %2\n", tr.pHit.vars.classname, flCurrentDamage );
+
+					flCurrentDamage *= 0.75f;
+				}
+			}
+			else
+				iPenetration = 0;
+
+			g_WeaponFuncs.ApplyMultiDamage( m_pPlayer.pev, m_pPlayer.pev );
+		}
+
+		if( iTrail > TRAIL_NONE )
+		{
+			if( iPenetration <= 0 )
+				DoTrail( iTrail, vecTrailOrigin, tr.vecEndPos );
+		}
+
+		if( (iFlags & CSOF_ETHEREAL) != 0 )
+			DoTracerEthereal( vecTrailOrigin, vecDir );
+		else if( iTracerFreq != 0 and (tracerCount++ % iTracerFreq) == 0 )
+			DoTracer( vecTrailOrigin, tr.vecEndPos );
+
+		return iEnemiesHit;
+		//return Vector(x * flSpread, y * flSpread, 0);
+	}
+
+	void DoTrail( int iTrail, Vector vecTrailstart, Vector vecTrailend )
+	{
+		switch( iTrail )
+		{
+			case TRAIL_CSOBOW:
+			{
+				NetworkMessage m1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
+					m1.WriteByte( TE_BEAMPOINTS );
+					m1.WriteCoord( vecTrailstart.x );//start position
+					m1.WriteCoord( vecTrailstart.y );
+					m1.WriteCoord( vecTrailstart.z );
+					m1.WriteCoord( vecTrailend.x );//end position
+					m1.WriteCoord( vecTrailend.y );
+					m1.WriteCoord( vecTrailend.z );
+					m1.WriteShort( g_EngineFuncs.ModelIndex(cso::SPRITE_TRAIL_CSOBOW) );//sprite index
+					m1.WriteByte( 0 );//starting frame
+					m1.WriteByte( 0 );//framerate in 0.1's
+					m1.WriteByte( 20 );//life in 0.1's
+					m1.WriteByte( 10 );//width in 0.1's
+					m1.WriteByte( 0 );//noise amplitude in 0.1's
+					m1.WriteByte( 255 );//red
+					m1.WriteByte( 127 );//green
+					m1.WriteByte( 127 );//blue
+					m1.WriteByte( 127 );//brightness
+					m1.WriteByte( 0 );//scroll speed
+				m1.End();
+
+				break;
+			}
+
+			case TRAIL_FAILNAUGHT:
+			{
+				NetworkMessage m1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
+					m1.WriteByte( TE_BEAMPOINTS );
+					m1.WriteCoord( vecTrailstart.x );//start position
+					m1.WriteCoord( vecTrailstart.y );
+					m1.WriteCoord( vecTrailstart.z );
+					m1.WriteCoord( vecTrailend.x );//end position
+					m1.WriteCoord( vecTrailend.y );
+					m1.WriteCoord( vecTrailend.z );
+					m1.WriteShort( g_EngineFuncs.ModelIndex(cso::SPRITE_TRAIL_FAILNAUGHT) );//sprite index
+					m1.WriteByte( 0 );//starting frame
+					m1.WriteByte( 1);//framerate in 0.1's
+					m1.WriteByte( 20 );//life in 0.1's
+					m1.WriteByte( 84 );//width in 0.1's
+					m1.WriteByte( 0 );//noise amplitude in 0.1's
+					m1.WriteByte( 219 );//red
+					m1.WriteByte( 180 );//green
+					m1.WriteByte( 12 );//blue
+					m1.WriteByte( 127 );//brightness
+					m1.WriteByte( 1 );//scroll speed
+				m1.End();
+
+				break;
+			}
+
+			case TRAIL_M95TIGER:
+			{
+				NetworkMessage m1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
+					m1.WriteByte( TE_BEAMPOINTS );
+					m1.WriteCoord( vecTrailstart.x );//start position
+					m1.WriteCoord( vecTrailstart.y );
+					m1.WriteCoord( vecTrailstart.z );
+					m1.WriteCoord( vecTrailend.x );//end position
+					m1.WriteCoord( vecTrailend.y );
+					m1.WriteCoord( vecTrailend.z );
+					m1.WriteShort( g_EngineFuncs.ModelIndex(cso::SPRITE_TRAIL_CSOBOW) );//sprite index
+					m1.WriteByte( 0 );//starting frame
+					m1.WriteByte( 0 );//framerate in 0.1's
+					m1.WriteByte( 5 );//life in 0.1's
+					m1.WriteByte( 4 );//width in 0.1's
+					m1.WriteByte( 0 );//noise amplitude in 0.1's
+					m1.WriteByte( 213 );//red
+					m1.WriteByte( 213 );//green
+					m1.WriteByte( 0 );//blue
+					m1.WriteByte( 190 );//brightness
+					m1.WriteByte( 0 );//scroll speed
+				m1.End();
+
+				break;
+			}
+		}
+	}
+
+	void DoTrailExplosion( int iTrail, Vector vecTrailend )
+	{
+		switch( iTrail )
+		{
+			case TRAIL_FAILNAUGHT:
+			{
+				NetworkMessage m1( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, vecTrailend );
+					m1.WriteByte( TE_EXPLOSION );
+					m1.WriteCoord( vecTrailend.x );
+					m1.WriteCoord( vecTrailend.y );
+					m1.WriteCoord( vecTrailend.z );
+					m1.WriteShort( g_EngineFuncs.ModelIndex(cso::SPRITE_TRAIL_FAILNAUGHT_EXPLODE) );
+					m1.WriteByte( 5 ); //scale
+					m1.WriteByte( 30 ); //framerate
+					m1.WriteByte( TE_EXPLFLAG_NODLIGHTS|TE_EXPLFLAG_NOSOUND|TE_EXPLFLAG_NOPARTICLES );
+				m1.End();
+
+				break;
+			}
+		}
+	}
+
+	void DoTracer( Vector vecStart, Vector vecEnd )
+	{
+			NetworkMessage m1( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, vecStart );
+				m1.WriteByte( TE_TRACER );
+				m1.WriteCoord( vecStart.x );
+				m1.WriteCoord( vecStart.y );
+				m1.WriteCoord( vecStart.z );
+				m1.WriteCoord( vecEnd.x );
+				m1.WriteCoord( vecEnd.y );
+				m1.WriteCoord( vecEnd.z );
+			m1.End();
+	}
+
+	void DoTracerEthereal( Vector vecStart, Vector vecDir )
+	{
+		Vector vecVelocity = vecDir * 6000.0;
+
+		NetworkMessage m1( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, vecStart );
+			m1.WriteByte( TE_USERTRACER );
+			m1.WriteCoord( vecStart.x );
+			m1.WriteCoord( vecStart.y );
+			m1.WriteCoord( vecStart.z );
+			m1.WriteCoord( vecVelocity.x );
+			m1.WriteCoord( vecVelocity.y );
+			m1.WriteCoord( vecVelocity.z );
+			m1.WriteByte( 32 ); //life
+			m1.WriteByte( 0 ); //color
+			m1.WriteByte( 12 ); //length
+		m1.End();
 	}
 
 	// AMXX Stuff that I cba converting :ayaya:

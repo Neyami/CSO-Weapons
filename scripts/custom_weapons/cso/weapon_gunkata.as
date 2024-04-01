@@ -14,6 +14,7 @@ const string CSOW_NAME								= "weapon_gunkata";
 const int CSOW_DEFAULT_GIVE						= 36;
 const int CSOW_MAX_CLIP 								= 36;
 const int CSOW_MAX_AMMO							= 180;
+const int CSOW_TRACERFREQ							= 0;
 const float CSOW_DAMAGE								= 20;
 const float CSOW_SKILL_RADIUS_FAR			= cso::MetersToUnits(6);
 const float CSOW_SKILL_RADIUS_CLOSE		= cso::MetersToUnits(3);
@@ -309,8 +310,8 @@ class weapon_gunkata : CBaseCSOWeapon
 		if( self.m_flCustomDmg > 0 )
 			flDamage = self.m_flCustomDmg;
 
-		int iPenetration = USE_PENETRATION ? 2 : 0; 
-		cso::FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), 8192, iPenetration, BULLET_PLAYER_44MAG, flDamage, 1.0, EHandle(m_pPlayer), m_pPlayer.random_seed, (CSOF_ALWAYSDECAL | CSOF_HITMARKER) );
+		int iPenetration = USE_PENETRATION ? 2 : 1;
+		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), iPenetration, BULLET_PLAYER_44MAG, CSOW_TRACERFREQ, flDamage, 1.0, (CSOF_ALWAYSDECAL | CSOF_HITMARKER) );
 
 		HandleRecoil( CSOW_RECOIL_STANDING_X, CSOW_RECOIL_STANDING_Y, CSOW_RECOIL_DUCKING_X, CSOW_RECOIL_DUCKING_Y );
 
@@ -493,6 +494,8 @@ class weapon_gunkata : CBaseCSOWeapon
 
 	void WeaponIdle()
 	{
+		self.ResetEmptySound();
+
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
@@ -937,7 +940,7 @@ class ef_gunkataweapon : ScriptBaseEntity
 		g_EntityFuncs.SetOrigin( self, self.pev.origin );
 
 		pev.solid = SOLID_NOT;
-		pev.movetype = MOVETYPE_FLY;
+		pev.movetype = MOVETYPE_NOCLIP; //FLY
 		pev.takedamage = DAMAGE_NO;
 		pev.rendermode = kRenderTransTexture;
 		pev.renderamt = 0;
@@ -1073,3 +1076,7 @@ void Register()
 }
 
 } //namespace cso_gunkata END
+
+/* TODO
+Make use of ef_gunkata.spr
+*/

@@ -7,6 +7,7 @@ const string CSOW_NAME								= "weapon_elites";
 const int CSOW_DEFAULT_GIVE						= 30;
 const int CSOW_MAX_CLIP 								= 30;
 const int CSOW_MAX_AMMO							= 120;
+const int CSOW_TRACERFREQ							= 0;
 const float CSOW_DAMAGE								= 36;
 const float CSOW_TIME_DELAY						= 0.2;
 const float CSOW_TIME_DRAW						= 1.1;
@@ -224,14 +225,14 @@ class weapon_elites : CBaseCSOWeapon
 		if( self.m_flCustomDmg > 0 )
 			flDamage = self.m_flCustomDmg;
 
-		int iPenetration = USE_PENETRATION ? 2 : 0; 
+		int iPenetration = USE_PENETRATION ? 2 : 1;
 
 		if( m_iWeaponState == STATE_LEFT )
 		{
 			m_pPlayer.m_szAnimExtension = "uzis_right";
 			m_iWeaponState = 0;
 
-			cso::FireBullets3( m_pPlayer.GetGunPosition() - g_Engine.v_right * 5, g_Engine.v_forward, flSpread, 8192.0, iPenetration, BULLET_PLAYER_9MM, flDamage, 0.75, EHandle(m_pPlayer), m_pPlayer.random_seed, CSOF_ALWAYSDECAL );
+			FireBullets3( m_pPlayer.GetGunPosition() - g_Engine.v_right * 5, g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_9MM, CSOW_TRACERFREQ, flDamage, 0.75, CSOF_ALWAYSDECAL );
 			EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN_R.x + g_Engine.v_right * CSOW_SHELL_ORIGIN_R.y + g_Engine.v_up * CSOW_SHELL_ORIGIN_R.z, m_iShell );
 		}
 		else
@@ -239,7 +240,7 @@ class weapon_elites : CBaseCSOWeapon
 			m_pPlayer.m_szAnimExtension = "uzis_left";
 			m_iWeaponState = STATE_LEFT;
 
-			cso::FireBullets3( m_pPlayer.GetGunPosition() - g_Engine.v_right * 5, g_Engine.v_forward, flSpread, 8192.0, iPenetration, BULLET_PLAYER_9MM, flDamage, 0.75, EHandle(m_pPlayer), m_pPlayer.random_seed, CSOF_ALWAYSDECAL );
+			FireBullets3( m_pPlayer.GetGunPosition() - g_Engine.v_right * 5, g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_9MM, CSOW_TRACERFREQ, flDamage, 0.75, CSOF_ALWAYSDECAL );
 			EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN_L.x + g_Engine.v_right * CSOW_SHELL_ORIGIN_L.y + g_Engine.v_up * CSOW_SHELL_ORIGIN_L.z, m_iShell, TE_BOUNCE_SHELL, false );
 		}
 

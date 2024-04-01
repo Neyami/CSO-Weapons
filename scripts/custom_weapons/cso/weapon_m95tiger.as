@@ -1,10 +1,13 @@
 namespace cso_m95tiger
 {
 
+const bool USE_PENETRATION					= true;
+
 const int CSOW_DEFAULT_GIVE			= 20;
 const int CSOW_MAX_CLIP 					= 20;
 const int CSOW_MAX_AMMO2				= 7;
 const int CSOW_ZOOMFOV					= 20;
+const int CSOW_TRACERFREQ				= 0;
 const float CSOW_DAMAGE					= 119; // 119 / 3085 / 6169
 const float CSOW_TIME_DELAY1			= 1.47; //Fire
 const float CSOW_TIME_DELAY2			= 0.3; //Zoom
@@ -290,7 +293,9 @@ class weapon_m95tiger : CBaseCSOWeapon
 			flDamage = self.m_flCustomDmg;
 
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
-		int iEnemiesHit = cso::FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, flSpread, 8192, 20, BULLET_PLAYER_M95TIGER, flDamage, 5, EHandle(m_pPlayer), m_pPlayer.random_seed, (CSOF_ALWAYSDECAL | CSOF_HITMARKER), Vector(CSOW_MUZZLE_ORIGIN.x, CSOW_MUZZLE_ORIGIN.y, CSOW_MUZZLE_ORIGIN.z) );
+
+		int iPenetration = USE_PENETRATION ? 20 : 1;
+		int iEnemiesHit = FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_M95TIGER, CSOW_TRACERFREQ, flDamage, 5, (CSOF_ALWAYSDECAL | CSOF_HITMARKER), Vector(CSOW_MUZZLE_ORIGIN.x, CSOW_MUZZLE_ORIGIN.y, CSOW_MUZZLE_ORIGIN.z) );
 		m_iKilledMobs += iEnemiesHit;
 
 		self.SendWeaponAnim( ANIM_SHOOT, 0, (m_bSwitchHands ? GetBodygroup() : 0) );

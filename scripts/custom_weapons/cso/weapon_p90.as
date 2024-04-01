@@ -1,7 +1,10 @@
 namespace cso_p90
 {
 
+const bool USE_PENETRATION							= true;
+
 const int CSOW_MAX_CLIP 								= 50;
+const int CSOW_TRACERFREQ							= 2;
 const float CSOW_DAMAGE								= 21;
 const float CSOW_TIME_DELAY						= 0.086;
 const float CSOW_TIME_DRAW						= 1.0;
@@ -172,7 +175,8 @@ class weapon_p90 : CBaseCSOWeapon
 		if( self.m_flCustomDmg > 0 )
 			flDamage = self.m_flCustomDmg;
 
-		cso::FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), 8192, 2, BULLET_PLAYER_57MM, flDamage, 0.885, EHandle(m_pPlayer), m_pPlayer.random_seed, CSOF_ALWAYSDECAL );
+		int iPenetration = USE_PENETRATION ? 2 : 1;
+		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), iPenetration, BULLET_PLAYER_57MM, CSOW_TRACERFREQ, flDamage, 0.885, CSOF_ALWAYSDECAL );
 
 		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x - g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell, TE_BOUNCE_SHELL, true, true );
 

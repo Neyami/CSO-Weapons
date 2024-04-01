@@ -1,10 +1,13 @@
 namespace cso_desperado
 {
+
+const bool USE_PENETRATION					= true;
 const bool USE_INFINITE_AMMO				= true; //The original has infinite ammo
 
 const int CSOW_DEFAULT_GIVE				= 7;
 const int CSOW_MAX_CLIP 						= 7;
 const int CSOW_MAX_AMMO					= 999;
+const int CSOW_TRACERFREQ					= 0;
 const float CSOW_DAMAGE						= 35;
 const float CSOW_TIME_DELAY				= 0.12;
 const float CSOW_TIME_DRAW				= 0.2f;
@@ -231,7 +234,8 @@ class weapon_desperado : CBaseCSOWeapon
 		Vector vecSrc = m_pPlayer.GetGunPosition();
 		Vector vecAiming = g_Engine.v_forward;
 
-		cso::FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, flSpread, 8192, 2, BULLET_PLAYER_44MAG, flDamage, 5, EHandle(m_pPlayer), m_pPlayer.random_seed, (CSOF_ALWAYSDECAL | CSOF_HITMARKER) );
+		int iPenetration = USE_PENETRATION ? 2 : 1;
+		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_44MAG, CSOW_TRACERFREQ, flDamage, 5, (CSOF_ALWAYSDECAL | CSOF_HITMARKER) );
 
 		HandleAmmoReduction( 1 );
 

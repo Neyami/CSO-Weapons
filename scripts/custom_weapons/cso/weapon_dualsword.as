@@ -888,7 +888,7 @@ class ef_dualsword : ScriptBaseAnimating
 		g_EntityFuncs.SetSize( self.pev, Vector(-1, -1, -1), Vector(1, 1, 1) );
 		g_EntityFuncs.SetOrigin( self, self.pev.origin );
 
-		pev.renderamt		= 255;
+		pev.renderamt		= 200;
 		pev.movetype 	= MOVETYPE_FLY;
 		pev.solid    		= SOLID_NOT;
 		pev.takedamage	= DAMAGE_NO;

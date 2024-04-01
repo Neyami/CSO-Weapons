@@ -3,7 +3,8 @@
 namespace cso_failnaught
 {
 
-const bool ARROWS_STICK_TO_PLAYERS		= true; //no damage is dealth though
+const bool USE_PENETRATION							= true;
+const bool ARROWS_STICK_TO_PLAYERS		= true; //no damage is dealt though
 
 const int CSOW_DEFAULT_GIVE						= 25;
 const int CSOW_MAX_AMMO							= 250;
@@ -47,7 +48,7 @@ const string SPRITE_EXPLODE							= "sprites/custom_weapons/cso/skull.spr";
 const string SPRITE_HUNTERSEYE					= "sprites/laserbeam.spr";
 //const string SPRITE_MUZZLE1						= "sprites/custom_weapons/cso/muzzleflash208.spr"; //??
 //const string SPRITE_MUZZLE2						= "sprites/custom_weapons/cso/muzzleflash210.spr"; //Charge finish
-//const string SPRITE_MUZZLE3						= "sprites/custom_weapons/cso/muzzleflash211.spr"; //Draw, and pulling back the arrow after shooting?
+const string SPRITE_MUZZLE3							= "sprites/custom_weapons/cso/muzzleflash211.spr"; //Draw, and pulling back the arrow after shooting?
 //const string SPRITE_MUZZLE4						= "sprites/custom_weapons/cso/muzzleflash212.spr"; //Charge idle1
 
 enum csow_e
@@ -114,6 +115,12 @@ enum csowmodes_e
 	STATE_CHARGED_IDLE
 };
 
+enum csowattach_e
+{
+	ATTACH_MUZZLE1 = 0,	//At the center of the rotating thingy
+	ATTACH_MUZZLE2			//A bit further out from the first
+};
+
 class weapon_failnaught : CBaseCSOWeapon
 {
 	private int m_iState;
@@ -153,7 +160,7 @@ class weapon_failnaught : CBaseCSOWeapon
 		m_iHuntersEyeSprite = g_Game.PrecacheModel( SPRITE_HUNTERSEYE );
 		//g_Game.PrecacheModel( SPRITE_MUZZLE1 );
 		//g_Game.PrecacheModel( SPRITE_MUZZLE2 );
-		//g_Game.PrecacheModel( SPRITE_MUZZLE3 );
+		g_Game.PrecacheModel( SPRITE_MUZZLE3 );
 		//g_Game.PrecacheModel( SPRITE_MUZZLE4 );
 
 		for( i = 1; i < pDamageMarks.length(); ++i )
@@ -206,7 +213,8 @@ class weapon_failnaught : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), (m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) > 0) ? ANIM_DRAW : ANIM_DRAW_EMPTY, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			int iAnim = (m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) > 0) ? ANIM_DRAW : ANIM_DRAW_EMPTY;
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), iAnim, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 
 			return bResult;
@@ -371,7 +379,8 @@ class weapon_failnaught : CBaseCSOWeapon
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_CHARGE_SHOOT], VOL_NORM, ATTN_NORM );
 
-		cso::FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, 0, 4096, 4, BULLET_PLAYER_FAILNAUGHT, CSOW_DAMAGE2, 1.0, EHandle(m_pPlayer), m_pPlayer.random_seed );
+		int iPenetration = USE_PENETRATION ? 4 : 0;
+		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, 0, iPenetration, BULLET_PLAYER_FAILNAUGHT, 0, CSOW_DAMAGE2, 1.0 );
 
 		Vector2D vec2dRecoilX = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_X : CSOW_RECOIL_STANDING_X;
 		Vector2D vec2dRecoilY = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_RECOIL_DUCKING_Y : CSOW_RECOIL_STANDING_Y;
@@ -433,6 +442,21 @@ class weapon_failnaught : CBaseCSOWeapon
 		}
 
 		BaseClass.ItemPostFrame();
+	}
+
+	void MuzzleflashThink()
+	{
+		if( m_pDynamicEnt is null )
+		{
+			SetThink( null );
+			return;
+		}
+
+		Vector vecOrigin;
+		GetAttachment( ATTACH_MUZZLE1, vecOrigin, void );
+		g_EntityFuncs.SetOrigin( m_pDynamicEnt, vecOrigin );
+
+		pev.nextthink = g_Engine.time + 0.01;
 	}
 
 	void HuntersEye()
