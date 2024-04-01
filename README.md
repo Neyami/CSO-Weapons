@@ -311,6 +311,19 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 <BR>
 
 
+* Ethereal
+
+    * ENTITIES
+    * `weapon_ethereal` - Weapon
+    * `ammo_ether` - Ammo
+ 
+    * AMMO NAME
+    * `ether`
+
+<BR>
+
+
+
 
 # SNIPER RIFLES
 * Accuracy International AWP
