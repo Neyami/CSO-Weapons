@@ -258,7 +258,7 @@ class weapon_augex : CBaseCSOWeapon
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
 		Vector vecSrc = m_pPlayer.GetGunPosition();
 		int iPenetration = USE_PENETRATION ? 2 : 0;
-		/*Vector vecDir = */FireBullets3( vecSrc, g_Engine.v_forward, flSpread, 8192, iPenetration, BULLET_PLAYER_556MM, CSOW_TRACERFREQ, CSOW_DAMAGE, 0.96 ); //CSOF_ALWAYSDECAL ??
+		/*Vector vecDir = */FireBullets3( vecSrc, g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_556MM, CSOW_TRACERFREQ, CSOW_DAMAGE, 0.96 ); //CSOF_ALWAYSDECAL ??
 
 		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
