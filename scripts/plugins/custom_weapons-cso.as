@@ -37,6 +37,7 @@
 #include "../custom_weapons/cso/weapon_failnaught"
 #include "../custom_weapons/cso/weapon_augex"
 #include "../custom_weapons/cso/weapon_guitar"
+#include "../custom_weapons/cso/weapon_ethereal"
 
 //Sniper Rifles
 #include "../custom_weapons/cso/weapon_awp"
@@ -88,6 +89,7 @@ void MapInit()
 	cso_failnaught::Register();
 	cso_augex::Register();
 	cso_guitar::Register();
+	cso_ethereal::Register();
 
 	cso_awp::Register();
 	cso_svd::Register();
