@@ -21,6 +21,7 @@ const Vector2D CSOW_RECOIL_STANDING_Y	= Vector2D(0, 0);
 const Vector2D CSOW_RECOIL_DUCKING_X	= Vector2D(0, 0);
 const Vector2D CSOW_RECOIL_DUCKING_Y	= Vector2D(0, 0);
 const Vector CSOW_SHELL_ORIGIN				= Vector(20.0, -12.0, -8.0); //forward, right, up
+const Vector CSOW_OFFSETS_MUZZLE			= Vector( 15.259552, 4.463806, -3.458954 );
 
 const string CSOW_ANIMEXT							= "mp5"; //carbine
 
@@ -176,7 +177,7 @@ class weapon_p90 : CBaseCSOWeapon
 			flDamage = self.m_flCustomDmg;
 
 		int iPenetration = USE_PENETRATION ? 2 : 1;
-		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), iPenetration, BULLET_PLAYER_57MM, CSOW_TRACERFREQ, flDamage, 0.885, CSOF_ALWAYSDECAL );
+		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), iPenetration, BULLET_PLAYER_57MM, CSOW_TRACERFREQ, flDamage, 0.885, CSOF_ALWAYSDECAL, CSOW_OFFSETS_MUZZLE );
 
 		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x - g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell, TE_BOUNCE_SHELL, true, true );
 
