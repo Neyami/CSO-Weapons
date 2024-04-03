@@ -133,9 +133,12 @@ const int AEOLIS_SLOT						= 7;
 const int AEOLIS_POSITION				= 10;
 const int M134HERO_SLOT					= 7;
 const int M134HERO_POSITION			= 11;
+const int M2_SLOT								= 7;
+const int M2_POSITION						= 12;
 
 const int AEOLIS_WEIGHT					= 30;
 const int M134HERO_WEIGHT				= 40;
+const int M2_WEIGHT							= 25;
 
 //Special/Miscellaneous (Equipment)
 
