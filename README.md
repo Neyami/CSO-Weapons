@@ -421,7 +421,21 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
     * ENTITIES
     * `weapon_m134hero` - Weapon
-    * `ef_gundrop` - Dropped Item Effect
+    * `ammo_762mg` - Ammo
  
     * AMMO NAME
     * `762mg`
+
+
+<BR>
+
+
+* M2 Browning
+    * [Video1](https://youtu.be/UclXLsp09EU)
+
+    * ENTITIES
+    * `weapon_m2` - Weapon
+    * `ammo_50bmg` - Ammo
+ 
+    * AMMO NAME
+    * `50bmg`
