@@ -19,27 +19,6 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		set { m_hDropEffect = EHandle(@value); }
 	}*/
 
-	protected EHandle m_hAttachEnt;
-	protected CBaseEntity@ m_pAttachEnt
-	{
-		get const { return m_hAttachEnt.GetEntity(); }
-		set { m_hAttachEnt = EHandle(@value); }
-	}
-
-	/*protected EHandle m_hDynamicEnt;
-	protected CBaseEntity@ m_pDynamicEnt
-	{
-		get const { return m_hDynamicEnt.GetEntity(); }
-		set { m_hDynamicEnt = EHandle(@value); }
-	}*/
-
-	protected EHandle m_hDynamicEnt;
-	protected CSprite@ m_pDynamicEnt
-	{
-		get const { return cast<CSprite@>(m_hDynamicEnt.GetEntity()); }
-		set { m_hDynamicEnt = EHandle(@value); }
-	}
-
 	int m_iWeaponType;
 	int m_iShell;
 	private int tracerCount = 0;
