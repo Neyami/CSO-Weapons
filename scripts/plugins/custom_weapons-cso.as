@@ -50,6 +50,7 @@
 //Machine Guns
 #include "../custom_weapons/cso/weapon_aeolis"
 #include "../custom_weapons/cso/weapon_m134hero"
+#include "../custom_weapons/cso/weapon_m2"
 
 void PluginInit()
 {
@@ -100,4 +101,5 @@ void MapInit()
 
 	cso_aeolis::Register();
 	cso_m134hero::Register();
+	cso_m2::Register();
 }
