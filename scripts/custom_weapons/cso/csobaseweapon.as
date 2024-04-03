@@ -380,7 +380,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 	}
 
 	//From cstrike combat.cpp Vector CBaseEntity::FireBullets3(Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, int iDamage, float flRangeModifier, entvars_t *pevAttacker, bool bPistol, int shared_rand)
-	//FireBullets3( vecSrc, vecAiming, 0, 4096, 2, BULLET_PLAYER_50AE, 54, 0.81f, m_pPlayer.edict(), true, m_pPlayer.random_seed );
+	//FireBullets3( vecSrc, vecAiming, 0, 4096, 2, BULLET_PLAYER_50AE, 54, 0.81, m_pPlayer.edict(), true, m_pPlayer.random_seed );
 	//TODO make bullet decals on the otherside of a penetrated wall
 	//TODO make bullet decals and smoke when hitting a wall that is further than flCurrentDistance ??
 	int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, int iPenetration, int iBulletType, int iTracerFreq, float flDamage, float flRangeModifier, int iFlags = 0, Vector vecMuzzleOrigin = g_vecZero )
@@ -396,7 +396,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		TraceResult tr, tr2;
 		Vector vecRight = g_Engine.v_right;
 		Vector vecUp = g_Engine.v_up;
-		CBaseEntity@ pEntity;
+		edict_t@ pentIgnore = m_pPlayer.edict();
 		bool bHitMetal = false;
 		//int iSparksAmount; //UNUSED??
 		int iTrail = TRAIL_NONE;
@@ -563,7 +563,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		while( iPenetration > 0 ) //!= 0 seems unsafe
 		{
 			g_WeaponFuncs.ClearMultiDamage();
-			g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr );
+			g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, pentIgnore, tr );
 
 			//char cTextureType = UTIL_TextureHit( tr, vecSrc, vecEnd );
 			string sTexture = g_Utility.TraceTexture( null, vecSrc, vecEnd );
@@ -572,7 +572,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 
 			if( cso::pBPTextures.find( sTexture ) != -1 )
 			{
-				g_Utility.Ricochet( tr.vecEndPos, 1.0f );
+				g_Utility.Ricochet( tr.vecEndPos, 1.0 );
 				return 0;
 				//return tr.vecEndPos;
 			}
@@ -581,51 +581,51 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 			{
 				bSparks = true;
 				bHitMetal = true;
-				flPenetrationPower *= 0.15f;
-				flDamageModifier = 0.2f;
+				flPenetrationPower *= 0.15;
+				flDamageModifier = 0.2;
 			}
 			else if( cTextureType == CHAR_TEX_CONCRETE )
 			{
-				flPenetrationPower *= 0.25f;
-				flDamageModifier = 0.25f;
+				flPenetrationPower *= 0.25;
+				flDamageModifier = 0.25;
 			}
 			else if( cTextureType == CHAR_TEX_GRATE )
 			{
 				bSparks = true;
 				bHitMetal = true;
-				flPenetrationPower *= 0.5f;
-				flDamageModifier = 0.4f;
+				flPenetrationPower *= 0.5;
+				flDamageModifier = 0.4;
 			}
 			else if( cTextureType == CHAR_TEX_VENT )
 			{
 				bSparks = true;
 				bHitMetal = true;
-				flPenetrationPower *= 0.5f;
-				flDamageModifier = 0.45f;
+				flPenetrationPower *= 0.5;
+				flDamageModifier = 0.45;
 			}
 			else if( cTextureType == CHAR_TEX_TILE )
 			{
-				flPenetrationPower *= 0.65f;
-				flDamageModifier = 0.3f;
+				flPenetrationPower *= 0.65;
+				flDamageModifier = 0.3;
 			}
 			else if( cTextureType == CHAR_TEX_COMPUTER )
 			{
 				bSparks = true;
 				bHitMetal = true;
-				flPenetrationPower *= 0.4f;
-				flDamageModifier = 0.45f;
+				flPenetrationPower *= 0.4;
+				flDamageModifier = 0.45;
 			}
 			else if( cTextureType == CHAR_TEX_WOOD )
 			{
 				flPenetrationPower *= 1;
-				flDamageModifier = 0.6f;
+				flDamageModifier = 0.6;
 			}
 			else
 				bSparks = false;
 
-			if( tr.flFraction != 1.0f )
+			if( tr.flFraction != 1.0 )
 			{
-				@pEntity = g_EntityFuncs.Instance(tr.pHit);
+				CBaseEntity@ pEntity = g_EntityFuncs.Instance(tr.pHit);
 				iPenetration--;
 
 				flCurrentDistance = tr.flFraction * flDistance;
@@ -638,7 +638,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 				{
 					iPenetration = 0;
 
-					if( tr.flFraction != 1.0f )
+					if( tr.flFraction != 1.0 )
 					{
 						if( Math.RandomLong(0, 1) == 1 )
 							g_SoundSystem.EmitSound( pEntity.edict(), CHAN_VOICE, "custom_weapons/cso/ric_metal-1.wav", 1, ATTN_NORM );
@@ -647,8 +647,8 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 
 						g_Utility.Sparks( tr.vecEndPos );
 
-						pEntity.pev.punchangle.x = flCurrentDamage * Math.RandomFloat(-0.15f, 0.15f);
-						pEntity.pev.punchangle.z = flCurrentDamage * Math.RandomFloat(-0.15f, 0.15f);
+						pEntity.pev.punchangle.x = flCurrentDamage * Math.RandomFloat(-0.15, 0.15);
+						pEntity.pev.punchangle.z = flCurrentDamage * Math.RandomFloat(-0.15, 0.15);
 
 						if( pEntity.pev.punchangle.x < 4 )
 							pEntity.pev.punchangle.x = 4;
@@ -670,7 +670,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 						g_WeaponFuncs.DecalGunshot( tr, iBulletDecal/*, true, pev, bHitMetal*/ );
 
 					vecSrc = tr.vecEndPos + (vecDir * flPenetrationPower);
-					flDistance = (flDistance - flCurrentDistance) * 0.5f;
+					flDistance = (flDistance - flCurrentDistance) * 0.5;
 					vecEnd = vecSrc + (vecDir * flDistance);
 
 					pEntity.TraceAttack( m_pPlayer.pev, flCurrentDamage, vecDir, tr, (DMG_BULLET|DMG_NEVERGIB) );
@@ -724,7 +724,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 					}
 
 					vecSrc = tr.vecEndPos + (vecDir * 42);
-					flDistance = (flDistance - flCurrentDistance) * 0.75f;
+					flDistance = (flDistance - flCurrentDistance) * 0.75;
 					vecEnd = vecSrc + (vecDir * flDistance);
 
 					pEntity.TraceAttack( m_pPlayer.pev, flCurrentDamage, vecDir, tr, (DMG_BULLET|DMG_NEVERGIB) );
@@ -735,7 +735,9 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 					iEnemiesHit++;
 					//g_Game.AlertMessage( at_notice, "Hit entity: %1 with damage: %2\n", tr.pHit.vars.classname, flCurrentDamage );
 
-					flCurrentDamage *= 0.75f;
+					flCurrentDamage *= 0.75;
+
+					@pentIgnore = pEntity.edict();
 				}
 			}
 			else
