@@ -156,56 +156,6 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		pMuzzle.AnimateAndDie( flFramerate );
 	}
 
-	/*void SpawnDynamicEnt( string szSprite, Vector vecOrigin, float m_flRemoveTime, float flScale, float flRenderamt, float flFramerate, float flRotation = 0.0 )
-	{
-		CBaseEntity@ pDynamicEnt = g_EntityFuncs.Create( "ent_dynamic", vecOrigin, g_vecZero, true, m_pPlayer.edict() );
-		//cso::ent_dynamic@ pDynamicEnt = cast<cso::ent_dynamic@>(CastToScriptClass(cbeDynamicEnt));
-
-		if( pDynamicEnt !is null )
-		{
-			g_EntityFuncs.SetModel( pDynamicEnt, szSprite );
-
-			pDynamicEnt.pev.scale = flScale;
-			pDynamicEnt.pev.rendermode = kRenderTransAdd;
-			pDynamicEnt.pev.renderamt = flRenderamt;
-			pDynamicEnt.pev.framerate = flFramerate;
-			//pDynamicEnt.m_flRemoveTime = g_Engine.time + m_flRemoveTime;
-			pDynamicEnt.pev.dmg = g_Engine.time + m_flRemoveTime;
-
-			if( flRotation > 0.0 )
-			{
-				pDynamicEnt.KeyValue( "vp_type", "VP_TYPE::VP_ORIENTATED" );
-				pDynamicEnt.pev.angles = Vector( 0.0, 0.0, flRotation );
-			}
-
-			g_EntityFuncs.DispatchSpawn( pDynamicEnt.edict() );
-
-			@m_pDynamicEnt = pDynamicEnt;
-		}
-	}*/
-
-	void SpawnDynamicEnt( string szSprite, Vector vecOrigin, float m_flRemoveTime, float flScale, float flRenderamt, float flFramerate, float flRotation = 0.0 )
-	{
-		@m_pDynamicEnt = g_EntityFuncs.CreateSprite( szSprite, vecOrigin, true, flFramerate);
-		@m_pDynamicEnt.pev.owner = m_pPlayer.edict();
-		m_pDynamicEnt.SetScale( flScale );
-		m_pDynamicEnt.SetTransparency( kRenderTransAdd, 255, 255, 255, int(flRenderamt), kRenderFxNone );
-
-		if( flRotation > 0.0 )
-		{
-			m_pDynamicEnt.KeyValue( "vp_type", "VP_TYPE::VP_ORIENTATED" );
-			m_pDynamicEnt.pev.angles = Vector( 0.0, 0.0, flRotation );
-		}
-
-		m_pDynamicEnt.AnimateAndDie( flFramerate );
-	}
-
-	void RemoveDynamicEnc()
-	{
-		if( m_pDynamicEnt !is null )
-			g_EntityFuncs.Remove( m_pDynamicEnt );
-	}
-
 	void HandleAmmoReduction( int iPrimaryClip = 0, int iPrimaryAmmo = 0, int iSecondaryClip = 0, int iSecondaryAmmo = 0 )
 	{
 		if( iPrimaryClip > 0 )
@@ -245,43 +195,6 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 
 		m_pPlayer.pev.punchangle.x = Math.RandomFloat( vec2dRecoilX.x, vec2dRecoilX.y );
 		m_pPlayer.pev.punchangle.y = Math.RandomFloat( vec2dRecoilY.x, vec2dRecoilY.y );
-	}
-
-	void PlayWeaponAnim( int iAnim, int skiplocal = 0, int body = 0 )
-	{
-		self.SendWeaponAnim( iAnim, 0, body );
-
-		if( m_pAttachEnt is null ) SpawnAttachmentEnt();
-
-		m_pAttachEnt.pev.sequence = iAnim;
-	}
-
-	void SpawnAttachmentEnt( int iAnim = -1 )
-	{
-		if( m_pAttachEnt !is null ) RemoveAttachmentEnt();
-
-		Vector vecSpawnAngles = m_pPlayer.pev.v_angle;
-		vecSpawnAngles.x = -vecSpawnAngles.x;
-
-		@m_pAttachEnt = g_EntityFuncs.Create( "ent_weaponattachment", m_pPlayer.GetGunPosition(), g_vecZero, true, m_pPlayer.edict() );
-
-		g_EntityFuncs.SetModel( m_pAttachEnt, m_pPlayer.pev.viewmodel );
-		g_EntityFuncs.DispatchSpawn( m_pAttachEnt.edict() );
-
-		if( iAnim >= 0 ) m_pAttachEnt.pev.sequence = iAnim;
-	}
-
-	void RemoveAttachmentEnt()
-	{
-		if( m_pAttachEnt !is null )
-			g_EntityFuncs.Remove( m_pAttachEnt );
-	}
-
-	void GetAttachment( int iAttachment, Vector &out vecOrigin, Vector &out vecAngles )
-	{
-		if( m_pAttachEnt is null ) SpawnAttachmentEnt();
-
-		g_EngineFuncs.GetAttachment( m_pAttachEnt.edict(), iAttachment, vecOrigin, vecAngles );
 	}
 
 	//For CS-Like
