@@ -444,21 +444,6 @@ class weapon_failnaught : CBaseCSOWeapon
 		BaseClass.ItemPostFrame();
 	}
 
-	void MuzzleflashThink()
-	{
-		if( m_pDynamicEnt is null )
-		{
-			SetThink( null );
-			return;
-		}
-
-		Vector vecOrigin;
-		GetAttachment( ATTACH_MUZZLE1, vecOrigin, void );
-		g_EntityFuncs.SetOrigin( m_pDynamicEnt, vecOrigin );
-
-		pev.nextthink = g_Engine.time + 0.01;
-	}
-
 	void HuntersEye()
 	{
 		CBaseEntity@ pTarget;
