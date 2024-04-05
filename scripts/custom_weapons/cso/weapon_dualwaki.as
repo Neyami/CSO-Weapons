@@ -160,13 +160,6 @@ class weapon_dualwaki : CBaseCSOWeapon
 		BaseClass.Holster( skipLocal );
 	}
 
-	~weapon_dualwaki()
-	{
-		SetThink(null);
-		m_flDoubleSlashTime = 0;
-		m_bDoDoubleSlash = false;
-	}
-
 	void PrimaryAttack()
 	{
 		if( m_iSlashingMode == 0 ) m_iSlashingMode = 1;

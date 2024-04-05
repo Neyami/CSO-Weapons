@@ -176,14 +176,6 @@ class weapon_csobow : CBaseCSOWeapon
 		BaseClass.Holster( skipLocal );
 	}
 
-	~weapon_csobow()
-	{
-		self.m_fInReload = false;
-		m_iState = STATE_NONE;
-		m_flTimeCharge = 0.0;
-		//SetThink(null);
-	}
-
 	void PrimaryAttack()
 	{
 		if( m_iState > STATE_NONE )

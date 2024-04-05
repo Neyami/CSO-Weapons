@@ -242,18 +242,6 @@ class weapon_blockas : CBaseCSOWeapon
 		BaseClass.Holster( skipLocal );
 	}
 
-	~weapon_blockas()
-	{
-		self.m_fInReload = false;
-		m_iShotgunReload = 0;
-		m_flShootRocketStage1 = m_flShootRocketStage2 = m_flShootRocketStage3 = 0;
-		m_flModeChangeStage1 = m_flModeChangeStage2 = m_flModeChangeStage3 = 0;
-
-		m_bChanging = false;
-
-		//g_Game.AlertMessage( at_console, "weapon_blockas has been destroyed via ~ \n");
-	}
-
 	void PrimaryAttack()
 	{
 		if( m_pPlayer.pev.waterlevel == WATERLEVEL_HEAD )
