@@ -204,8 +204,8 @@ class weapon_m95 : CBaseCSOWeapon
 			flDamage = self.m_flCustomDmg;
 
 		Vector vecSrc = m_pPlayer.GetGunPosition();
-		int iPenetration = USE_PENETRATION ? 20 : 1;
-		FireBullets3( vecSrc, g_Engine.v_forward, flSpread, 20, BULLET_PLAYER_338MAG, CSOW_TRACERFREQ, flDamage, 1, CSOF_ALWAYSDECAL );
+		int iPenetration = USE_PENETRATION ? 6 : 1;
+		FireBullets3( vecSrc, g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_338MAG, CSOW_TRACERFREQ, flDamage, 1, CSOF_ALWAYSDECAL );
 
 		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
