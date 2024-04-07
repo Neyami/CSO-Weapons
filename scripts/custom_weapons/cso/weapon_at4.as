@@ -7,7 +7,6 @@ const string CSOW_NAME								= "weapon_at4";
 const int CSOW_DEFAULT_GIVE						= 2;
 const int CSOW_MAX_CLIP 								= 1;
 const int CSOW_MAX_AMMO							= 10;
-const int CSOW_TRACERFREQ							= 2;
 const float CSOW_DAMAGE								= 123; //Based on AT4-CS which deals 4% more damage
 const float CSOW_TIME_DELAY1						= 1.5; //N/A as it is a single-fire weapon
 const float CSOW_TIME_DELAY2						= 0.3;
