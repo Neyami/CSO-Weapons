@@ -1,5 +1,3 @@
-#include "includes/csoweapondev"
-
 int g_iCSOWHands = 0;
 
 class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity, CSODevWeapon
@@ -20,21 +18,6 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity, CSODevWeapon
 		get const { return cast<CBaseEntity@>(m_hDropEffect.GetEntity()); }
 		set { m_hDropEffect = EHandle(@value); }
 	}*/
-
-	//Dev stuff, DON'T FORGET TO REMOVE BEFORE RELEASE :aRage:
-	protected EHandle m_hAttachEnt;
-	protected CBaseEntity@ m_pAttachEnt
-	{
-		get const { return m_hAttachEnt.GetEntity(); }
-		set { m_hAttachEnt = EHandle(@value); }
-	}
-
-	protected EHandle m_hDynamicEnt;
-	protected CSprite@ m_pDynamicEnt
-	{
-		get const { return cast<CSprite@>(m_hDynamicEnt.GetEntity()); }
-		set { m_hDynamicEnt = EHandle(@value); }
-	}
 
 	int m_iWeaponType;
 	int m_iShell;
