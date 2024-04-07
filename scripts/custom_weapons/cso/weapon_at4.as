@@ -362,6 +362,7 @@ class at4rocket : ScriptBaseEntity
 
 void Register()
 {
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_at4::at4rocket", "at4rocket" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_at4::weapon_at4", CSOW_NAME );
 	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "rockets", "", "ammo_rpgclip" );
 }
