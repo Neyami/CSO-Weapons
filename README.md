@@ -439,3 +439,18 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
  
     * AMMO NAME
     * `50bmg`
+
+<BR>
+
+
+# EXPLOSIVES
+* M136 AT4
+
+    * ENTITIES
+    * `weapon_at4` - Weapon
+    * `at4rocket` - Projectile
+ 
+    * AMMO NAME
+    * `rockets`
+
+<BR>
