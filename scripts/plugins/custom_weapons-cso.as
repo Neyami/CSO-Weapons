@@ -52,6 +52,9 @@
 #include "../custom_weapons/cso/weapon_m134hero"
 #include "../custom_weapons/cso/weapon_m2"
 
+//Explosives
+#include "../custom_weapons/cso/weapon_at4"
+
 void PluginInit()
 {
 	g_Module.ScriptInfo.SetAuthor( "Nero" );
@@ -102,4 +105,6 @@ void MapInit()
 	cso_aeolis::Register();
 	cso_m134hero::Register();
 	cso_m2::Register();
+
+	cso_at4::Register();
 }
