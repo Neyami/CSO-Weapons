@@ -480,8 +480,8 @@ class augex_grenade : ScriptBaseEntity
 		tr = g_Utility.GetGlobalTrace();
 
 		// Pull out of the wall a bit
-		if( tr.flFraction != 1.0f )
-			pev.origin = tr.vecEndPos + (tr.vecPlaneNormal * 24.0f);
+		if( tr.flFraction != 1.0 )
+			pev.origin = tr.vecEndPos + (tr.vecPlaneNormal * 24.0);
 
 		Vector vecOrigin = pev.origin;
 

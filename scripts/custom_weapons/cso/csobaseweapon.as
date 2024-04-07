@@ -1,6 +1,8 @@
+#include "includes/csoweapondev"
+
 int g_iCSOWHands = 0;
 
-class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
+class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity, CSODevWeapon
 {
 	// Possible workaround for the SendWeaponAnim() access violation crash.
 	// According to R4to0 this seems to provide at least some improvement.
@@ -18,6 +20,21 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		get const { return cast<CBaseEntity@>(m_hDropEffect.GetEntity()); }
 		set { m_hDropEffect = EHandle(@value); }
 	}*/
+
+	//Dev stuff, DON'T FORGET TO REMOVE BEFORE RELEASE :aRage:
+	protected EHandle m_hAttachEnt;
+	protected CBaseEntity@ m_pAttachEnt
+	{
+		get const { return m_hAttachEnt.GetEntity(); }
+		set { m_hAttachEnt = EHandle(@value); }
+	}
+
+	protected EHandle m_hDynamicEnt;
+	protected CSprite@ m_pDynamicEnt
+	{
+		get const { return cast<CSprite@>(m_hDynamicEnt.GetEntity()); }
+		set { m_hDynamicEnt = EHandle(@value); }
+	}
 
 	int m_iWeaponType;
 	int m_iShell;
@@ -137,13 +154,13 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		}
 	}
 
-	void DoMuzzleflash( string szSprite, float flForward, float flRight, float flUp, float flScale, float flRenderamt, float flFramerate, float flRotation = 0.0 )
+	void DoMuzzleflash( string szSprite, float flForward, float flRight, float flUp, float flScale, float flRenderamt, float flFramerate, float flRotation = 0.0, int iRenderMode = kRenderTransAdd )
 	{
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
 		CSprite@ pMuzzle = g_EntityFuncs.CreateSprite( szSprite, m_pPlayer.GetGunPosition() + g_Engine.v_forward * flForward + g_Engine.v_right * flRight + g_Engine.v_up * flUp, true );
 		@pMuzzle.pev.owner = m_pPlayer.edict();
 		pMuzzle.SetScale( flScale );
-		pMuzzle.SetTransparency( kRenderTransAdd, 255, 255, 255, int(flRenderamt), kRenderFxNone );
+		pMuzzle.SetTransparency( iRenderMode, 255, 255, 255, int(flRenderamt), kRenderFxNone );
 
 		if( flRotation > 0.0 )
 		{
@@ -154,6 +171,23 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		//pMuzzle.pev.sequence = VP_TYPE::VP_ORIENTATED; //next update ??
 		//pMuzzle.pev.effects = EF_SPRITE_CUSTOM_VP; //next update ??
 		pMuzzle.AnimateAndDie( flFramerate );
+	}
+
+	void DoMuzzleflash2( string szSprite, float flForward, float flRight, float flUp, int iScale, int iFramerate, int iFlags )
+	{
+		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
+		Vector vecOrigin = m_pPlayer.GetGunPosition() + g_Engine.v_forward * flForward + g_Engine.v_right * flRight + g_Engine.v_up * flUp;
+
+		NetworkMessage m1( MSG_ONE, NetworkMessages::SVC_TEMPENTITY, m_pPlayer.edict() );
+			m1.WriteByte( TE_EXPLOSION );
+			m1.WriteCoord( vecOrigin.x );
+			m1.WriteCoord( vecOrigin.y );
+			m1.WriteCoord( vecOrigin.z );
+			m1.WriteShort( g_EngineFuncs.ModelIndex(szSprite) );
+			m1.WriteByte( iScale ); //scale
+			m1.WriteByte( iFramerate ); //framerate
+			m1.WriteByte( iFlags );
+		m1.End();
 	}
 
 	void HandleAmmoReduction( int iPrimaryClip = 0, int iPrimaryAmmo = 0, int iSecondaryClip = 0, int iSecondaryAmmo = 0 )
@@ -278,7 +312,6 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 	int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, int iPenetration, int iBulletType, int iTracerFreq, float flDamage, float flRangeModifier, int iFlags = 0, Vector vecMuzzleOrigin = g_vecZero )
 	{
 		float flDistance = 8192.0;
-		int shared_rand = m_pPlayer.random_seed;
 
 		const int HITGROUP_SHIELD = HITGROUP_RIGHTLEG + 1;
 		float flPenetrationPower;
@@ -443,8 +476,8 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 
 		float x, y;
 
-		x = g_PlayerFuncs.SharedRandomFloat(shared_rand, -0.5, 0.5) + g_PlayerFuncs.SharedRandomFloat(shared_rand + 1, -0.5, 0.5);
-		y = g_PlayerFuncs.SharedRandomFloat(shared_rand + 2, -0.5, 0.5) + g_PlayerFuncs.SharedRandomFloat(shared_rand + 3, -0.5, 0.5);
+		x = g_PlayerFuncs.SharedRandomFloat(m_pPlayer.random_seed, -0.5, 0.5) + g_PlayerFuncs.SharedRandomFloat(m_pPlayer.random_seed + 1, -0.5, 0.5);
+		y = g_PlayerFuncs.SharedRandomFloat(m_pPlayer.random_seed + 2, -0.5, 0.5) + g_PlayerFuncs.SharedRandomFloat(m_pPlayer.random_seed + 3, -0.5, 0.5);
 
 		Vector vecDir = vecDirShooting + x * flSpread * vecRight + y * flSpread * vecUp;
 		Vector vecEnd = vecSrc + vecDir * flDistance;

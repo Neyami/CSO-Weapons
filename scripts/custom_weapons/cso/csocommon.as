@@ -141,7 +141,10 @@ const int M134HERO_WEIGHT				= 40;
 const int M2_WEIGHT							= 25;
 
 //Special/Miscellaneous (Equipment)
+const int AT4_SLOT								= 8;
+const int AT4_POSITION						= 10;
 
+const int AT4_WEIGHT							= 30;
 
 
 
@@ -158,7 +161,7 @@ const array<string> pBPTextures =
 };
 
 
-const float CSO_AZ_MULTIPLIER	= 1.2f; //Anti-Zombie
+const float CSO_AZ_MULTIPLIER	= 1.2; //Anti-Zombie
 
 const array<string> g_arrsZombies =
 {
