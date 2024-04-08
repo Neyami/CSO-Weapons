@@ -1,6 +1,6 @@
 int g_iCSOWHands = 0;
 
-class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity, CSODevWeapon
+class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 {
 	// Possible workaround for the SendWeaponAnim() access violation crash.
 	// According to R4to0 this seems to provide at least some improvement.
