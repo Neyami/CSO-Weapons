@@ -268,7 +268,27 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 			return m_flSpreadStanding;
 	}
 
-	void Think()
+	CBasePlayerItem@ DropItem()
+	{
+		if( cso::bUseDroppedItemEffect )
+		{
+			if( m_hDropEffect.GetEntity() is null )
+			{
+				CBaseEntity@ cbeGunDrop = g_EntityFuncs.Create( "ef_gundrop", pev.origin, g_vecZero, false, self.edict() );
+				m_hDropEffect = EHandle( cbeGunDrop );
+				cso::ef_gundrop@ pGunDrop = cast<cso::ef_gundrop@>(CastToScriptClass(cbeGunDrop));
+				pGunDrop.m_hOwner = EHandle( self );
+				pGunDrop.pev.movetype	= MOVETYPE_FOLLOW;
+				@pGunDrop.pev.aiment	= self.edict();
+
+				g_EntityFuncs.DispatchSpawn( pGunDrop.self.edict() );
+			}
+		}
+
+		return BaseClass.DropItem();
+	}
+
+	/*void Think()
 	{
 		if( cso::bUseDroppedItemEffect )
 		{
@@ -286,7 +306,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		}
 
 		BaseClass.Think();
-	}
+	}*/
 
 	//From cstrike combat.cpp Vector CBaseEntity::FireBullets3(Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, int iDamage, float flRangeModifier, entvars_t *pevAttacker, bool bPistol, int shared_rand)
 	//FireBullets3( vecSrc, vecAiming, 0, 4096, 2, BULLET_PLAYER_50AE, 54, 0.81, m_pPlayer.edict(), true, m_pPlayer.random_seed );

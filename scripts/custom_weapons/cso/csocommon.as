@@ -143,8 +143,11 @@ const int M2_WEIGHT							= 25;
 //Special/Miscellaneous (Equipment)
 const int AT4_SLOT								= 8;
 const int AT4_POSITION						= 10;
+const int AT4EX_SLOT							= 8;
+const int AT4EX_POSITION					= 11;
 
 const int AT4_WEIGHT							= 30;
+const int AT4EX_WEIGHT						= 30;
 
 
 
