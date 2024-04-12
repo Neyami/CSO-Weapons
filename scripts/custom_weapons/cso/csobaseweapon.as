@@ -657,7 +657,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 
 					int iDmgType = (DMG_BULLET|DMG_NEVERGIB);
 
-					if( (iFlags & CSOF_ARMORPEN) != 0 ) iDmgType = (DMG_ENERGYBEAM|DMG_NEVERGIB);
+					if( (iFlags & CSOF_ARMORPEN) != 0 ) iDmgType = (DMG_GENERIC|DMG_BLAST|DMG_NEVERGIB);
 
 					pEntity.TraceAttack( m_pPlayer.pev, flCurrentDamage, vecDir, tr, iDmgType );
 
