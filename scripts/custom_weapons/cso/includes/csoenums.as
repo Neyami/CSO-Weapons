@@ -92,7 +92,8 @@ enum cso_firebulletsflags
 	CSOF_HITMARKER = 1,
 	CSOF_ALWAYSDECAL = 2,
 	CSOF_TRACER = 4,
-	CSOF_ETHEREAL = 8
+	CSOF_ARMORPEN = 8,
+	CSOF_ETHEREAL = 16
 };
 
 
