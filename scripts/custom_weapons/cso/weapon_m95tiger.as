@@ -295,7 +295,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
 
 		int iPenetration = USE_PENETRATION ? 20 : 1;
-		int iEnemiesHit = FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_M95TIGER, CSOW_TRACERFREQ, flDamage, 5, (CSOF_ALWAYSDECAL | CSOF_HITMARKER), Vector(CSOW_MUZZLE_ORIGIN.x, CSOW_MUZZLE_ORIGIN.y, CSOW_MUZZLE_ORIGIN.z) );
+		int iEnemiesHit = FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_M95TIGER, CSOW_TRACERFREQ, flDamage, 5, (CSOF_ALWAYSDECAL|CSOF_HITMARKER|CSOF_ARMORPEN), Vector(CSOW_MUZZLE_ORIGIN.x, CSOW_MUZZLE_ORIGIN.y, CSOW_MUZZLE_ORIGIN.z) );
 		m_iKilledMobs += iEnemiesHit;
 
 		self.SendWeaponAnim( ANIM_SHOOT, 0, (m_bSwitchHands ? GetBodygroup() : 0) );
