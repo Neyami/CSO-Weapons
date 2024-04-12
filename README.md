@@ -454,3 +454,16 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
     * `rockets`
 
 <BR>
+
+
+* AT4-CS
+    * [Video](https://www.youtube.com/watch?v=7DhqGnh572c)
+
+    * ENTITIES
+    * `weapon_at4ex` - Weapon
+    * `at4exrocket` - Projectile
+ 
+    * AMMO NAME
+    * `rockets`
+
+<BR>
