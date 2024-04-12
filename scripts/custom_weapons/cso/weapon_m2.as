@@ -221,7 +221,7 @@ class weapon_m2 : CBaseCSOWeapon
 			flDamage = self.m_flCustomDmg;
 
 		int iPenetration = USE_PENETRATION ? 2 : 0; 
-		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), iPenetration, BULLET_PLAYER_50BMG, CSOW_TRACERFREQ, flDamage, 1.0, 0, m_bDeployed ? CSOW_OFFSETS_MUZZLE_B : CSOW_OFFSETS_MUZZLE_A );
+		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), iPenetration, BULLET_PLAYER_50BMG, CSOW_TRACERFREQ, flDamage, 1.0, CSOF_ARMORPEN, m_bDeployed ? CSOW_OFFSETS_MUZZLE_B : CSOW_OFFSETS_MUZZLE_A );
 
 		Vector vecShellOffsets = m_bDeployed ? CSOW_OFFSETS_SHELL_B : CSOW_OFFSETS_SHELL_A;
 		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * vecShellOffsets.x - g_Engine.v_right * vecShellOffsets.y + g_Engine.v_up * vecShellOffsets.z, m_iShell, TE_BOUNCE_SHELL, true, !m_bDeployed );
