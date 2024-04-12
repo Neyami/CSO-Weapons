@@ -62,6 +62,8 @@ class ef_gundrop : ScriptBaseAnimating
 
 		pev.solid		= SOLID_NOT;
 		pev.framerate	= 1.0;
+		pev.rendermode = kRenderTransTexture;
+		pev.renderamt = 0;
 
 		self.pev.frame = 0;
 		self.ResetSequenceInfo();
@@ -79,6 +81,9 @@ class ef_gundrop : ScriptBaseAnimating
 	{
 		if( m_hOwner.IsValid() )
 		{
+			if( pev.rendermode != 0 and m_hOwner.GetEntity().pev.velocity == g_vecZero )
+				pev.rendermode = 0;
+
 			self.StudioFrameAdvance();
 
 			if( m_hOwner.GetEntity().pev.owner !is null )
