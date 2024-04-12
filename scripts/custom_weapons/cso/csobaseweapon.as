@@ -655,7 +655,11 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 					flDistance = (flDistance - flCurrentDistance) * 0.75;
 					vecEnd = vecSrc + (vecDir * flDistance);
 
-					pEntity.TraceAttack( m_pPlayer.pev, flCurrentDamage, vecDir, tr, (DMG_BULLET|DMG_NEVERGIB) );
+					int iDmgType = (DMG_BULLET|DMG_NEVERGIB);
+
+					if( (iFlags & CSOF_ARMORPEN) != 0 ) iDmgType = (DMG_ENERGYBEAM|DMG_NEVERGIB);
+
+					pEntity.TraceAttack( m_pPlayer.pev, flCurrentDamage, vecDir, tr, iDmgType );
 
 					if( iTrail > TRAIL_NONE )
 						DoTrailExplosion( iTrail, tr.vecEndPos );
