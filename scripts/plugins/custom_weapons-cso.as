@@ -54,6 +54,7 @@
 
 //Explosives
 #include "../custom_weapons/cso/weapon_at4"
+#include "../custom_weapons/cso/weapon_at4ex"
 
 void PluginInit()
 {
@@ -107,4 +108,5 @@ void MapInit()
 	cso_m2::Register();
 
 	cso_at4::Register();
+	cso_at4ex::Register();
 }
