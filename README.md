@@ -158,6 +158,16 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
 
 # SHOTGUNS
+* Benelli M3
+
+    * ENTITIES
+    * `weapon_m3` - Weapon
+ 
+    * AMMO NAME
+    * `buckshot`
+
+<BR>
+
 * Brick Piece M777
     * [Video](https://youtu.be/7mOEY7KNsA0)
 
