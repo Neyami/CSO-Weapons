@@ -214,6 +214,16 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
 <BR>
 
+* Winchester M1887
+
+    * ENTITIES
+    * `weapon_m1887` - Weapon
+ 
+    * AMMO NAME
+    * `buckshot`
+
+<BR>
+
 
 # SUBMACHINE GUNS  
 * CROW-3
