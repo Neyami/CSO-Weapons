@@ -21,6 +21,7 @@
 #include "../custom_weapons/cso/weapon_gunkata"
 
 //Shotguns
+#include "../custom_weapons/cso/weapon_m3"
 #include "../custom_weapons/cso/weapon_blockas"
 #include "../custom_weapons/cso/weapon_mk3a1"
 #include "../custom_weapons/cso/weapon_volcano"
@@ -80,6 +81,7 @@ void MapInit()
 	cso_bloodhunter::Register();
 	cso_gunkata::Register();
 
+	cso_m3::Register();
 	cso_blockas::Register();
 	cso_mk3a1::Register();
 	cso_volcano::Register();
