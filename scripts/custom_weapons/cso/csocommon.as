@@ -57,15 +57,18 @@ const int DESPERADO_WEIGHT			= 10;
 const int GUNKATA_WEIGHT				= 10;
 
 //Shotguns
+const int M3_SLOT								= 3;
+const int M3_POSITION						= 10;
 const int BLOCKAS_SLOT						= 3;
-const int BLOCKAS_POSITION				= 10;
+const int BLOCKAS_POSITION				= 11;
 const int MK3A1_SLOT							= 3;
-const int MK3A1_POSITION					= 11;
+const int MK3A1_POSITION					= 12;
 const int VOLCANO_SLOT					= 3;
-const int VOLCANO_POSITION				= 12;
+const int VOLCANO_POSITION				= 13;
 const int QBARREL_SLOT						= 3;
-const int QBARREL_POSITION				= 13;
+const int QBARREL_POSITION				= 14;
 
+const int M3_WEIGHT							= 20;
 const int BLOCKAS_WEIGHT				= 20;
 const int MK3A1_WEIGHT					= 20;
 const int VOLCANO_WEIGHT				= 20;
@@ -229,7 +232,7 @@ void DoGunSmoke( Vector vecSrc, int iSmokeType )
 */
 }
 
-void CreateShotgunPelletDecals( CBasePlayer@ pPlayer, const Vector& in vecSrc, const Vector& in vecAiming, const Vector& in vecSpread, const uint uiPelletCount, float flMaxDamage, const int iDamageFlags, int spriteIndex = -1 )
+void CreateShotgunPelletDecals( CBasePlayer@ pPlayer, const Vector& in vecSrc, const Vector& in vecAiming, const Vector& in vecSpread, const uint uiPelletCount, float flMaxDamage, const int iDamageFlags )
 {
 	TraceResult tr;
 
@@ -248,7 +251,7 @@ void CreateShotgunPelletDecals( CBasePlayer@ pPlayer, const Vector& in vecSrc, c
 
 		g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, pPlayer.edict(), tr );
 
-		if( tr.flFraction < 1.0f )
+		if( tr.flFraction < 1.0 )
 		{
 			if( tr.pHit !is null )
 			{
@@ -258,8 +261,16 @@ void CreateShotgunPelletDecals( CBasePlayer@ pPlayer, const Vector& in vecSrc, c
 				{
 					g_WeaponFuncs.DecalGunshot( tr, BULLET_PLAYER_BUCKSHOT );
 
-					if( spriteIndex != -1 )
-						cso::fake_smoke( tr, spriteIndex );
+					NetworkMessage m1( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, tr.vecEndPos );
+						m1.WriteByte( TE_EXPLOSION );
+						m1.WriteCoord( tr.vecEndPos.x );
+						m1.WriteCoord( tr.vecEndPos.y );
+						m1.WriteCoord( tr.vecEndPos.z - 10.0 );
+						m1.WriteShort( g_EngineFuncs.ModelIndex(pSmokeSprites[Math.RandomLong(1, 4)]) );
+						m1.WriteByte( 2 ); //scale
+						m1.WriteByte( 50 ); //framerate
+						m1.WriteByte( TE_EXPLFLAG_NODLIGHTS|TE_EXPLFLAG_NOSOUND|TE_EXPLFLAG_NOPARTICLES );
+					m1.End();
 				}
 
 				if( pHit.pev.takedamage != DAMAGE_NO )
@@ -284,51 +295,6 @@ void CreateShotgunPelletDecals( CBasePlayer@ pPlayer, const Vector& in vecSrc, c
 	}
 }
 
-/*
-void CreateShotgunPelletDecals( CBasePlayer@ pPlayer, const Vector& in vecSrc, const Vector& in vecAiming, const Vector& in vecSpread, const uint uiPelletCount, const int iDamage, const int iDamageFlags, int spriteIndex = -1 )
-{
-    TraceResult tr;
-
-    float x, y;
-
-    for( uint uiPellet = 0; uiPellet < uiPelletCount; ++uiPellet )
-    {
-        g_Utility.GetCircularGaussianSpread( x, y );
-
-        Vector vecDir = vecAiming 
-                        + x * vecSpread.x * g_Engine.v_right 
-                        + y * vecSpread.y * g_Engine.v_up;
-
-        Vector vecEnd    = vecSrc + vecDir * 2048;
-
-        g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, pPlayer.edict(), tr );
-
-        if( tr.flFraction < 1.0f )
-        {
-            if( tr.pHit !is null )
-            {
-                CBaseEntity@ pHit = g_EntityFuncs.Instance( tr.pHit );
-
-                if( pHit.IsBSPModel() == true )
-                {
-                    g_WeaponFuncs.DecalGunshot( tr, BULLET_PLAYER_BUCKSHOT );
-
-                    if( spriteIndex != -1 )
-                        cso::fake_smoke( tr, spriteIndex );
-                }
-
-                if ( pHit.pev.takedamage != DAMAGE_NO )
-                {
-                    g_WeaponFuncs.ClearMultiDamage();
-                    pHit.TraceAttack( pPlayer.pev, iDamage, vecDir, tr, iDamageFlags );
-                    g_WeaponFuncs.ApplyMultiDamage( pPlayer.pev, pPlayer.pev );
-                }
-            }
-        }
-    }
-}
-*/
-
 Vector AngleRecoil( CBasePlayer@ m_pPlayer, float &in x, float &in y, float &in z = 0 )
 {
 	Vector vecTemp = m_pPlayer.pev.v_angle;
@@ -339,37 +305,6 @@ Vector AngleRecoil( CBasePlayer@ m_pPlayer, float &in x, float &in y, float &in 
 	m_pPlayer.pev.fixangle = FAM_FORCEVIEWANGLES;
 
 	return m_pPlayer.pev.angles;
-}
-
-void fake_smoke( TraceResult tr, int spriteIndex )
-{
-	Vector origin;
-
-	if( tr.flFraction != 1.0f )
-		origin = tr.vecEndPos + (tr.vecPlaneNormal * 0.6f);
-
-	/*//correct origin but slow framerate
-	NetworkMessage msg( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, origin );
-			msg.WriteByte( TE_SPRITE );
-			msg.WriteCoord( origin.x );
-			msg.WriteCoord( origin.y );
-			msg.WriteCoord( origin.z );
-			msg.WriteShort( spriteIndex );
-			msg.WriteByte( 2 );//scale
-			msg.WriteByte( 128 );//brightness
-	msg.End();*/
-
-	//incorrect origin but proper framerate
-	NetworkMessage msg( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, origin );
-		msg.WriteByte( TE_EXPLOSION );
-		msg.WriteCoord( origin.x );
-		msg.WriteCoord( origin.y );
-		msg.WriteCoord( origin.z );
-		msg.WriteShort( spriteIndex );
-		msg.WriteByte( 2 ); // scale * 10
-		msg.WriteByte( 50 ); // framerate
-		msg.WriteByte( TE_EXPLFLAG_NODLIGHTS | TE_EXPLFLAG_NOSOUND | TE_EXPLFLAG_NOPARTICLES );
-	msg.End();
 }
 
 CBaseEntity@ ShootCustomProjectile( string classname, string mdl, Vector origin, Vector velocity, Vector angles, EHandle &in eOwner, float time = 0 )
