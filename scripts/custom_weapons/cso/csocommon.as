@@ -48,6 +48,8 @@ const int DESPERADO_SLOT				= 2;
 const int DESPERADO_POSITION			= 14;
 const int GUNKATA_SLOT						= 2;
 const int GUNKATA_POSITION				= 15;
+const int M1887CRAFT_SLOT				= 2;
+const int M1887CRAFT_POSITION		= 16;
 
 const int ELITES_WEIGHT					= 5;
 const int M950_WEIGHT						= 10;
@@ -55,6 +57,7 @@ const int SKULL2_WEIGHT					= 10;
 const int BLOODHUNTER_WEIGHT		= 10;
 const int DESPERADO_WEIGHT			= 10;
 const int GUNKATA_WEIGHT				= 10;
+const int M1887CRAFT_WEIGHT			= 10;
 
 //Shotguns
 const int M3_SLOT								= 3;
@@ -67,12 +70,15 @@ const int VOLCANO_SLOT					= 3;
 const int VOLCANO_POSITION				= 13;
 const int QBARREL_SLOT						= 3;
 const int QBARREL_POSITION				= 14;
+const int M1887_SLOT							= 3;
+const int M1887_POSITION					= 15;
 
 const int M3_WEIGHT							= 20;
 const int BLOCKAS_WEIGHT				= 20;
 const int MK3A1_WEIGHT					= 20;
 const int VOLCANO_WEIGHT				= 20;
 const int QBARREL_WEIGHT				= 20;
+const int M1887_WEIGHT					= 20;
 
 //SMGs
 const int CROW3_SLOT						= 4;
