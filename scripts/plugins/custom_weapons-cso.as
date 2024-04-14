@@ -19,6 +19,7 @@
 #include "../custom_weapons/cso/weapon_skull2"
 #include "../custom_weapons/cso/weapon_bloodhunter"
 #include "../custom_weapons/cso/weapon_gunkata"
+#include "../custom_weapons/cso/weapon_m1887craft"
 
 //Shotguns
 #include "../custom_weapons/cso/weapon_m3"
@@ -81,6 +82,7 @@ void MapInit()
 	cso_skull2::Register();
 	cso_bloodhunter::Register();
 	cso_gunkata::Register();
+	cso_m1887craft::Register();
 
 	cso_m3::Register();
 	cso_blockas::Register();
