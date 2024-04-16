@@ -271,17 +271,6 @@ class weapon_skull11 : CBaseCSOWeapon
 		pev.nextthink = g_Engine.time + 0.01;
 	}
 
-	/*void ItemPostFrame()
-	{
-		if( m_flYeetMag > 0.0 and m_flYeetMag < g_Engine.time )
-		{
-			YeetMag();
-			m_flYeetMag = 0.0;
-		}
-
-		BaseClass.ItemPostFrame();
-	}*/
-
 	void YeetMag()
 	{
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
