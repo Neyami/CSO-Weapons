@@ -235,6 +235,17 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
 <BR>
 
+* SKULL-11
+    * [Video](https://www.youtube.com/watch?v=BYXfCY4s3Lk)
+
+    * ENTITIES
+    * `weapon_skull11` - Weapon
+ 
+    * AMMO NAME
+    * `buckshot`
+
+<BR>
+
 
 # SUBMACHINE GUNS  
 * CROW-3
