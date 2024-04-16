@@ -72,6 +72,8 @@ const int QBARREL_SLOT						= 3;
 const int QBARREL_POSITION				= 14;
 const int M1887_SLOT							= 3;
 const int M1887_POSITION					= 15;
+const int SKULL11_SLOT						= 3;
+const int SKULL11_POSITION				= 16;
 
 const int M3_WEIGHT							= 20;
 const int BLOCKAS_WEIGHT				= 20;
@@ -79,6 +81,7 @@ const int MK3A1_WEIGHT					= 20;
 const int VOLCANO_WEIGHT				= 20;
 const int QBARREL_WEIGHT				= 20;
 const int M1887_WEIGHT					= 20;
+const int SKULL11_WEIGHT					= 20;
 
 //SMGs
 const int CROW3_SLOT						= 4;
@@ -180,11 +183,11 @@ const array<string> g_arrsZombies =
 	"npc_zombienormal",
 	"npc_zombielight",
 	"npc_zombieheavy",
-	"npc_zombievenomsting",
+	"npc_zombievenomsting"/*,
 	"monster_gonome",
 	"monster_zombie",
 	"monster_zombie_barney",
-	"monster_zombie_soldier"
+	"monster_zombie_soldier"*/
 };
 
 const array<string> pSmokeSprites =

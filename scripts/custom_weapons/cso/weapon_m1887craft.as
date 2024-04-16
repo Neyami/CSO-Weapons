@@ -4,9 +4,9 @@ namespace cso_m1887craft
 const bool USE_PENETRATION							= true;
 const string CSOW_NAME								= "weapon_m1887craft";
 
-const int CSOW_DEFAULT_GIVE						= 3;
-const int CSOW_MAX_CLIP 								= 3;
-const int CSOW_MAX_AMMO							= 3;
+const int CSOW_DEFAULT_GIVE						= 6;
+const int CSOW_MAX_CLIP 								= 6;
+const int CSOW_MAX_AMMO							= 32;
 const int CSOW_TRACERFREQ							= 0;
 const int CSOW_PELLETCOUNT						= 8;
 const float CSOW_DAMAGE								= (76/CSOW_PELLETCOUNT);

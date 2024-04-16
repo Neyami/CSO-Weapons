@@ -1,7 +1,6 @@
 namespace cso_bloodhunter
 {
 
-const bool CSOW_DEBUG						= false;
 const bool CSOW_USE_MAGDROP			= true; //Drop mag while reloading or not
 const int CSOW_DEFAULT_GIVE				= 30;
 const int CSOW_MAX_CLIP 					= 30;
@@ -126,6 +125,7 @@ class weapon_bloodhunter : CBaseCSOWeapon
 		m_uiLevel = 0;
 		m_flRedrawTime = 0.0;
 		m_flThrowGrenade = 0.0;
+
 		self.FallInit();
 	}
 
@@ -363,25 +363,11 @@ class weapon_bloodhunter : CBaseCSOWeapon
 		self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DELAY2;
 	}
 
-	void TertiaryAttack()
-	{
-		if( CSOW_DEBUG )
-		{
-			if( m_uiLevel == 3 )
-				m_uiLevel = 0;
-
-			m_uiLevel++;
-
-			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + 0.5;
-		}
-	}
-
 	void ThrowGrenade()
 	{
-		Vector vecOrigin = m_pPlayer.pev.origin + m_pPlayer.pev.view_ofs + g_Engine.v_forward * 16;
-		Vector vecVelocity = g_Engine.v_forward * CSOW_GRENADE_THROW + m_pPlayer.pev.velocity;
-
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
+		Vector vecOrigin = m_pPlayer.GetGunPosition() + g_Engine.v_forward * 16;
+		Vector vecVelocity = g_Engine.v_forward * CSOW_GRENADE_THROW + m_pPlayer.pev.velocity;
 
 		CBaseEntity@ cbeGrenade = g_EntityFuncs.Create( "bloodgrenade", vecOrigin, g_vecZero, true, m_pPlayer.edict() );
 		bloodgrenade@ pGrenade = cast<bloodgrenade@>(CastToScriptClass(cbeGrenade));

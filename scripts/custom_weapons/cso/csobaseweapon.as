@@ -66,9 +66,9 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 			flUpBoost = Math.RandomFloat(50, 75);
 
 		if( bRight )
-			vecVelocity = m_pPlayer.pev.velocity + g_Engine.v_right * Math.RandomFloat(50, 70) + g_Engine.v_up * flUpBoost + g_Engine.v_forward * 25;
+			vecVelocity = m_pPlayer.pev.velocity + g_Engine.v_right * Math.RandomFloat(100, 150) + g_Engine.v_up * flUpBoost + g_Engine.v_forward * 25;
 		else
-			vecVelocity = m_pPlayer.pev.velocity - g_Engine.v_right * Math.RandomFloat(50, 70) + g_Engine.v_up * flUpBoost + g_Engine.v_forward * 25;
+			vecVelocity = m_pPlayer.pev.velocity - g_Engine.v_right * Math.RandomFloat(100, 150) + g_Engine.v_up * flUpBoost + g_Engine.v_forward * 25;
 
 		NetworkMessage m1( MSG_BROADCAST, NetworkMessages::SVC_TEMPENTITY );
 			m1.WriteByte( TE_MODEL );

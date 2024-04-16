@@ -15,8 +15,6 @@ const float CSOW_DAMAGE								= (90/CSOW_PELLETCOUNT);
 const float CSOW_TIME_DELAY						= 0.875;
 const float CSOW_TIME_DRAW						= 1.0;
 const float CSOW_TIME_IDLE							= 1.0;
-const float CSOW_TIME_FIRE_TO_IDLE			= 1.0;
-const float CSOW_TIME_RELOAD					= 2.0;
 const Vector CSOW_OFFSETS_SHELL				= Vector( 11.405645, 5.216532, -2.891270 ); //forward, right, up
 const Vector CSOW_VECTOR_SPREAD				= Vector( 0.0675, 0.0675, 0 );
 

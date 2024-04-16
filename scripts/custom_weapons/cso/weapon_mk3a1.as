@@ -1,8 +1,8 @@
 namespace cso_mk3a1
 {
 
-const Vector CSOW_VECTOR_SPREAD( 0.0725f, 0.0725f, 0.0f );
-const Vector2D CSOW_VEC2D_RECOIL( 6.0f, 10.0f );
+const Vector CSOW_VECTOR_SPREAD( 0.0725, 0.0725, 0.0 );
+const Vector2D CSOW_VEC2D_RECOIL( 6.0, 10.0 );
 
 const int CSOW_DEFAULT_GIVE			= 10;
 const int CSOW_MAX_CLIP 			= 10;
@@ -10,11 +10,11 @@ const int CSOW_MAX_AMMO 			= 40; //doesn't actually do anything since it uses th
 const int CSOW_PELLETCOUNT			= 8;
 const float CSOW_DAMAGE				= 7.5; //total 60
 
-const float CSOW_DELAY1				= 0.35f;
-const float CSOW_TIME_RELOAD		= 2.5f;
-const float CSOW_TIME_IDLE			= 2.0f;
-const float CSOW_TIME_DRAW			= 1.3f;
-const float CSOW_TIME_FIRE_TO_IDLE	= 0.5f;
+const float CSOW_DELAY1				= 0.35;
+const float CSOW_TIME_RELOAD		= 2.5;
+const float CSOW_TIME_IDLE			= 2.0;
+const float CSOW_TIME_DRAW			= 1.3;
+const float CSOW_TIME_FIRE_TO_IDLE	= 0.5;
 
 const string MODEL_VIEW				= "models/custom_weapons/cso/v_mk3a1.mdl";
 const string MODEL_PLAYER			= "models/custom_weapons/cso/p_mk3a1.mdl";
@@ -114,7 +114,7 @@ class weapon_mk3a1 : CBaseCSOWeapon
 		if( self.m_bPlayEmptySound )
 		{
 			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], 0.8f, ATTN_NORM );
+			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], 0.8, ATTN_NORM );
 		}
 
 		return false;
@@ -135,7 +135,7 @@ class weapon_mk3a1 : CBaseCSOWeapon
 		if( m_pPlayer.pev.waterlevel == WATERLEVEL_HEAD )
 		{
 			self.PlayEmptySound();
-			self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + 0.15f;
+			self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + 0.15;
 
 			return;
 		}
@@ -143,7 +143,7 @@ class weapon_mk3a1 : CBaseCSOWeapon
 		if( self.m_iClip <= 0 )
 		{
 			self.PlayEmptySound();
-			self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + 1.0f;
+			self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + 1.0;
 
 			return;
 		}
@@ -151,14 +151,12 @@ class weapon_mk3a1 : CBaseCSOWeapon
 		m_pPlayer.m_iWeaponVolume = LOUD_GUN_VOLUME;
 		m_pPlayer.m_iWeaponFlash = BRIGHT_GUN_FLASH;
 
-		--self.m_iClip;
-
 		m_pPlayer.pev.effects |= EF_MUZZLEFLASH;
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
 		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
-		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], 1.0f, 0.5f, 0, 94 + Math.RandomLong(0, 15) );
+		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], 1.0, 0.5, 0, 94 + Math.RandomLong(0, 15) );
 
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
 		Vector vecSrc	 = m_pPlayer.GetGunPosition();
@@ -168,18 +166,17 @@ class weapon_mk3a1 : CBaseCSOWeapon
 		if( self.m_flCustomDmg > 0 )
 			flDamage = self.m_flCustomDmg;
 
-		m_pPlayer.FireBullets( CSOW_PELLETCOUNT, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 0, 0 );
+		m_pPlayer.FireBullets( CSOW_PELLETCOUNT, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, 8192.0, BULLET_PLAYER_CUSTOMDAMAGE, 0, 0 );
 		cso::CreateShotgunPelletDecals( m_pPlayer, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, CSOW_PELLETCOUNT, flDamage, (DMG_BULLET | DMG_LAUNCH | DMG_NEVERGIB) );
 
-		if( self.m_iClip <= 0 and m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 )
-			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
+		HandleAmmoReduction( 1 );
 
 		self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_DELAY1;
 
 		if( self.m_iClip > 0 )
-			self.m_flTimeWeaponIdle = g_Engine.time + 2.25f;
+			self.m_flTimeWeaponIdle = g_Engine.time + 2.25;
 		else
-			self.m_flTimeWeaponIdle = 0.75f;
+			self.m_flTimeWeaponIdle = 0.75;
 
 		if( (m_pPlayer.pev.flags & FL_ONGROUND) != 0 )
 			m_pPlayer.pev.punchangle.x -= g_PlayerFuncs.SharedRandomFloat( m_pPlayer.random_seed + 1, (CSOW_VEC2D_RECOIL.x/2), (CSOW_VEC2D_RECOIL.y/2) );
