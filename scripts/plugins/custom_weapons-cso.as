@@ -28,6 +28,7 @@
 #include "../custom_weapons/cso/weapon_volcano"
 #include "../custom_weapons/cso/weapon_qbarrel"
 #include "../custom_weapons/cso/weapon_m1887"
+#include "../custom_weapons/cso/weapon_skull11"
 
 //Submachine Guns
 #include "../custom_weapons/cso/weapon_crow3"
@@ -90,6 +91,7 @@ void MapInit()
 	cso_volcano::Register();
 	cso_qbarrel::Register();
 	cso_m1887::Register();
+	cso_skull11::Register();
 
 	cso_p90::Register();
 	cso_crow3::Register();
