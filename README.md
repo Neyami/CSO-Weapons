@@ -177,31 +177,47 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
     * AMMO NAME
     * `buckshot`
 
-<BR>
-
-* Brick Piece M777
-    * [Video](https://youtu.be/7mOEY7KNsA0)
-
-    * ENTITIES
-    * `weapon_blockas` - Weapon
-    * `block_missile` - Projectile
- 
-    * AMMO NAME
-    * `buckshot`
-    * `m777shot`
 
 <BR>
 
-* BALROG-XI REMOVED FOR NOW
-    * [Video](https://youtu.be/QV1UfLhlgrE)
+* Daewoo USAS-12
 
     * ENTITIES
-    * `weapon_balrog11` - Weapon
-    * `balrog11_fire` - Projectile
+    * `weapon_usas12` - Weapon
  
     * AMMO NAME
     * `buckshot`
-    * `b11shot`
+
+<BR>
+
+* Winchester M1887
+
+    * ENTITIES
+    * `weapon_m1887` - Weapon
+ 
+    * AMMO NAME
+    * `buckshot`
+
+<BR>
+
+* Quad-barreled shotgun
+
+    * ENTITIES
+    * `weapon_qbarrel` - Weapon
+ 
+    * AMMO NAME
+    * `buckshot`
+
+<BR>
+
+* SKULL-11
+    * [Video](https://www.youtube.com/watch?v=BYXfCY4s3Lk)
+
+    * ENTITIES
+    * `weapon_skull11` - Weapon
+ 
+    * AMMO NAME
+    * `buckshot`
 
 <BR>
 
@@ -225,24 +241,16 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
 <BR>
 
-* Winchester M1887
+* Brick Piece M777
+    * [Video](https://youtu.be/7mOEY7KNsA0)
 
     * ENTITIES
-    * `weapon_m1887` - Weapon
+    * `weapon_blockas` - Weapon
+    * `block_missile` - Projectile
  
     * AMMO NAME
     * `buckshot`
-
-<BR>
-
-* SKULL-11
-    * [Video](https://www.youtube.com/watch?v=BYXfCY4s3Lk)
-
-    * ENTITIES
-    * `weapon_skull11` - Weapon
- 
-    * AMMO NAME
-    * `buckshot`
+    * `m777shot`
 
 <BR>
 
