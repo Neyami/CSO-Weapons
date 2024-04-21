@@ -23,16 +23,18 @@
 
 //Shotguns
 #include "../custom_weapons/cso/weapon_m3"
-#include "../custom_weapons/cso/weapon_blockas"
-#include "../custom_weapons/cso/weapon_mk3a1"
-#include "../custom_weapons/cso/weapon_volcano"
-#include "../custom_weapons/cso/weapon_qbarrel"
+#include "../custom_weapons/cso/weapon_usas12"
 #include "../custom_weapons/cso/weapon_m1887"
+#include "../custom_weapons/cso/weapon_qbarrel"
 #include "../custom_weapons/cso/weapon_skull11"
+#include "../custom_weapons/cso/weapon_volcano"
+#include "../custom_weapons/cso/weapon_mk3a1"
+#include "../custom_weapons/cso/weapon_blockas"
 
 //Submachine Guns
 #include "../custom_weapons/cso/weapon_crow3"
 #include "../custom_weapons/cso/weapon_p90"
+#include "../custom_weapons/cso/weapon_thompson"
 
 //Assault Rifles
 #include "../custom_weapons/cso/weapon_aug"
@@ -63,7 +65,7 @@
 void PluginInit()
 {
 	g_Module.ScriptInfo.SetAuthor( "Nero" );
-	g_Module.ScriptInfo.SetContactInfo( "https://discord.gg/0wtJ6aAd7XOGI6vI" );
+	g_Module.ScriptInfo.SetContactInfo( "https://discord.gg/0wtJ6aAd7XOGI6vI\n" );
 }
 
 void MapInit()
@@ -86,15 +88,17 @@ void MapInit()
 	cso_m1887craft::Register();
 
 	cso_m3::Register();
-	cso_blockas::Register();
-	cso_mk3a1::Register();
-	cso_volcano::Register();
-	cso_qbarrel::Register();
+	cso_usas12::Register();
 	cso_m1887::Register();
+	cso_qbarrel::Register();
 	cso_skull11::Register();
+	cso_volcano::Register();
+	cso_mk3a1::Register();
+	cso_blockas::Register();
 
-	cso_p90::Register();
 	cso_crow3::Register();
+	cso_p90::Register();
+	cso_thompson::Register();
 
 	cso_aug::Register();
 	cso_plasmagun::Register();
