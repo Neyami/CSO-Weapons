@@ -74,6 +74,8 @@ const int M1887_SLOT							= 3;
 const int M1887_POSITION					= 15;
 const int SKULL11_SLOT						= 3;
 const int SKULL11_POSITION				= 16;
+const int USAS12_SLOT						= 3;
+const int USAS12_POSITION				= 17;
 
 const int M3_WEIGHT							= 20;
 const int BLOCKAS_WEIGHT				= 20;
@@ -82,6 +84,7 @@ const int VOLCANO_WEIGHT				= 20;
 const int QBARREL_WEIGHT				= 20;
 const int M1887_WEIGHT					= 20;
 const int SKULL11_WEIGHT					= 20;
+const int USAS12_WEIGHT					= 20;
 
 //SMGs
 const int CROW3_SLOT						= 4;

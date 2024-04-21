@@ -12,12 +12,6 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 	}
 
 	protected EHandle m_hDropEffect;
-	/*protected EHandle m_hDropEffect;
-	protected CBaseEntity@ m_pDropEffect
-	{
-		get const { return cast<CBaseEntity@>(m_hDropEffect.GetEntity()); }
-		set { m_hDropEffect = EHandle(@value); }
-	}*/
 
 	int m_iWeaponType;
 	int m_iShell;
@@ -641,6 +635,21 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 					if( (iFlags & CSOF_ARMORPEN) != 0 ) iDmgType = (DMG_GENERIC|DMG_BLAST|DMG_NEVERGIB);
 
 					pEntity.TraceAttack( m_pPlayer.pev, flCurrentDamage, vecDir, tr, iDmgType );
+					//TEMPTEST
+					/*if( (iFlags & CSOF_ETHEREAL) != 0 )
+					{
+						//check for existing dotent
+						CBaseEntity@ pDotEnt = g_EntityFuncs.Create( "cso_dotent", pEntity.pev.origin, g_vecZero, true, pEntity.edict() );
+
+						if( pDotEnt !is null )
+						{
+							@pDotEnt.pev.aiment = pEntity.edict();
+							pDotEnt.pev.dmgtime = 6.0;
+							pDotEnt.pev.dmg = 15;
+							g_EntityFuncs.DispatchSpawn( pDotEnt.edict() );
+						}
+					}*/
+					//TEMPTEST
 
 					if( iTrail > TRAIL_NONE )
 						DoTrailExplosion( iTrail, tr.vecEndPos );
