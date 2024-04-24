@@ -2,7 +2,7 @@ namespace cso
 {
 
 //Ammo
-const string MODEL_45ACP			= "models/w_45acp.mdl";
+const string MODEL_45ACP			= "models/custom_weapons/cso/w_45acp.mdl";
 const string MODEL_57MM			= "models/w_9mmclip.mdl";
 const string MODEL_50BMG			= "models/custom_weapons/cso/w_50bmg.mdl";
 const string MODEL_762MG			= "models/custom_weapons/cs16/w_762natobox_big.mdl";
