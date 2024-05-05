@@ -8,6 +8,7 @@ const string MODEL_50BMG			= "models/custom_weapons/cso/w_50bmg.mdl";
 const string MODEL_762MG			= "models/custom_weapons/cs16/w_762natobox_big.mdl";
 const string MODEL_GASOLINE	= "models/hunger/w_gas.mdl";
 const string MODEL_ETHER			= "models/custom_weapons/cso/w_etherammo.mdl";
+const string MODEL_CSOBOLTS	= "models/custom_weapons/cso/mag_csocrossbow.mdl";
 
 const int MAXCARRY_45ACP			= 100;
 const int GIVE_45ACP					= 12;
@@ -23,6 +24,9 @@ const int GIVE_GASOLINE			= 50;
 
 const int MAXCARRY_ETHER			= 90;
 const int GIVE_ETHER					= 30;
+
+const int MAXCARRY_CSOBOLTS	= 200;
+const int GIVE_CSOBOLTS			= 50;
 
 class ammo_45acp : ScriptBasePlayerAmmoEntity
 {
@@ -226,6 +230,40 @@ void RegisterEther()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso::ammo_ether", "ammo_ether" );
 	g_Game.PrecacheOther( "ammo_ether" );
+}
+
+class ammo_csobolts : ScriptBasePlayerAmmoEntity
+{
+	void Spawn()
+	{
+		Precache();
+
+		g_EntityFuncs.SetModel( self, MODEL_CSOBOLTS );
+
+		BaseClass.Spawn();
+	}
+
+	void Precache()
+	{
+		g_Game.PrecacheModel( MODEL_CSOBOLTS );
+	}
+
+	bool AddAmmo( CBaseEntity@ pOther )
+	{ 
+		if( pOther.GiveAmmo( GIVE_CSOBOLTS, "csobolts", MAXCARRY_CSOBOLTS ) != -1)
+		{
+			g_SoundSystem.EmitSound( self.edict(), CHAN_ITEM, "items/9mmclip1.wav", 1, ATTN_NORM );
+			return true;
+		}
+
+		return false;
+	}
+}
+
+void RegisterCSOBolts()
+{
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso::ammo_csobolts", "ammo_csobolts" );
+	g_Game.PrecacheOther( "ammo_csobolts" );
 }
 
 } //namespace cso END
