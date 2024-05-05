@@ -292,6 +292,44 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 <BR>
 
 
+* Lightning AR-1
+    * [Video](https://youtu.be/jmp9SVYchD0)
+
+    * ENTITIES
+    * `weapon_guitar` - Weapon
+    * `ef_guitar` - Note effects
+ 
+    * AMMO NAME
+    * `556`
+
+<BR>
+
+
+* Ethereal
+
+    * ENTITIES
+    * `weapon_ethereal` - Weapon
+    * `ammo_ether` - Ammo
+ 
+    * AMMO NAME
+    * `ether`
+
+<BR>
+
+
+* Crossbow
+    * [Video](https://youtu.be/A9f2aC1fSUU)
+
+    * ENTITIES
+    * `weapon_csocrossbow` - Weapon
+    * `ammo_csobolts` - Ammo
+ 
+    * AMMO NAME
+    * `csobolts`
+
+<BR>
+
+
 * Plasma Gun
 
     * ENTITIES
@@ -301,6 +339,21 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
  
     * AMMO NAME
     * `plasma`
+
+
+<BR>
+
+
+
+* Burning AUG
+
+    * ENTITIES
+    * `weapon_augex` - Weapon
+    * `augex_grenade` - Projectile
+ 
+    * AMMO NAME
+    * `556`
+    * `ARgrenades`
 
 
 <BR>
@@ -332,46 +385,6 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
 
 <BR>
-
-
-* Burning AUG
-
-    * ENTITIES
-    * `weapon_augex` - Weapon
-    * `augex_grenade` - Projectile
- 
-    * AMMO NAME
-    * `556`
-    * `ARgrenades`
-
-
-<BR>
-
-
-* Lightning AR-1
-    * [Video](https://youtu.be/jmp9SVYchD0)
-
-    * ENTITIES
-    * `weapon_guitar` - Weapon
-    * `ef_guitar` - Note effects
- 
-    * AMMO NAME
-    * `556`
-
-<BR>
-
-
-* Ethereal
-
-    * ENTITIES
-    * `weapon_ethereal` - Weapon
-    * `ammo_ether` - Ammo
- 
-    * AMMO NAME
-    * `ether`
-
-<BR>
-
 
 
 
