@@ -256,6 +256,17 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
 
 # SUBMACHINE GUNS  
+* FN P90
+
+    * ENTITIES
+    * `weapon_p90` - Weapon
+    * `ammo_57mm` - Ammo
+ 
+    * AMMO NAME
+    * `57mm`
+
+<BR>
+
 * CROW-3
     * [Video](https://youtu.be/dIPY_jT4ArQ)
 
@@ -267,16 +278,18 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
 <BR>
 
-* FN P90
+
+* Thompson M1928
 
     * ENTITIES
-    * `weapon_p90` - Weapon
-    * `ammo_57mm` - Ammo
+    * `weapon_thompson` - Weapon
+    * `ammo_45acp` - Ammo
  
     * AMMO NAME
-    * `57mm`
+    * `45acp`
 
 <BR>
+
 
 
 # ASSAULT RIFLES
