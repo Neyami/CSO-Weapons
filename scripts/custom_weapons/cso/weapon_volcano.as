@@ -136,7 +136,7 @@ class weapon_volcano : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flNextPrimaryAttack = g_Engine.time + CSOW_TIME_DRAW_TO_FIRE;
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_DRAW;
 			return bResult;
@@ -161,13 +161,13 @@ class weapon_volcano : CBaseCSOWeapon
 		m_pPlayer.pev.effects |= EF_MUZZLEFLASH;
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
-		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2) );
+		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		Vector vecShellVelocity, vecShellOrigin;
 		CS16GetDefaultShellInfo( EHandle(m_pPlayer), vecShellVelocity, vecShellOrigin, CSOW_SHELL_ORIGIN.x, CSOW_SHELL_ORIGIN.y, CSOW_SHELL_ORIGIN.z, true, false );
-		g_EntityFuncs.EjectBrass( vecShellOrigin, vecShellVelocity*1.2f, m_pPlayer.pev.angles.y, g_EngineFuncs.ModelIndex(MODEL_SHELL), TE_BOUNCE_SHOTSHELL );
+		g_EntityFuncs.EjectBrass( vecShellOrigin, vecShellVelocity*1.2, m_pPlayer.pev.angles.y, g_EngineFuncs.ModelIndex(MODEL_SHELL), TE_BOUNCE_SHOTSHELL );
 
-		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], 1.0f, 0.5f, 0, 94 + Math.RandomLong(0, 15) );
+		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], 1.0, 0.5, 0, 94 + Math.RandomLong(0, 15) );
 
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
 		Vector vecSrc	 = m_pPlayer.GetGunPosition();
@@ -177,7 +177,7 @@ class weapon_volcano : CBaseCSOWeapon
 		if( self.m_flCustomDmg > 0 )
 			flDamage = self.m_flCustomDmg;
 
-		m_pPlayer.FireBullets( CSOW_PELLETCOUNT, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 0, 0 );
+		m_pPlayer.FireBullets( CSOW_PELLETCOUNT, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, 8192.0, BULLET_PLAYER_CUSTOMDAMAGE, 0, 0 );
 		cso::CreateShotgunPelletDecals( m_pPlayer, vecSrc, vecAiming, CSOW_VECTOR_SPREAD, CSOW_PELLETCOUNT, flDamage, (DMG_BULLET | DMG_NEVERGIB) );
 
 		if( self.m_iClip <= 0 and m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 )
@@ -186,9 +186,9 @@ class weapon_volcano : CBaseCSOWeapon
 		self.m_flNextPrimaryAttack = g_Engine.time + CSOW_DELAY;
 
 		if( self.m_iClip > 0 )
-			self.m_flTimeWeaponIdle = g_Engine.time + 2.25f;
+			self.m_flTimeWeaponIdle = g_Engine.time + 2.25;
 		else
-			self.m_flTimeWeaponIdle = 0.75f;
+			self.m_flTimeWeaponIdle = 0.75;
 
 		if( (m_pPlayer.pev.flags & FL_ONGROUND) != 0 )
 			m_pPlayer.pev.punchangle.x -= g_PlayerFuncs.SharedRandomFloat( m_pPlayer.random_seed + 1, (CSOW_VEC2D_RECOIL.x/2), (CSOW_VEC2D_RECOIL.y/2) );
@@ -201,8 +201,8 @@ class weapon_volcano : CBaseCSOWeapon
 		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 or self.m_iClip >= CSOW_MAX_CLIP or (m_pPlayer.pev.button & IN_ATTACK) != 0 )
 			return;
 
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD );
-		self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_IDLE * Math.RandomFloat(1.0f, 1.7f));
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_IDLE * Math.RandomFloat(1.0, 1.7));
 
 		BaseClass.Reload();
 	}
@@ -214,8 +214,8 @@ class weapon_volcano : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_IDLE * Math.RandomFloat(1.0f, 1.7f));
-		self.SendWeaponAnim( ANIM_IDLE );
+		self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_IDLE * Math.RandomFloat(1.0, 1.7));
+		self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 	}
 }
 

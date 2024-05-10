@@ -23,6 +23,8 @@ const string DCLAW_SOUND_STABREADY		= "custom_weapons/cso/dragonclaw_stab_ready.
 const string DCLAW_SOUND_STABHIT		= "custom_weapons/cso/dragonclaw_stab_hit.wav";
 const string DCLAW_SOUND_STABMISS		= "custom_weapons/cso/dragonclaw_stab_miss.wav";
 
+const string CSOW_ANIMEXT						= "squeak";
+
 const string DCLAW_MODEL_VIEW			= "models/custom_weapons/cso/v_dragonclaw.mdl";
 const string DCLAW_MODEL_PLAYER			= "models/custom_weapons/cso/p_dragonclaw.mdl";
 const string DCLAW_MODEL_WORLD			= "models/custom_weapons/cso/w_dragonclaw.mdl";
@@ -117,7 +119,7 @@ class weapon_dragonclaw : CBaseCSOWeapon
 		bool bResult;
 		{
 			m_iSwing = 0;
-			bResult = self.DefaultDeploy( self.GetV_Model( DCLAW_MODEL_VIEW ), self.GetP_Model( DCLAW_MODEL_PLAYER ), DCLAW_DRAW, "squeak" );
+			bResult = self.DefaultDeploy( self.GetV_Model( DCLAW_MODEL_VIEW ), self.GetP_Model( DCLAW_MODEL_PLAYER ), DCLAW_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + DCLAW_TIME_DRAW;
 
 			return bResult;
@@ -182,9 +184,9 @@ class weapon_dragonclaw : CBaseCSOWeapon
 				switch( ( m_iSwing++ ) % 2 )
 				{
 					case 0:
-						self.SendWeaponAnim( DCLAW_SLASH1 ); break;
+						self.SendWeaponAnim( DCLAW_SLASH1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
 					case 1:
-						self.SendWeaponAnim( DCLAW_SLASH2 ); break;
+						self.SendWeaponAnim( DCLAW_SLASH2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
 				}
 				
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + DCLAW_DELAY_PRIMARY;
@@ -203,9 +205,9 @@ class weapon_dragonclaw : CBaseCSOWeapon
 				switch( ( ( m_iSwing++ ) % 2 ) )
 				{
 					case 0:
-						self.SendWeaponAnim( DCLAW_SLASH1 ); break;
+						self.SendWeaponAnim( DCLAW_SLASH1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
 					case 1:
-						self.SendWeaponAnim( DCLAW_SLASH2 ); break;
+						self.SendWeaponAnim( DCLAW_SLASH2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
 				}
 				
 			}
@@ -277,7 +279,7 @@ class weapon_dragonclaw : CBaseCSOWeapon
 
 	void HeavySwingFirst()
 	{
-		self.SendWeaponAnim( DCLAW_SLASH3 );
+		self.SendWeaponAnim( DCLAW_SLASH3, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, DCLAW_SOUND_STABREADY, 1, ATTN_NORM );
 	}
 
@@ -305,7 +307,7 @@ class weapon_dragonclaw : CBaseCSOWeapon
 
 		if( tr.flFraction >= 1.0 )
 		{
-			self.SendWeaponAnim( DCLAW_SLASH3MISS );
+			self.SendWeaponAnim( DCLAW_SLASH3MISS, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + DCLAW_DELAY_SECONDARY/2;
 			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, DCLAW_SOUND_STABMISS, 1, ATTN_NORM, 0, 94 + Math.RandomLong( 0,0xF ) );
@@ -314,7 +316,7 @@ class weapon_dragonclaw : CBaseCSOWeapon
 		else
 		{
 			CBaseEntity@ pEntity = g_EntityFuncs.Instance( tr.pHit );
-			self.SendWeaponAnim( DCLAW_SLASH3HIT );
+			self.SendWeaponAnim( DCLAW_SLASH3HIT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 ); 
 
 			float flDamage = DCLAW_DAMAGE_STAB;
@@ -369,7 +371,7 @@ class weapon_dragonclaw : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 		
-		self.SendWeaponAnim( DCLAW_IDLE );
+		self.SendWeaponAnim( DCLAW_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		
 		self.m_flTimeWeaponIdle = g_Engine.time + DCLAW_TIME_IDLE;
 	}

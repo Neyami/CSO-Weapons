@@ -202,7 +202,7 @@ class weapon_bloodhunter : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW + m_uiLevel, CSOW_ANIMEXT );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW + m_uiLevel, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 
 			return bResult;
@@ -324,7 +324,7 @@ class weapon_bloodhunter : CBaseCSOWeapon
 
 					m_uiLevel = m_uiShotsHit / 4; //4shots per level, 12 to fully charge
 
-					self.SendWeaponAnim( anim + m_uiLevel );
+					self.SendWeaponAnim( anim + m_uiLevel, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 					Vector vecOrigin, vecAngle, vecForward, vecRight, vecUp;
 
@@ -340,7 +340,7 @@ class weapon_bloodhunter : CBaseCSOWeapon
 					g_EntityFuncs.Create( "bloodhunter_effect", vecOrigin, g_vecZero, false, m_pPlayer.edict() );
 				}
 				else
-					self.SendWeaponAnim( ANIM_SHOOT + m_uiLevel );
+					self.SendWeaponAnim( ANIM_SHOOT + m_uiLevel, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 				g_WeaponFuncs.ApplyMultiDamage( m_pPlayer.pev, m_pPlayer.pev );	
 			}
@@ -351,7 +351,7 @@ class weapon_bloodhunter : CBaseCSOWeapon
 	{
 		if( m_uiLevel > 0 )
 		{
-			self.SendWeaponAnim( ANIM_THROW + m_uiLevel );
+			self.SendWeaponAnim( ANIM_THROW + m_uiLevel, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			m_pPlayer.m_szAnimExtension = "crowbar";
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_THROW], 1.0f, ATTN_NORM );
@@ -387,7 +387,7 @@ class weapon_bloodhunter : CBaseCSOWeapon
 			return;
 
 		m_pPlayer.m_szAnimExtension = "uzis_left";
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD + m_uiLevel, CSOW_TIME_RELOAD );
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD + m_uiLevel, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
 		if( CSOW_USE_MAGDROP )
@@ -403,7 +403,7 @@ class weapon_bloodhunter : CBaseCSOWeapon
 	{
 		if( m_flRedrawTime > 0.0 and m_flRedrawTime < g_Engine.time )
 		{
-			self.SendWeaponAnim( ANIM_DRAW + m_uiLevel );
+			self.SendWeaponAnim( ANIM_DRAW + m_uiLevel, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 			m_flRedrawTime = 0.0;
 		}
@@ -426,7 +426,7 @@ class weapon_bloodhunter : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( ANIM_IDLE + m_uiLevel );
+		self.SendWeaponAnim( ANIM_IDLE + m_uiLevel, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		if( Math.RandomLong(0, CSOW_IDLE_SOUND_CHANCE) == 1 )
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_ITEM, pCSOWSounds[SND_IDLE], VOL_NORM, ATTN_NORM );

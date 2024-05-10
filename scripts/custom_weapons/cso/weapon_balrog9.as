@@ -15,6 +15,8 @@ const float BALROG9_TIME_FIRE_TO_IDLE2	= 1.4f;
 const float BALROG9_TIME_CHARGE			= 3.0f;
 const int BALROG9_MAXCHARGE				= 150;
 
+const string CSOW_ANIMEXT							= "squeak";
+
 const string BALROG9_MODEL_VIEW			= "models/custom_weapons/cso/v_balrog9.mdl";
 const string BALROG9_MODEL_PLAYER		= "models/custom_weapons/cso/p_balrog9.mdl";
 const string BALROG9_MODEL_WORLD		= "models/custom_weapons/cso/w_balrog9.mdl";
@@ -140,7 +142,7 @@ class weapon_balrog9 : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model( BALROG9_MODEL_VIEW ), self.GetP_Model( BALROG9_MODEL_PLAYER ), BALROG9_DRAW, "squeak" );
+			bResult = self.DefaultDeploy( self.GetV_Model( BALROG9_MODEL_VIEW ), self.GetP_Model( BALROG9_MODEL_PLAYER ), BALROG9_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + BALROG9_TIME_DRAW;
 			m_flAnimDelay = 0;
 
@@ -187,7 +189,7 @@ class weapon_balrog9 : CBaseCSOWeapon
 	{
 		if( m_iInAttack == 0 )
 		{
-			self.SendWeaponAnim( BALROG9_CHARGE_START );
+			self.SendWeaponAnim( BALROG9_CHARGE_START, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			m_iInAttack = 1;
 			self.m_flTimeWeaponIdle = g_Engine.time + 0.75f;
 			m_flStartCharge = g_Engine.time;
@@ -196,7 +198,7 @@ class weapon_balrog9 : CBaseCSOWeapon
 		{
 			if( self.m_flTimeWeaponIdle < g_Engine.time )
 			{
-				self.SendWeaponAnim( BALROG9_CHARGE_IDLE1 );
+				self.SendWeaponAnim( BALROG9_CHARGE_IDLE1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				m_iInAttack = 2;
 			}
 		}
@@ -252,14 +254,14 @@ class weapon_balrog9 : CBaseCSOWeapon
 			{
 				// miss
 				m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
-				self.SendWeaponAnim( BALROG9_SLASH1 + Math.RandomLong(0, 4) );
+				self.SendWeaponAnim( BALROG9_SLASH1 + Math.RandomLong(0, 4), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pB9Sounds[BALROG9_SND_SLASH1 + Math.RandomLong(0, 4)], 1, ATTN_NORM, 0, 94 + Math.RandomLong( 0,0xF ) );
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + BALROG9_DELAY_PRIMARY_MISS;
 			}
 		}
 		else
 		{
-			self.SendWeaponAnim( BALROG9_SLASH1 + Math.RandomLong(0, 4) );
+			self.SendWeaponAnim( BALROG9_SLASH1 + Math.RandomLong(0, 4), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
 			// hit
@@ -367,7 +369,7 @@ class weapon_balrog9 : CBaseCSOWeapon
 		{
 			// miss
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
-			self.SendWeaponAnim( BALROG9_CHARGE_ATTACK1 + Math.RandomLong(0, 1) );
+			self.SendWeaponAnim( BALROG9_CHARGE_ATTACK1 + Math.RandomLong(0, 1), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 			if( !m_bFullyCharged )
 				g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pB9Sounds[BALROG9_SND_SLASH1 + Math.RandomLong(0, 4)], 1, ATTN_NORM, 0, 94 + Math.RandomLong(0, 0xF) );
@@ -378,7 +380,7 @@ class weapon_balrog9 : CBaseCSOWeapon
 		{
 			CBaseEntity@ pEntity = g_EntityFuncs.Instance( tr.pHit );
 
-			self.SendWeaponAnim( BALROG9_CHARGE_ATTACK1 + Math.RandomLong(0, 1) );
+			self.SendWeaponAnim( BALROG9_CHARGE_ATTACK1 + Math.RandomLong(0, 1), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
 			fDidHit = true;
@@ -466,8 +468,8 @@ class weapon_balrog9 : CBaseCSOWeapon
 		}
 		else
 		{
-			self.SendWeaponAnim( BALROG9_IDLE );
-			self.m_flTimeWeaponIdle = g_Engine.time + Math.RandomFloat( 6.7f, 13.4f );
+			self.SendWeaponAnim( BALROG9_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.m_flTimeWeaponIdle = g_Engine.time + Math.RandomFloat( 6.7, 13.4 );
 		}
 	}
 
@@ -478,16 +480,16 @@ class weapon_balrog9 : CBaseCSOWeapon
 			//g_Game.AlertMessage( at_console, "CHARGED!\n" );
 
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pB9Sounds[BALROG9_SND_CHARGE_FINISH], VOL_NORM, ATTN_NORM );
-			self.SendWeaponAnim( BALROG9_CHARGE_FINISH );
+			self.SendWeaponAnim( BALROG9_CHARGE_FINISH, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			m_bFullyCharged = true;
-			m_flAnimDelay = g_Engine.time + 0.2f;
+			m_flAnimDelay = g_Engine.time + 0.2;
 		}
 
 		if( m_iInAttack != 0 && m_flAnimDelay > 0 && g_Engine.time > m_flAnimDelay )
 		{
-			self.SendWeaponAnim( BALROG9_CHARGE_IDLE2 );
+			self.SendWeaponAnim( BALROG9_CHARGE_IDLE2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
-			m_flAnimDelay = g_Engine.time + 0.2f;
+			m_flAnimDelay = g_Engine.time + 0.2;
 		}
 
 		BaseClass.ItemPostFrame();

@@ -1,41 +1,43 @@
 namespace cso_aeolis
 {
 
-const int AEOLIS_DEFAULT_GIVE			= 150;
-const int AEOLIS_MAX_AMMO				= 200;
+const int AEOLIS_DEFAULT_GIVE				= 150;
+const int AEOLIS_MAX_AMMO					= 200;
 const int AEOLIS_MAX_AMMO2				= 89;
-const int AEOLIS_MAX_CLIP 				= 150;
-const float AEOLIS_DAMAGE				= 30;
-const float AEOLIS_DAMAGE_FLAME			= 35;
+const int AEOLIS_MAX_CLIP 					= 150;
+const float AEOLIS_DAMAGE					= 30;
+const float AEOLIS_DAMAGE_FLAME		= 35;
 const float AEOLIS_DELAY_PRIMARY		= 0.10;
-const float AEOLIS_DELAY_SECONDARY		= 0.10;//0.095
+const float AEOLIS_DELAY_SECONDARY	= 0.10;//0.095
 const float AEOLIS_TIME_RELOAD			= 4.5;
-const float AEOLIS_TIME_IDLE			= 5.05;
-const float AEOLIS_TIME_DRAW			= 1.0;
+const float AEOLIS_TIME_IDLE				= 5.05;
+const float AEOLIS_TIME_DRAW				= 1.0;
 const float AEOLIS_TIME_FIRE_TO_IDLE	= 1.0;
-const float AEOLIS_RECOIL_X				= Math.RandomFloat( -2.0, 2.0 + Math.RandomFloat(0, 0.3) );
-const float AEOLIS_RECOIL_Y				= Math.RandomFloat( 2.0 + Math.RandomFloat(0, 0.1), -2.0 );
+const float AEOLIS_RECOIL_X					= Math.RandomFloat( -2.0, 2.0 + Math.RandomFloat(0, 0.3) );
+const float AEOLIS_RECOIL_Y					= Math.RandomFloat( 2.0 + Math.RandomFloat(0, 0.1), -2.0 );
+
+const string CSOW_ANIMEXT					= "saw";
 
 const string AEOLIS_MODEL_VIEW			= "models/custom_weapons/cso/v_aeolis.mdl";
 const string AEOLIS_MODEL_PLAYER		= "models/custom_weapons/cso/p_aeolis.mdl";
-const string AEOLIS_MODEL_WORLD			= "models/custom_weapons/cso/w_aeolis.mdl";
-const string AEOLIS_MODEL_SHELL			= "models/custom_weapons/cso/shell_556_big.mdl";
+const string AEOLIS_MODEL_WORLD		= "models/custom_weapons/cso/w_aeolis.mdl";
+const string AEOLIS_MODEL_SHELL		= "models/custom_weapons/cso/shell_556_big.mdl";
 const string AEOLIS_MODEL_CLIP			= "models/custom_weapons/cso/clip_aeolis.mdl";
 const string AEOLIS_SPRITE_FLAME		= "sprites/custom_weapons/cso/flame_puff01.spr";
 
 const string AEOLIS_SOUND_CLIPIN1		= "custom_weapons/cso/aeolis_clipin1.wav";
 const string AEOLIS_SOUND_CLIPIN2		= "custom_weapons/cso/aeolis_clipin2.wav";
 const string AEOLIS_SOUND_CLIPIN3		= "custom_weapons/cso/aeolis_clipin3.wav";
-const string AEOLIS_SOUND_CLIPOUT		= "custom_weapons/cso/aeolis_clipout1.wav";
-const string AEOLIS_SOUND_DRAW			= "custom_weapons/cso/aeolis_draw.wav";
+const string AEOLIS_SOUND_CLIPOUT	= "custom_weapons/cso/aeolis_clipout1.wav";
+const string AEOLIS_SOUND_DRAW		= "custom_weapons/cso/aeolis_draw.wav";
 const string AEOLIS_SOUND_IDLE			= "custom_weapons/cso/aeolis_idle2.wav";
-const string AEOLIS_SOUND_SHOOT			= "custom_weapons/cso/aeolis-1.wav";
+const string AEOLIS_SOUND_SHOOT		= "custom_weapons/cso/aeolis-1.wav";
 const string AEOLIS_SOUND_FLAME1		= "custom_weapons/cso/flamegun-1.wav";
 const string AEOLIS_SOUND_FLAME2		= "custom_weapons/cso/flamegun-2.wav";
-const string AEOLIS_SOUND_STEAM			= "custom_weapons/cso/papin_steam.wav";
-const string AEOLIS_SOUND_EMPTY			= "custom_weapons/cs16/dryfire_rifle.wav";
+const string AEOLIS_SOUND_STEAM		= "custom_weapons/cso/papin_steam.wav";
+const string AEOLIS_SOUND_EMPTY		= "custom_weapons/cs16/dryfire_rifle.wav";
 
-const Vector CSOW_SHELL_ORIGIN				= Vector(15.0, 13.0, -10.0); //forward, right, up
+const Vector CSOW_SHELL_ORIGIN		= Vector(15.0, 13.0, -10.0); //forward, right, up
 
 enum AeolisAnimation
 {
@@ -156,7 +158,7 @@ class weapon_aeolis : CBaseCSOWeapon
 		bool bResult;
 		{
 			m_iInAttack = 0;
-			bResult = self.DefaultDeploy( self.GetV_Model( AEOLIS_MODEL_VIEW ), self.GetP_Model( AEOLIS_MODEL_PLAYER ), AEOLIS_DRAW, "saw" );
+			bResult = self.DefaultDeploy( self.GetV_Model( AEOLIS_MODEL_VIEW ), self.GetP_Model( AEOLIS_MODEL_PLAYER ), AEOLIS_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + AEOLIS_TIME_DRAW;
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_STATIC, AEOLIS_SOUND_IDLE, 0.5f, ATTN_NORM );
 			heatCount = 1;
@@ -205,7 +207,7 @@ class weapon_aeolis : CBaseCSOWeapon
 		
 		--self.m_iClip;
 
-		self.SendWeaponAnim( AEOLIS_SHOOT_BULLET );
+		self.SendWeaponAnim( AEOLIS_SHOOT_BULLET, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, AEOLIS_SOUND_SHOOT, 1, ATTN_NORM, 0, 94 + Math.RandomLong( 0, 0xf ) );
 		
@@ -280,7 +282,7 @@ class weapon_aeolis : CBaseCSOWeapon
 		
 		if( m_iAnimate == 0 && m_pPlayer.m_rgAmmo(self.m_iSecondaryAmmoType) > 0 )
 		{
-			self.SendWeaponAnim( AEOLIS_SHOOT_FLAME );
+			self.SendWeaponAnim( AEOLIS_SHOOT_FLAME, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_STATIC, AEOLIS_SOUND_FLAME1, 0.9f, ATTN_NORM, SND_FORCE_LOOP, 95 + Math.RandomLong( 0, 10 ) );
 			m_iAnimate = 1;
 
@@ -331,7 +333,7 @@ class weapon_aeolis : CBaseCSOWeapon
 		if( m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 || self.m_iClip >= AEOLIS_MAX_CLIP or (m_pPlayer.pev.button & IN_ATTACK) != 0 )
 			return;
 
-		self.DefaultReload( AEOLIS_MAX_CLIP, AEOLIS_RELOAD, AEOLIS_TIME_RELOAD );
+		self.DefaultReload( AEOLIS_MAX_CLIP, AEOLIS_RELOAD, AEOLIS_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + 4.0f;
 
 		self.pev.nextthink = g_Engine.time + 1.25f;
@@ -403,7 +405,7 @@ class weapon_aeolis : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( AEOLIS_IDLE );
+		self.SendWeaponAnim( AEOLIS_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + AEOLIS_TIME_IDLE;
 	}
 }

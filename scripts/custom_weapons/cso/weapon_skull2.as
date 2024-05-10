@@ -31,6 +31,9 @@ const string CSOW_MODEL_WORLD		= "models/custom_weapons/cso/w_skull2.mdl";
 const string CSOW_MODEL_SHELL		= "models/custom_weapons/cso/shell_skull1.mdl";
 const string CSOW_MODEL_CLIP		= "models/custom_weapons/cso/clip_skull1.mdl";
 
+const string CSOW_ANIMEXT1				= "onehanded";
+const string CSOW_ANIMEXT2				= "uzis";
+
 enum csow_e
 {
 	ANIM_IDLE = 0,
@@ -175,7 +178,7 @@ class weapon_skull2 : CBaseCSOWeapon
 			{
 				case MODE_SINGLE:
 				{
-					bResult = self.DefaultDeploy( self.GetV_Model(CSOW_MODEL_VIEW), self.GetP_Model(CSOW_MODEL_PLAYER), ANIM_DRAW, "onehanded" );
+					bResult = self.DefaultDeploy( self.GetV_Model(CSOW_MODEL_VIEW), self.GetP_Model(CSOW_MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 					self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW1;
 
 					break;
@@ -183,7 +186,7 @@ class weapon_skull2 : CBaseCSOWeapon
 
 				case MODE_DUAL:
 				{
-					bResult = self.DefaultDeploy( self.GetV_Model(CSOW_MODEL_VIEW), self.GetP_Model(CSOW_MODEL_PLAYER_DUAL), ANIM_DRAW2, "uzis" );
+					bResult = self.DefaultDeploy( self.GetV_Model(CSOW_MODEL_VIEW), self.GetP_Model(CSOW_MODEL_PLAYER_DUAL), ANIM_DRAW2, CSOW_ANIMEXT2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 					self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW2;
 
 					break;
@@ -262,7 +265,7 @@ class weapon_skull2 : CBaseCSOWeapon
 			}
 		}
 
-		self.SendWeaponAnim( anim );
+		self.SendWeaponAnim( anim, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], 1, ATTN_NORM );
 
@@ -334,9 +337,9 @@ class weapon_skull2 : CBaseCSOWeapon
 					self.m_iClip += Math.min( ammodiff, CSOW_MAX_CLIP );
 				}
 
-				self.SendWeaponAnim( ANIM_DRAW3 );
+				self.SendWeaponAnim( ANIM_DRAW3, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				m_pPlayer.pev.weaponmodel = CSOW_MODEL_PLAYER_DUAL;
-				m_pPlayer.m_szAnimExtension = "uzis";
+				m_pPlayer.m_szAnimExtension = CSOW_ANIMEXT2;
 				m_uiMode = MODE_DUAL;
 
 				break;
@@ -350,9 +353,9 @@ class weapon_skull2 : CBaseCSOWeapon
 					self.m_iClip = CSOW_MAX_CLIP;
 				}
 
-				self.SendWeaponAnim( ANIM_DRAW4 );
+				self.SendWeaponAnim( ANIM_DRAW4, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				m_pPlayer.pev.weaponmodel = CSOW_MODEL_PLAYER;
-				m_pPlayer.m_szAnimExtension = "onehanded";
+				m_pPlayer.m_szAnimExtension = CSOW_ANIMEXT1;
 				m_uiMode = MODE_SINGLE;
 
 				break;
@@ -373,7 +376,7 @@ class weapon_skull2 : CBaseCSOWeapon
 		{
 			case MODE_SINGLE:
 			{
-				self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD1, CSOW_TIME_RELOAD1 );
+				self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD1, CSOW_TIME_RELOAD1, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD1;
 
 				break;
@@ -381,7 +384,7 @@ class weapon_skull2 : CBaseCSOWeapon
 
 			case MODE_DUAL:
 			{
-				self.DefaultReload( CSOW_MAX_CLIP * 2, ANIM_RELOAD2, CSOW_TIME_RELOAD2 );
+				self.DefaultReload( CSOW_MAX_CLIP * 2, ANIM_RELOAD2, CSOW_TIME_RELOAD2, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD2;
 
 				break;
@@ -488,7 +491,7 @@ class weapon_skull2 : CBaseCSOWeapon
 		self.ResetEmptySound();
 
 		if( m_uiMode == MODE_DUAL )
-			m_pPlayer.m_szAnimExtension = "uzis";
+			m_pPlayer.m_szAnimExtension = CSOW_ANIMEXT2;
 
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
@@ -501,7 +504,7 @@ class weapon_skull2 : CBaseCSOWeapon
 			else anim = ANIM_IDLE2;
 		}
 
-		self.SendWeaponAnim( anim );
+		self.SendWeaponAnim( anim, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + Math.RandomFloat( CSOW_TIME_IDLE1, CSOW_TIME_IDLE2 );
 	}
 }

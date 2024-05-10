@@ -162,7 +162,7 @@ class weapon_beamsword : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER_ON), ANIM_DRAW, CSOW_ANIMEXT1 );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER_ON), ANIM_DRAW, CSOW_ANIMEXT1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_IDLE], 0.5, ATTN_NORM );
 			m_flNextDLight = g_Engine.time + 0.1;
@@ -198,17 +198,17 @@ class weapon_beamsword : CBaseCSOWeapon
 				int iSound;
 				if( m_iAttackType == 0 )
 				{
-					self.SendWeaponAnim( ANIM_MIDSLASH1 );
+					self.SendWeaponAnim( ANIM_MIDSLASH1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 					iSound = SND_MIDSLASH1;
 				}
 				else if( m_iAttackType == 1 )
 				{
-					self.SendWeaponAnim( ANIM_MIDSLASH2 );
+					self.SendWeaponAnim( ANIM_MIDSLASH2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 					iSound = SND_MIDSLASH2;
 				}
 				else if( m_iAttackType == 2 )
 				{
-					self.SendWeaponAnim( ANIM_MIDSLASH1 );
+					self.SendWeaponAnim( ANIM_MIDSLASH1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 					iSound = SND_MIDSLASH3;
 				}
 
@@ -226,7 +226,7 @@ class weapon_beamsword : CBaseCSOWeapon
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + 1.0;
 				self.m_flTimeWeaponIdle = g_Engine.time + 1.5;
 
-				self.SendWeaponAnim( ANIM_STAB );
+				self.SendWeaponAnim( ANIM_STAB, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_STAB], VOL_NORM, ATTN_NORM );
 
 				SetThink( ThinkFunction(this.DamageStab) );
@@ -240,7 +240,7 @@ class weapon_beamsword : CBaseCSOWeapon
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + 1.0;
 			self.m_flTimeWeaponIdle = g_Engine.time + 1.5;
 
-			self.SendWeaponAnim( ANIM_SLASH_OFF );
+			self.SendWeaponAnim( ANIM_SLASH_OFF, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_OFF_SLASH], VOL_NORM, ATTN_NORM );
 
@@ -373,7 +373,7 @@ class weapon_beamsword : CBaseCSOWeapon
 
 	void SecondaryAttack()
 	{
-		self.SendWeaponAnim( m_iMode == MODE_ON ? ANIM_TURNOFF : ANIM_TURNON );
+		self.SendWeaponAnim( m_iMode == MODE_ON ? ANIM_TURNOFF : ANIM_TURNON, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + CSOW_TIME_DELAY_SWITCH;
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_DELAY_SWITCH + 0.5;
@@ -387,7 +387,7 @@ class weapon_beamsword : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( m_iMode == MODE_ON ? ANIM_IDLE : ANIM_IDLE_OFF );
+		self.SendWeaponAnim( m_iMode == MODE_ON ? ANIM_IDLE : ANIM_IDLE_OFF, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		if( m_iMode == MODE_ON )
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_IDLE], 0.5, ATTN_NORM );

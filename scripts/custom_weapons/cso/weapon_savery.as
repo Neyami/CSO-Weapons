@@ -19,6 +19,8 @@ const string MODEL_WORLD				= "models/custom_weapons/cso/w_savery.mdl";
 const string MODEL_SHELL				= "models/custom_weapons/cso/shell_savery.mdl";
 const string MODEL_CLIP					= "models/custom_weapons/cso/clip_savery.mdl";
 
+const string CSOW_ANIMEXT				= "sniper";
+
 enum csow_e
 {
 	ANIM_IDLE1 = 0,
@@ -132,7 +134,7 @@ class weapon_savery : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model( MODEL_VIEW ), self.GetP_Model( MODEL_PLAYER ), ANIM_DRAW, "sniper" );
+			bResult = self.DefaultDeploy( self.GetV_Model( MODEL_VIEW ), self.GetP_Model( MODEL_PLAYER ), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = g_Engine.time + SAVERY_TIME_DRAW;
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_IDLE], 0.5f, ATTN_NORM );
 			return bResult;
@@ -181,7 +183,7 @@ class weapon_savery : CBaseCSOWeapon
 
 		--self.m_iClip;
 
-		self.SendWeaponAnim( ANIM_SHOOT1 );
+		self.SendWeaponAnim( ANIM_SHOOT1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], 1, ATTN_NORM );
 
@@ -251,7 +253,7 @@ class weapon_savery : CBaseCSOWeapon
 		m_pPlayer.m_szAnimExtension = "sniper";
 		ToggleZoom( 0 );
 
-		self.DefaultReload( SAVERY_MAX_CLIP, ANIM_RELOAD, SAVERY_TIME_RELOAD );
+		self.DefaultReload( SAVERY_MAX_CLIP, ANIM_RELOAD, SAVERY_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + SAVERY_TIME_RELOAD;
 
 		self.pev.nextthink = g_Engine.time + 0.5f;
@@ -270,7 +272,7 @@ class weapon_savery : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( ANIM_IDLE1 );
+		self.SendWeaponAnim( ANIM_IDLE1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + SAVERY_TIME_IDLE;
 	}
 

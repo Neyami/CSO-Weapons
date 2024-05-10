@@ -25,6 +25,8 @@ const string M950_SOUND_CLIPOUT		= "custom_weapons/cso/m950_clipout.wav";
 const string M950_SOUND_SHOOT		= "custom_weapons/cso/m950-1.wav";
 const string M950_SOUND_EMPTY		= "custom_weapons/cs16/dryfire_pistol.wav";
 
+const string CSOW_ANIMEXT				= "onehanded";
+
 enum M950Animation
 {
 	M950_IDLE1 = 0,
@@ -118,7 +120,7 @@ class weapon_m950 : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model( M950_MODEL_VIEW ), self.GetP_Model( M950_MODEL_PLAYER ), M950_DRAW, "onehanded" );
+			bResult = self.DefaultDeploy( self.GetV_Model( M950_MODEL_VIEW ), self.GetP_Model( M950_MODEL_PLAYER ), M950_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + M950_TIME_DRAW;
 			return bResult;
 		}
@@ -172,9 +174,9 @@ class weapon_m950 : CBaseCSOWeapon
 		
 		switch( g_PlayerFuncs.SharedRandomLong( m_pPlayer.random_seed, 0, 2 ) )
 		{
-			case 0: self.SendWeaponAnim( M950_SHOOT1 ); break;
-			case 1: self.SendWeaponAnim( M950_SHOOT2 ); break;
-			case 2: self.SendWeaponAnim( M950_SHOOT3 ); break;
+			case 0: self.SendWeaponAnim( M950_SHOOT1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
+			case 1: self.SendWeaponAnim( M950_SHOOT2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
+			case 2: self.SendWeaponAnim( M950_SHOOT3, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
 		}
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, M950_SOUND_SHOOT, 1, ATTN_NORM );
@@ -218,7 +220,7 @@ class weapon_m950 : CBaseCSOWeapon
 		if( m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 || self.m_iClip >= M950_MAX_CLIP or (m_pPlayer.pev.button & IN_ATTACK) != 0 )
 			return;
 
-		self.DefaultReload( M950_MAX_CLIP, M950_RELOAD, M950_TIME_RELOAD );
+		self.DefaultReload( M950_MAX_CLIP, M950_RELOAD, M950_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + 4.0f;
 
 		self.pev.nextthink = g_Engine.time + 0.85f;
@@ -238,7 +240,7 @@ class weapon_m950 : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( M950_IDLE1 );
+		self.SendWeaponAnim( M950_IDLE1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + M950_TIME_IDLE;
 	}
 

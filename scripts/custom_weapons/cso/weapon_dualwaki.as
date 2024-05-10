@@ -144,7 +144,7 @@ class weapon_dualwaki : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model( CSOW_MODEL_VIEW ), self.GetP_Model( CSOW_MODEL_PLAYER ), ANIM_DRAW, CSOW_ANIMEXT );
+			bResult = self.DefaultDeploy( self.GetV_Model( CSOW_MODEL_VIEW ), self.GetP_Model( CSOW_MODEL_PLAYER ), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 
 			return bResult;
@@ -179,7 +179,7 @@ class weapon_dualwaki : CBaseCSOWeapon
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + SLASH_RESET_TIME;
 				self.m_flTimeWeaponIdle = g_Engine.time + (SLASH_RESET_TIME + 0.5f);
 
-				self.SendWeaponAnim( ANIM_SLASH1 );
+				self.SendWeaponAnim( ANIM_SLASH1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
 				SetThink( ThinkFunction(this.Do_Slashing) );
@@ -197,7 +197,7 @@ class weapon_dualwaki : CBaseCSOWeapon
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + SLASH_RESET_TIME;
 				self.m_flTimeWeaponIdle = g_Engine.time + (SLASH_RESET_TIME + 0.5f);
 
-				self.SendWeaponAnim( ANIM_SLASH2 );
+				self.SendWeaponAnim( ANIM_SLASH2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
 				m_flDoubleSlashTime = g_Engine.time + SLASH2_TIME1;
@@ -215,7 +215,7 @@ class weapon_dualwaki : CBaseCSOWeapon
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + SLASH_RESET_TIME;
 				self.m_flTimeWeaponIdle = g_Engine.time + (SLASH_RESET_TIME + 0.5f);
 
-				self.SendWeaponAnim( ANIM_SLASH3 );
+				self.SendWeaponAnim( ANIM_SLASH3, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 				m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
 				m_flDoubleSlashTime = g_Engine.time + SLASH2_TIME1;
@@ -233,7 +233,7 @@ class weapon_dualwaki : CBaseCSOWeapon
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + (STAB_TIME + 0.1f);
 		self.m_flTimeWeaponIdle = g_Engine.time + (STAB_TIME + 0.6f);
 
-		self.SendWeaponAnim( ANIM_STAB );
+		self.SendWeaponAnim( ANIM_STAB, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		SetThink( ThinkFunction(this.Do_StabNow) );
 		pev.nextthink = g_Engine.time + STAB_TIME;
@@ -244,7 +244,7 @@ class weapon_dualwaki : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( ANIM_IDLE );
+		self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 
 		self.m_flTimeWeaponIdle = g_Engine.time + Math.RandomFloat( CSOW_TIME_IDLE1, CSOW_TIME_IDLE2 );
 	}
