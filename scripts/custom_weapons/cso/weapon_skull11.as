@@ -111,8 +111,8 @@ class weapon_skull11 : CBaseCSOWeapon
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud71.spr" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/muzzleflash2.spr" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/muzzleflash4.spr" );
-		g_Game.PrecacheGeneric( "events/cso/muzzle_skull11_1.txt" );
-		g_Game.PrecacheGeneric( "events/cso/muzzle_skull11_2.txt" );
+		g_Game.PrecacheGeneric( "events/cso/muzzle_usas12_1.txt" );
+		g_Game.PrecacheGeneric( "events/cso/muzzle_usas12_2.txt" );
 	}
 
 	bool GetItemInfo( ItemInfo& out info )
