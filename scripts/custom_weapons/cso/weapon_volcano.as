@@ -56,7 +56,7 @@ const array<string> pCSOWSounds =
 	"custom_weapons/cso/gatling_clipout1.wav",
 	"custom_weapons/cso/gatling_clipout2.wav",
 	"custom_weapons/cso/gatlingm-1.wav",
-	"custom_weapons/cs16/usas_draw.wav"
+	"custom_weapons/cso/usas_draw.wav"
 };
 
 class weapon_volcano : CBaseCSOWeapon
