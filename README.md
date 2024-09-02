@@ -2,7 +2,7 @@ Weapons from Counter-Strike Online ported to Sven Co-op in Angelscript.
 
 CREDITS:  
 Nexon for the models, textures, sounds, and sprites.  
-Sven Co-op hands courtesy of DNIO071  
+Sven Co-op hands courtesy of DNIO071, Garompa, Nova, Föur-Nïnes  
 AS Plugins by me, sometimes with code converted from various AMXX plugins.
 
 
