@@ -1,10 +1,12 @@
-namespace cso_awp
+namespace cso_m400
 {
+
+const string CSOW_NAME					= "weapon_m400";
 
 const bool USE_PENETRATION				= true;
 
 const int CSOW_DEFAULT_GIVE			= 10;
-const int CSOW_MAX_CLIP 					= 10;
+const int CSOW_MAX_CLIP 				= 10;
 const int CSOW_MAX_AMMO				= 30;
 const int CSOW_TRACERFREQ				= 0;
 const float CSOW_DAMAGE					= 112;
@@ -12,15 +14,15 @@ const float CSOW_TIME_DELAY1			= 1.45;
 const float CSOW_TIME_DELAY2			= 0.3;
 const float CSOW_TIME_DRAW			= 1.45;
 const float CSOW_TIME_IDLE				= 60.0;
-const float CSOW_TIME_RELOAD		= 3.0;
+const float CSOW_TIME_RELOAD			= 3.0;
 const float CSOW_RECOIL					= 2.0;
-const Vector CSOW_SHELL_ORIGIN	= Vector(16.0, 9.0, -9.0); //forward, right, up
+const Vector CSOW_SHELL_ORIGIN		= Vector(16.0, 9.0, -9.0); //forward, right, up
 
 const string CSOW_ANIMEXT				= "sniper"; //rifle
 
-const string MODEL_VIEW					= "models/custom_weapons/cso/v_awp.mdl";
-const string MODEL_PLAYER				= "models/custom_weapons/cso/p_awp.mdl";
-const string MODEL_WORLD				= "models/custom_weapons/cso/w_awp.mdl";
+const string MODEL_VIEW					= "models/custom_weapons/cso/v_m400.mdl";
+const string MODEL_PLAYER				= "models/custom_weapons/cso/p_m400.mdl";
+const string MODEL_WORLD				= "models/custom_weapons/cso/w_m400.mdl";
 const string MODEL_SHELL					= "models/custom_weapons/cso/rshell_big.mdl";
 
 enum csow_e
@@ -35,24 +37,22 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_SHOOT = 1,
-	SND_ZOOM
+	SND_ZOOM = 1,
+	SND_SHOOT
 };
 
 const array<string> pCSOWSounds =
 {
 	"custom_weapons/cs16/dryfire_rifle.wav", //only here for the precache
-	"custom_weapons/cso/awp1.wav",
 	"custom_weapons/cso/zoom.wav",
-	"custom_weapons/cso/awp_deploy.wav",
-	"custom_weapons/cso/awp_clipin.wav",
-	"custom_weapons/cso/awp_clipout.wav",
-	"custom_weapons/cso/boltdown.wav",
-	"custom_weapons/cso/boltpull1.wav",
-	"custom_weapons/cso/boltup.wav"
+	"custom_weapons/cso/m400-1.wav",
+	"custom_weapons/cso/m400_clipin.wav",
+	"custom_weapons/cso/m400_clipout.wav",
+	"custom_weapons/cso/m400_foley1.wav",
+	"custom_weapons/cso/m400_foley2.wav"
 };
 
-class weapon_awp : CBaseCSOWeapon
+class weapon_m400 : CBaseCSOWeapon
 {
 	private bool m_bResumeZoom;
 	private int m_iLastZoom;
@@ -92,10 +92,9 @@ class weapon_awp : CBaseCSOWeapon
 		for( uint i = 0; i < pCSOWSounds.length(); ++i )
 			g_Game.PrecacheGeneric( "sound/" + pCSOWSounds[i] );
 
-		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/weapon_awp.txt" );
-		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud2.spr" );
-		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud5.spr" );
+		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/" + CSOW_NAME + ".txt" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud7.spr" );
+		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud29.spr" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/sniper_scope.spr" );
 	}
 
@@ -103,9 +102,9 @@ class weapon_awp : CBaseCSOWeapon
 	{
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
 		info.iMaxClip 		= CSOW_MAX_CLIP;
-		info.iSlot			= cso::AWP_SLOT - 1;
-		info.iPosition		= cso::AWP_POSITION - 1;
-		info.iWeight		= cso::AWP_WEIGHT;
+		info.iSlot			= cso::M400_SLOT - 1;
+		info.iPosition		= cso::M400_POSITION - 1;
+		info.iWeight		= cso::M400_WEIGHT;
 
 		return true;
 	}
@@ -118,7 +117,7 @@ class weapon_awp : CBaseCSOWeapon
 		@m_pPlayer = pPlayer;
 
 		NetworkMessage m( MSG_ONE, NetworkMessages::WeapPickup, pPlayer.edict() );
-			m.WriteLong( g_ItemRegistry.GetIdForName("weapon_awp") );
+			m.WriteLong( g_ItemRegistry.GetIdForName(CSOW_NAME) );
 		m.End();
 
 		return true;
@@ -158,18 +157,18 @@ class weapon_awp : CBaseCSOWeapon
 		}
 
 		if( !m_pPlayer.pev.FlagBitSet(FL_ONGROUND) )
-			AWPFire( 0.85, CSOW_TIME_DELAY1 );
+			M400Fire( 0.85, CSOW_TIME_DELAY1 );
 		else if( m_pPlayer.pev.velocity.Length2D() > 140 )
-			AWPFire( 0.25, CSOW_TIME_DELAY1 );
+			M400Fire( 0.25, CSOW_TIME_DELAY1 );
 		else if( m_pPlayer.pev.velocity.Length2D() > 10 )
-			AWPFire( 0.1, CSOW_TIME_DELAY1 );
+			M400Fire( 0.1, CSOW_TIME_DELAY1 );
 		else if( m_pPlayer.pev.FlagBitSet(FL_DUCKING) )
-			AWPFire( 0.0, CSOW_TIME_DELAY1 );
+			M400Fire( 0.0, CSOW_TIME_DELAY1 );
 		else
-			AWPFire( 0.001, CSOW_TIME_DELAY1 );
+			M400Fire( 0.001, CSOW_TIME_DELAY1 );
 	}
 
-	void AWPFire( float flSpread, float flCycleTime )
+	void M400Fire( float flSpread, float flCycleTime )
 	{
 		if( m_pPlayer.pev.fov != 0 )
 		{
@@ -293,8 +292,8 @@ class weapon_awp : CBaseCSOWeapon
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_awp::weapon_awp", "weapon_awp" );
-	g_ItemRegistry.RegisterWeapon( "weapon_awp", "custom_weapons/cso", "m40a1", "", "ammo_762" ); //338Magnum
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m400::weapon_m400", CSOW_NAME );
+	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "m40a1", "", "ammo_762" ); //338Magnum
 
 	if( cso::bUseDroppedItemEffect )
 	{
@@ -303,4 +302,4 @@ void Register()
 	}
 }
 
-} //namespace cso_awp END
+} //namespace cso_m400 END

@@ -36,13 +36,12 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_SHOOT
+	SND_SHOOT = 1
 };
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_pistol.wav",
+	"custom_weapons/cs16/dryfire_pistol.wav", //only here for the precache
 	"custom_weapons/cso/crow3-1.wav",
 	"custom_weapons/cso/crow3_draw.wav",
 	"custom_weapons/cso/crow3_reload_a.wav",
@@ -73,6 +72,8 @@ class weapon_crow3 : CBaseCSOWeapon
 		m_iReloadState = STATE_NONE;
 		g_iCSOWHands = HANDS_SVENCOOP;
 		m_bSwitchHands = true;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -130,17 +131,6 @@ class weapon_crow3 : CBaseCSOWeapon
 		m.End();
 
 		return true;
-	}
-
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
 	}
 
 	bool Deploy()

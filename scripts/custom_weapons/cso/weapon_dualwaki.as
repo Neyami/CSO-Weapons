@@ -429,6 +429,12 @@ void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_dualwaki::weapon_dualwaki", "weapon_dualwaki" );
 	g_ItemRegistry.RegisterWeapon( "weapon_dualwaki", "custom_weapons/cso" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_dualwaki END

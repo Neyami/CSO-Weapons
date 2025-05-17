@@ -31,24 +31,20 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_CLIPIN,
-	SND_CLIPOUT,
-	SND_DRAW,
-	SND_IDLE,
+	SND_IDLE = 1,
 	SND_SHOOT,
 	SND_ZOOM
 };
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_rifle.wav",
-	"custom_weapons/cso/savery_clipin.wav",
-	"custom_weapons/cso/savery_clipout.wav",
-	"custom_weapons/cso/savery_draw.wav",
+	"custom_weapons/cs16/dryfire_rifle.wav", //only here for the precache
 	"custom_weapons/cso/savery_idle.wav",
 	"custom_weapons/cso/savery-1.wav",
-	"custom_weapons/cso/zoom.wav"
+	"custom_weapons/cso/zoom.wav",
+	"custom_weapons/cso/savery_clipin.wav",
+	"custom_weapons/cso/savery_clipout.wav",
+	"custom_weapons/cso/savery_draw.wav"
 };
 
 class weapon_savery : CBaseCSOWeapon
@@ -61,6 +57,8 @@ class weapon_savery : CBaseCSOWeapon
 		g_EntityFuncs.SetModel( self, MODEL_WORLD );
 		self.m_iDefaultAmmo = SAVERY_DEFAULT_GIVE*4;
 		m_iZoomMode = MODE_NOZOOM;
+		m_sEmptySound = pCSOWSounds[0];
+
 		self.FallInit();
 	}
 
@@ -116,18 +114,6 @@ class weapon_savery : CBaseCSOWeapon
 		savery.End();
 
 		return true;
-	}
-
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], 0.8f, ATTN_NORM );
-		}
-		
-		return false;
 	}
 
 	bool Deploy()
@@ -352,6 +338,12 @@ void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_savery::weapon_savery", "weapon_savery" );
 	g_ItemRegistry.RegisterWeapon( "weapon_savery", "custom_weapons/cso", "m40a1", "", "ammo_762" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_savery END

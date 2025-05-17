@@ -55,13 +55,12 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_SHOOT
+	SND_SHOOT = 1
 };
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_pistol.wav",
+	"custom_weapons/cs16/dryfire_pistol.wav", //only here for the precache
 	"custom_weapons/cso/elite_fire.wav",
 	"custom_weapons/cso/elite_clipout.wav",
 	"custom_weapons/cso/elite_deploy.wav",
@@ -93,6 +92,8 @@ class weapon_elites : CBaseCSOWeapon
 		m_flSpreadWalking = CSOW_SPREAD_WALKING;
 		m_flSpreadStanding = CSOW_SPREAD_STANDING;
 		m_flSpreadDucking = CSOW_SPREAD_DUCKING;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -149,17 +150,6 @@ class weapon_elites : CBaseCSOWeapon
 		m.End();
 
 		return true;
-	}
-
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
 	}
 
 	bool Deploy()
@@ -308,6 +298,12 @@ void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_elites::weapon_elites", CSOW_NAME );
 	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "9mm", "", "ammo_9mmclip" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_elites END

@@ -1,7 +1,6 @@
 namespace cso_ripper
 {
 
-
 const int CSOW_DEFAULT_GIVE					= 200;
 const int CSOW_MAX_CLIP 						= 200;
 const int CSOW_DAMAGE1							= 20;
@@ -170,7 +169,7 @@ class weapon_ripper : CBaseCSOWeapon
 	{
 		if( m_pPlayer.pev.waterlevel == WATERLEVEL_HEAD or self.m_iClip <= 0 )
 		{
-			self.PlayEmptySound();
+			//self.PlayEmptySound();
 			self.m_flNextPrimaryAttack = g_Engine.time + 0.2;
 
 			return;
@@ -433,6 +432,12 @@ void Register()
 
 	if( !g_CustomEntityFuncs.IsCustomEntity( "ammo_gasoline" ) ) 
 		cso::RegisterGasoline();
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_ripper END

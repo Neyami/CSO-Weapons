@@ -42,26 +42,21 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_CLIPIN1,
-	SND_CLIPIN2,
-	SND_CLIPIN3,
-	SND_DRAW,
-	SND_EXPLODE,
-	SND_IDLE,
-	SND_SHOOT
+	SND_IDLE = 1,
+	SND_SHOOT,
+	SND_EXPLODE
 };
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_rifle.wav",
+	"custom_weapons/cs16/dryfire_rifle.wav", //only here for the precache
+	"custom_weapons/cso/plasmagun_idle.wav",	
+	"custom_weapons/cso/plasmagun-1.wav",
+	"custom_weapons/cso/plasmagun_exp.wav",
 	"custom_weapons/cso/plasmagun_clipin1.wav",
 	"custom_weapons/cso/plasmagun_clipin2.wav",
 	"custom_weapons/cso/plasmagun_clipout.wav",
-	"custom_weapons/cso/plasmagun_draw.wav",
-	"custom_weapons/cso/plasmagun_exp.wav",
-	"custom_weapons/cso/plasmagun_idle.wav",	
-	"custom_weapons/cso/plasmagun-1.wav"
+	"custom_weapons/cso/plasmagun_draw.wav"
 };
 
 class weapon_plasmagun : CBaseCSOWeapon
@@ -74,6 +69,8 @@ class weapon_plasmagun : CBaseCSOWeapon
 
 		g_iCSOWHands = HANDS_SVENCOOP;
 		m_bSwitchHands = true;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -133,17 +130,6 @@ class weapon_plasmagun : CBaseCSOWeapon
 		return true;
 	}
 
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
-	}
-
 	bool Deploy()
 	{
 		bool bResult;
@@ -167,12 +153,14 @@ class weapon_plasmagun : CBaseCSOWeapon
 		BaseClass.Holster( skipLocal );
 	}
 
+	//causes null pointer access error
+	/*
 	void UpdateOnRemove()
 	{
 		g_SoundSystem.StopSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_IDLE] );
 
 		BaseClass.UpdateOnRemove();
-	}
+	}*/
 
 	void PrimaryAttack()
 	{
@@ -385,6 +373,14 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_plasmagun::plasmaball", "plasmaball" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_plasmagun::weapon_plasmagun", "weapon_plasmagun" );
 	g_ItemRegistry.RegisterWeapon( "weapon_plasmagun", "custom_weapons/cso", "plasma", "", "ammo_plasmashell" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_plasmagun END
+
+//TODO emit idle sound from weapon instead ??

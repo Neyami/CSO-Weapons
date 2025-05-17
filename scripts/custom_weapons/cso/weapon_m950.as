@@ -1,40 +1,48 @@
 namespace cso_m950
 {
 
-const int M950_DEFAULT_GIVE			= 50;
-const int M950_MAX_AMMO				= 120;
-const int M950_MAX_CLIP 			= 50;
-const float M950_DAMAGE				= 16;
-const float M950_DELAY				= 0.16f;
-const float M950_TIME_RELOAD		= 3.5f;
-const float M950_TIME_IDLE			= 4.0f;
-const float M950_TIME_DRAW			= 1.0f;
-const float M950_TIME_FIRE_TO_IDLE	= 1.0f;
-const float M950_RECOIL_X			= Math.RandomLong( -2, 2 );
-const float M950_RECOIL_Y			= 0;
+const int CSOW_DEFAULT_GIVE				= 50;
+const int CSOW_MAX_CLIP 					= 50;
+const int CSOW_MAX_AMMO					= 120;
+const float CSOW_DAMAGE						= 16;
+const float CSOW_TIME_DELAY				= 0.16;
+const float CSOW_TIME_RELOAD				= 3.5;
+const float CSOW_TIME_IDLE					= 4.0;
+const float CSOW_TIME_DRAW				= 1.0;
+const float CSOW_TIME_FIRE_TO_IDLE	= 1.0;
+const float CSOW_RECOIL_X					= Math.RandomLong( -2, 2 );
+const float CSOW_RECOIL_Y					= 0;
 
-const string M950_MODEL_VIEW		= "models/custom_weapons/cso/v_m950.mdl";
-const string M950_MODEL_PLAYER		= "models/custom_weapons/cso/p_m950.mdl";
-const string M950_MODEL_WORLD		= "models/custom_weapons/cso/w_m950.mdl";
-const string M950_MODEL_SHELL		= "models/custom_weapons/cso/shell_9mm.mdl";
-const string M950_MODEL_CLIP		= "models/custom_weapons/cso/clip_m950.mdl";
+const string MODEL_VIEW						= "models/custom_weapons/cso/v_m950.mdl";
+const string MODEL_PLAYER					= "models/custom_weapons/cso/p_m950.mdl";
+const string MODEL_WORLD					= "models/custom_weapons/cso/w_m950.mdl";
+const string MODEL_SHELL						= "models/custom_weapons/cso/shell_9mm.mdl";
+const string MODEL_CLIP						= "models/custom_weapons/cso/clip_m950.mdl";
 
-const string M950_SOUND_BOLTPULL	= "custom_weapons/cso/m950_boltpull.wav";
-const string M950_SOUND_CLIPIN		= "custom_weapons/cso/m950_clipin.wav";
-const string M950_SOUND_CLIPOUT		= "custom_weapons/cso/m950_clipout.wav";
-const string M950_SOUND_SHOOT		= "custom_weapons/cso/m950-1.wav";
-const string M950_SOUND_EMPTY		= "custom_weapons/cs16/dryfire_pistol.wav";
+const string CSOW_ANIMEXT					= "onehanded";
 
-const string CSOW_ANIMEXT				= "onehanded";
-
-enum M950Animation
+enum csow_e
 {
-	M950_IDLE1 = 0,
-	M950_RELOAD,
-	M950_DRAW,
-	M950_SHOOT1,
-	M950_SHOOT2,
-	M950_SHOOT3
+	ANIM_IDLE = 0,
+	ANIM_RELOAD,
+	ANIM_DRAW,
+	ANIM_SHOOT1,
+	ANIM_SHOOT2,
+	ANIM_SHOOT3
+};
+
+enum csowsounds_e
+{
+	SND_SHOOT = 1
+};
+
+const array<string> pCSOWSounds =
+{
+	"custom_weapons/cs16/dryfire_pistol.wav", //only here for the precache
+	"custom_weapons/cso/m950-1.wav",
+	"custom_weapons/cso/m950_boltpull.wav",
+	"custom_weapons/cso/m950_clipin.wav",
+	"custom_weapons/cso/m950_clipout.wav"
 };
 
 class weapon_m950 : CBaseCSOWeapon
@@ -44,35 +52,29 @@ class weapon_m950 : CBaseCSOWeapon
 	void Spawn()
 	{
 		m_iShotsFired = 0;
-		g_EntityFuncs.SetModel( self, M950_MODEL_WORLD );
-		self.m_iDefaultAmmo = M950_DEFAULT_GIVE;
+		g_EntityFuncs.SetModel( self, MODEL_WORLD );
+		self.m_iDefaultAmmo = CSOW_DEFAULT_GIVE;
+		m_sEmptySound = pCSOWSounds[0];
+
 		self.FallInit();
 	}
 
 	void Precache()
 	{
 		self.PrecacheCustomModels();
-		g_Game.PrecacheModel( M950_MODEL_VIEW );
-		g_Game.PrecacheModel( M950_MODEL_PLAYER );
-		g_Game.PrecacheModel( M950_MODEL_WORLD );
+		g_Game.PrecacheModel( MODEL_VIEW );
+		g_Game.PrecacheModel( MODEL_PLAYER );
+		g_Game.PrecacheModel( MODEL_WORLD );
 
-		g_Game.PrecacheModel( M950_MODEL_SHELL );
-		g_Game.PrecacheModel( M950_MODEL_CLIP );
+		g_Game.PrecacheModel( MODEL_SHELL );
+		g_Game.PrecacheModel( MODEL_CLIP );
 
-		g_SoundSystem.PrecacheSound( "items/9mmclip1.wav" );
-
-		g_SoundSystem.PrecacheSound( M950_SOUND_BOLTPULL );
-		g_SoundSystem.PrecacheSound( M950_SOUND_CLIPIN );
-		g_SoundSystem.PrecacheSound( M950_SOUND_CLIPOUT );
-		g_SoundSystem.PrecacheSound( M950_SOUND_SHOOT );
-		g_SoundSystem.PrecacheSound( M950_SOUND_EMPTY );
+		for( uint i = 0; i < pCSOWSounds.length(); ++i )
+			g_SoundSystem.PrecacheSound( pCSOWSounds[i] );
 
 		//Precache these for downloading
-		g_Game.PrecacheGeneric( "sound/" + M950_SOUND_BOLTPULL );
-		g_Game.PrecacheGeneric( "sound/" + M950_SOUND_CLIPIN );
-		g_Game.PrecacheGeneric( "sound/" + M950_SOUND_CLIPOUT );
-		g_Game.PrecacheGeneric( "sound/" + M950_SOUND_SHOOT );
-		g_Game.PrecacheGeneric( "sound/" + M950_SOUND_EMPTY );
+		for( uint i = 0; i < pCSOWSounds.length(); ++i )
+			g_Game.PrecacheGeneric( "sound/" + pCSOWSounds[i] );
 
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/weapon_m950.txt" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud7.spr" );
@@ -81,11 +83,11 @@ class weapon_m950 : CBaseCSOWeapon
 
 	bool GetItemInfo( ItemInfo& out info )
 	{
-		info.iMaxAmmo1 	= M950_MAX_AMMO;
-		info.iMaxClip 	= M950_MAX_CLIP;
-		info.iSlot 		= cso::M950_SLOT - 1;
-		info.iPosition 	= cso::M950_POSITION - 1;
-		info.iWeight 	= cso::M950_WEIGHT;
+		info.iMaxAmmo1	= CSOW_MAX_AMMO;
+		info.iMaxClip			= CSOW_MAX_CLIP;
+		info.iSlot				= cso::M950_SLOT - 1;
+		info.iPosition			= cso::M950_POSITION - 1;
+		info.iWeight			= cso::M950_WEIGHT;
 
 		return true;
 	}
@@ -104,24 +106,12 @@ class weapon_m950 : CBaseCSOWeapon
 		return true;
 	}
 
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, M950_SOUND_EMPTY, 0.8f, ATTN_NORM );
-		}
-		
-		return false;
-	}
-
 	bool Deploy()
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model( M950_MODEL_VIEW ), self.GetP_Model( M950_MODEL_PLAYER ), M950_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
-			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + M950_TIME_DRAW;
+			bResult = self.DefaultDeploy( self.GetV_Model( MODEL_VIEW ), self.GetP_Model( MODEL_PLAYER ), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 			return bResult;
 		}
 	}
@@ -153,8 +143,8 @@ class weapon_m950 : CBaseCSOWeapon
 		{
 			g_PlayerFuncs.ClientPrint( m_pPlayer, HUD_PRINTCENTER, "IT'S JAMMED! FUCKING PIECE OF SHIT GUN!!!" );
 			self.PlayEmptySound();
-			self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + M950_DELAY;
-			self.m_flTimeWeaponIdle = g_Engine.time + M950_DELAY*2;
+			self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY;
+			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_DELAY*2;
 			return;
 		}
 
@@ -174,12 +164,12 @@ class weapon_m950 : CBaseCSOWeapon
 		
 		switch( g_PlayerFuncs.SharedRandomLong( m_pPlayer.random_seed, 0, 2 ) )
 		{
-			case 0: self.SendWeaponAnim( M950_SHOOT1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
-			case 1: self.SendWeaponAnim( M950_SHOOT2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
-			case 2: self.SendWeaponAnim( M950_SHOOT3, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
+			case 0: self.SendWeaponAnim( ANIM_SHOOT1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
+			case 1: self.SendWeaponAnim( ANIM_SHOOT2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
+			case 2: self.SendWeaponAnim( ANIM_SHOOT3, 0, (m_bSwitchHands ? g_iCSOWHands : 0) ); break;
 		}
 
-		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, M950_SOUND_SHOOT, 1, ATTN_NORM );
+		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM );
 		
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 		
@@ -187,20 +177,20 @@ class weapon_m950 : CBaseCSOWeapon
 		Vector vecSrc = m_pPlayer.GetGunPosition();
 		Vector vecAiming = g_Engine.v_forward;
 
-		m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, M950_DAMAGE );
+		m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0, BULLET_PLAYER_CUSTOMDAMAGE, 4, CSOW_DAMAGE );
 
 		Vector vecShellVelocity, vecShellOrigin;
 		CS16GetDefaultShellInfo( m_pPlayer, vecShellVelocity, vecShellOrigin, 15, 6, -5, true, false );
 		vecShellVelocity.y *= -1;
-		g_EntityFuncs.EjectBrass( vecShellOrigin, vecShellVelocity, m_pPlayer.pev.angles[ 1 ], g_EngineFuncs.ModelIndex(M950_MODEL_SHELL), TE_BOUNCE_SHELL );
+		g_EntityFuncs.EjectBrass( vecShellOrigin, vecShellVelocity, m_pPlayer.pev.angles[ 1 ], g_EngineFuncs.ModelIndex(MODEL_SHELL), TE_BOUNCE_SHELL );
 
 		DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_MP5 );
 
 		if( self.m_iClip == 0 && m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 )
 			m_pPlayer.SetSuitUpdate( "!HEV_AMO0", false, 0 );
 
-		m_pPlayer.pev.punchangle.x = M950_RECOIL_X;
-		m_pPlayer.pev.punchangle.y = M950_RECOIL_Y;
+		m_pPlayer.pev.punchangle.x = CSOW_RECOIL_X;
+		m_pPlayer.pev.punchangle.y = CSOW_RECOIL_Y;
 		/*The Specialist-style recoil
 		Vector vecTemp;
 		vecTemp = m_pPlayer.pev.v_angle;
@@ -210,17 +200,17 @@ class weapon_m950 : CBaseCSOWeapon
 		m_pPlayer.pev.angles = vecTemp;
 		m_pPlayer.pev.fixangle = FAM_FORCEVIEWANGLES;*/
 
-		self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + M950_DELAY;
-		self.m_flTimeWeaponIdle = g_Engine.time + M950_TIME_FIRE_TO_IDLE;
+		self.m_flNextPrimaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY;
+		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE;
 		m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH;
 	}	
 
 	void Reload()
 	{
-		if( m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 || self.m_iClip >= M950_MAX_CLIP or (m_pPlayer.pev.button & IN_ATTACK) != 0 )
+		if( m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 || self.m_iClip >= CSOW_MAX_CLIP or (m_pPlayer.pev.button & IN_ATTACK) != 0 )
 			return;
 
-		self.DefaultReload( M950_MAX_CLIP, M950_RELOAD, M950_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		self.m_flTimeWeaponIdle = g_Engine.time + 4.0f;
 
 		self.pev.nextthink = g_Engine.time + 0.85f;
@@ -240,8 +230,8 @@ class weapon_m950 : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( M950_IDLE1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
-		self.m_flTimeWeaponIdle = g_Engine.time + M950_TIME_IDLE;
+		self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
 	}
 
 	void EjectClipThink()
@@ -268,7 +258,7 @@ class weapon_m950 : CBaseCSOWeapon
 				m950clip.WriteCoord( 0 );//velocity
 				m950clip.WriteCoord( 0 );//velocity
 				m950clip.WriteByte( 0 );//random velocity
-				m950clip.WriteShort( g_EngineFuncs.ModelIndex( M950_MODEL_CLIP ) );
+				m950clip.WriteShort( g_EngineFuncs.ModelIndex( MODEL_CLIP ) );
 				m950clip.WriteByte( 1 );//count
 				m950clip.WriteByte( int(lifetime) );
 				m950clip.WriteByte( 2 );//flags
@@ -291,6 +281,12 @@ void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m950::weapon_m950", "weapon_m950" );
 	g_ItemRegistry.RegisterWeapon( "weapon_m950", "custom_weapons/cso", "9mm", "", "ammo_9mmclip" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_m950 END

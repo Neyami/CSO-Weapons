@@ -49,13 +49,12 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_SHOOT
+	SND_SHOOT = 1
 };
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_rifle.wav",
+	"custom_weapons/cs16/dryfire_rifle.wav", //only here for the precache
 	"custom_weapons/cso/at4-1.wav",
 	"custom_weapons/cso/at4_clipin1.wav",
 	"custom_weapons/cso/at4_clipin2.wav",
@@ -75,6 +74,8 @@ class weapon_at4 : CBaseCSOWeapon
 		m_iWeaponType = TYPE_PRIMARY;
 		g_iCSOWHands = HANDS_SVENCOOP;
 		m_bSwitchHands = true;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -138,17 +139,6 @@ class weapon_at4 : CBaseCSOWeapon
 		return true;
 	}
 
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
-	}
-
 	bool Deploy()
 	{
 		bool bResult;
@@ -174,7 +164,7 @@ class weapon_at4 : CBaseCSOWeapon
 		if( m_pPlayer.pev.waterlevel == WATERLEVEL_HEAD or self.m_iClip <= 0 )
 		{
 			self.m_bPlayEmptySound = true;
-			PlayEmptySound();
+			self.PlayEmptySound();
 			self.m_flNextPrimaryAttack = g_Engine.time + 0.25;
 			return;
 		}
@@ -365,6 +355,12 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_at4::at4rocket", "at4rocket" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_at4::weapon_at4", CSOW_NAME );
 	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "rockets", "", "ammo_rpgclip" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_at4 END

@@ -70,36 +70,27 @@ enum csow_e2
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_DRAW,
-	SND_IDLE,
-	SND_SHOOT1,
+	SND_SHOOT1 = 1,
 	SND_RELOAD_INSERT,
-	SND_CHANGE1_TO_2,
-	SND_CHANGE1_FROM_2,
-	SND_CHANGE,
-	SND_CHANGE2_TO_1,
-	SND_CHANGE2_FROM_1,
 	SND_SHOOT2_START,
-	SND_SHOOT2_END,
-	SND_RELOAD2
+	SND_SHOOT2_END
 }
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_rifle.wav",
-	"custom_weapons/cso/blockas2_draw.wav",
-	"custom_weapons/cso/blockas2_idle.wav",
+	"custom_weapons/cs16/dryfire_rifle.wav", //only here for the precache
 	"custom_weapons/cso/blockas1-2.wav",
 	"custom_weapons/cso/blockas1_reload_loop.wav",
+	"custom_weapons/cso/blockas2_shoot_start.wav",
+	"custom_weapons/cso/blockas2_shoot_end.wav",
+	"custom_weapons/cso/blockas2_draw.wav",
+	"custom_weapons/cso/blockas2_idle.wav",
+	"custom_weapons/cso/blockas2_reload.wav",
 	"custom_weapons/cso/blockas1_change1.wav",
 	"custom_weapons/cso/blockas1_change2.wav",
 	"custom_weapons/cso/block_change.wav",
 	"custom_weapons/cso/blockas2_change1_1.wav",
-	"custom_weapons/cso/blockas2_change2_1.wav",
-	"custom_weapons/cso/blockas2_shoot_start.wav",
-	"custom_weapons/cso/blockas2_shoot_end.wav",
-	"custom_weapons/cso/blockas2_reload.wav"
+	"custom_weapons/cso/blockas2_change2_1.wav"
 };
 
 enum modes_e
@@ -128,6 +119,8 @@ class weapon_blockas : CBaseCSOWeapon
 		m_bFirstChange = true;
 		g_iCSOWHands = HANDS_SVENCOOP;
 		m_bSwitchHands = true;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -201,18 +194,6 @@ class weapon_blockas : CBaseCSOWeapon
 		blockas.End();
 
 		return true;
-	}
-
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], 0.8, ATTN_NORM );
-		}
-		
-		return false;
 	}
 
 	bool Deploy()
@@ -808,6 +789,12 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_blockas::weapon_blockas", "weapon_blockas" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_blockas::block_missile", "block_missile" );
 	g_ItemRegistry.RegisterWeapon( "weapon_blockas", "custom_weapons/cso", "buckshot", "m777shot", "ammo_buckshot" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_blockas END

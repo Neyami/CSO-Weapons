@@ -42,13 +42,12 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_SHOOT
+	SND_SHOOT = 1
 };
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_rifle.wav",
+	"custom_weapons/cs16/dryfire_rifle.wav", //only here for the precache
 	"custom_weapons/cso/skull11_1.wav",
 	"custom_weapons/cso/skull11_boltpull.wav",
 	"custom_weapons/cso/skull11_clipin.wav",
@@ -78,6 +77,8 @@ class weapon_skull11 : CBaseCSOWeapon
 		m_bSwitchHands = true;
 		m_iWeaponMode = MODE_BUCKSHOT;
 		m_flYeetMag = 0.0;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -140,17 +141,6 @@ class weapon_skull11 : CBaseCSOWeapon
 		return true;
 	}
 
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
-	}
-
 	bool Deploy()
 	{
 		bool bResult;
@@ -175,7 +165,7 @@ class weapon_skull11 : CBaseCSOWeapon
 		if( m_pPlayer.pev.waterlevel == WATERLEVEL_HEAD or self.m_iClip <= 0 )
 		{
 			self.m_bPlayEmptySound = true;
-			PlayEmptySound();
+			self.PlayEmptySound();
 			self.m_flNextPrimaryAttack = g_Engine.time + 1.0;
 			return;
 		}
@@ -271,6 +261,17 @@ class weapon_skull11 : CBaseCSOWeapon
 		pev.nextthink = g_Engine.time + 0.01;
 	}
 
+	/*void ItemPostFrame()
+	{
+		if( m_flYeetMag > 0.0 and m_flYeetMag < g_Engine.time )
+		{
+			YeetMag();
+			m_flYeetMag = 0.0;
+		}
+
+		BaseClass.ItemPostFrame();
+	}*/
+
 	void YeetMag()
 	{
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
@@ -359,6 +360,12 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_skull11::skull11_yeetmag", "skull11_yeetmag" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_skull11::weapon_skull11", CSOW_NAME );
 	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "buckshot", "", "ammo_buckshot" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_skull11 END

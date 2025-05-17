@@ -57,16 +57,7 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_CLIPIN,
-	SND_CLIPOUT,
-	SND_DRAW,
-	SND_DRAW2,
-	SND_DRAW3,
-	SND_DRAW4,
-	SND_RELOAD2_1,
-	SND_RELOAD2_2,
-	SND_SHOOT
+	SND_SHOOT = 1
 };
 
 enum skull2mode_e
@@ -77,7 +68,8 @@ enum skull2mode_e
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_pistol.wav",
+	"custom_weapons/cs16/dryfire_pistol.wav", //only here for the precache
+	"custom_weapons/cso/skull2-1.wav",
 	"custom_weapons/cso/skull2_clipin.wav",
 	"custom_weapons/cso/skull2_clipout.wav",
 	"custom_weapons/cso/skull2_draw.wav",
@@ -85,8 +77,7 @@ const array<string> pCSOWSounds =
 	"custom_weapons/cso/skull2_draw3.wav",
 	"custom_weapons/cso/skull2_draw4.wav",
 	"custom_weapons/cso/skull2_reload2_1.wav",
-	"custom_weapons/cso/skull2_reload2_2.wav",
-	"custom_weapons/cso/skull2-1.wav"
+	"custom_weapons/cso/skull2_reload2_2.wav"
 };
 
 class weapon_skull2 : CBaseCSOWeapon
@@ -100,6 +91,8 @@ class weapon_skull2 : CBaseCSOWeapon
 		g_EntityFuncs.SetModel( self, CSOW_MODEL_WORLD );
 		self.m_iDefaultAmmo = CSOW_DEFAULT_GIVE;
 		m_uiMode = MODE_SINGLE;
+		m_sEmptySound = pCSOWSounds[0];
+
 		self.FallInit();
 	}
 
@@ -156,18 +149,6 @@ class weapon_skull2 : CBaseCSOWeapon
 		m.End();
 
 		return true;
-	}
-
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
 	}
 
 	bool Deploy()
@@ -513,6 +494,12 @@ void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_skull2::weapon_skull2", "weapon_skull2" );
 	g_ItemRegistry.RegisterWeapon( "weapon_skull2", "custom_weapons/cso", "357", "", "ammo_357" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_skull2 END

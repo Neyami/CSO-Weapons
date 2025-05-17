@@ -1,10 +1,10 @@
 namespace cso_m95tiger
 {
 
-const bool USE_PENETRATION					= true;
+const bool USE_PENETRATION				= true;
 
 const int CSOW_DEFAULT_GIVE			= 20;
-const int CSOW_MAX_CLIP 					= 20;
+const int CSOW_MAX_CLIP 				= 20;
 const int CSOW_MAX_AMMO2				= 7;
 const int CSOW_ZOOMFOV					= 20;
 const int CSOW_TRACERFREQ				= 0;
@@ -14,12 +14,12 @@ const float CSOW_TIME_DELAY2			= 0.3; //Zoom
 const float CSOW_TIME_DELAY3			= 1.7; //Fire net
 const float CSOW_TIME_DRAW			= 1.45;
 const float CSOW_TIME_IDLE				= 15.0;
-const float CSOW_TIME_RELOAD		= 2.0;
+const float CSOW_TIME_RELOAD			= 2.0;
 const float CSOW_RECOIL					= 4.0;
 const float CSOW_NET_VELOCITY		= 1200.0;
 const float CSOW_NET_LIFETIME		= 1.7;
 const float CSOW_NET_RADIUS			= cso::MetersToUnits(2); //a second mob within this radius will get hit
-const Vector CSOW_SHELL_ORIGIN	= Vector( 9.0, 9.0, -9.0 ); //forward, right, up
+const Vector CSOW_SHELL_ORIGIN		= Vector( 9.0, 9.0, -9.0 ); //forward, right, up
 const Vector CSOW_MUZZLE_ORIGIN	= Vector( 27.0, 4.0, -4.0 ); //forward, right, up
 const Vector CSOW_NET_MINS			= Vector( -32.0, -32.0, -32.0 );
 const Vector CSOW_NET_MAXS			= Vector( 32.0, 32.0, 32.0 );
@@ -66,8 +66,7 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_ZOOM,
+	SND_ZOOM = 1,
 	SND_IDLE,
 	SND_SHOOT,
 	SND_SHOOT_NET,
@@ -76,7 +75,7 @@ enum csowsounds_e
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_rifle.wav",
+	"custom_weapons/cs16/dryfire_rifle.wav", //only here for the precache
 	"custom_weapons/cso/zoom.wav",
 	"custom_weapons/cso/m95tiger_idle.wav",
 	"custom_weapons/cso/m95tiger-1.wav",
@@ -114,6 +113,8 @@ class weapon_m95tiger : CBaseCSOWeapon
 		m_iKilledMobs = 0;
 		m_bSkillActive = false;
 		m_iBodyConfig = 0;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -189,17 +190,6 @@ class weapon_m95tiger : CBaseCSOWeapon
 			m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType, CSOW_DEFAULT_GIVE );
 
 		return true;
-	}
-
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
 	}
 
 	void Holster( int skiplocal )
@@ -824,6 +814,12 @@ void Register()
 
 	if( !g_CustomEntityFuncs.IsCustomEntity( "cso_buffhit" ) ) 
 		cso::RegisterBuffHit();
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_m95tiger END

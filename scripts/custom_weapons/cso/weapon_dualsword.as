@@ -967,6 +967,12 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_dualsword::ef_dualsword", "ef_dualsword" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_dualsword::weapon_dualsword", "weapon_dualsword" );
 	g_ItemRegistry.RegisterWeapon( "weapon_dualsword", "custom_weapons/cso" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_dualsword END

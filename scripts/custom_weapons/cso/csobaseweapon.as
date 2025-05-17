@@ -1,3 +1,5 @@
+#include "includes/dev/csoweapondev"
+
 int g_iCSOWHands = 0;
 
 class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
@@ -28,6 +30,19 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 	float m_flSpreadWalking;
 	float m_flSpreadStanding;
 	float m_flSpreadDucking;
+
+	string m_sEmptySound;
+
+	bool PlayEmptySound()
+	{
+		if( self.m_bPlayEmptySound )
+		{
+			self.m_bPlayEmptySound = false;
+			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, m_sEmptySound, VOL_NORM, ATTN_NORM ); //SND_EMPTY
+		}
+
+		return false;
+	}
 
 	void TertiaryAttack()
 	{
@@ -130,6 +145,46 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 				}
 			}
 		}
+	}
+
+	/*void MakeMuzzleflash( string szSprite, float flScale, float flRenderamt, int iAttachment, float flFramerate, float flRotation = 0.0 )
+	{
+		CSprite@ pMuzzleflash = g_EntityFuncs.CreateSprite( szSprite, pev.origin, true, flFramerate );
+		pMuzzleflash.pev.skin = m_pPlayer.entindex();
+		pMuzzleflash.pev.body = iAttachment;
+		@pMuzzleflash.pev.aiment = m_pPlayer.edict();
+		pMuzzleflash.pev.movetype = MOVETYPE_FOLLOW;
+		@pMuzzleflash.pev.owner = m_pPlayer.edict();
+		pMuzzleflash.SetScale( flScale );
+		pMuzzleflash.SetTransparency( kRenderTransAdd, 255, 255, 255, int(flRenderamt), kRenderFxNone );
+
+		if( flRotation > 0.0 )
+		{
+			pMuzzleflash.KeyValue( "vp_type", "VP_TYPE::VP_ORIENTATED" );
+			pMuzzleflash.pev.angles = Vector( 0.0, 0.0, flRotation );
+		}
+
+		pMuzzleflash.AnimateAndDie( flFramerate );
+	}*/
+
+	void MakeMuzzleflash( string szSprite, float flScale, float flRenderamt, int iAttachment, float flFramerate, float flRotation = 0.0 )
+	{
+		@m_pDynamicEnt = g_EntityFuncs.CreateSprite( szSprite, pev.origin, true, flFramerate );
+		m_pDynamicEnt.pev.skin = m_pPlayer.entindex();
+		m_pDynamicEnt.pev.body = iAttachment;
+		@m_pDynamicEnt.pev.aiment = m_pPlayer.edict();
+		m_pDynamicEnt.pev.movetype = MOVETYPE_FOLLOW;
+		@m_pDynamicEnt.pev.owner = m_pPlayer.edict();
+		m_pDynamicEnt.SetScale( flScale );
+		m_pDynamicEnt.SetTransparency( kRenderTransAdd, 255, 255, 255, int(flRenderamt), kRenderFxNone );
+
+		if( flRotation > 0.0 )
+		{
+			m_pDynamicEnt.KeyValue( "vp_type", "VP_TYPE::VP_ORIENTATED" );
+			m_pDynamicEnt.pev.angles = Vector( 0.0, 0.0, flRotation );
+		}
+
+		m_pDynamicEnt.AnimateAndDie( flFramerate );
 	}
 
 	void DoMuzzleflash( string szSprite, float flForward, float flRight, float flUp, float flScale, float flRenderamt, float flFramerate, float flRotation = 0.0, int iRenderMode = kRenderTransAdd )
@@ -273,7 +328,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 				m_hDropEffect = EHandle( cbeGunDrop );
 				cso::ef_gundrop@ pGunDrop = cast<cso::ef_gundrop@>(CastToScriptClass(cbeGunDrop));
 				pGunDrop.m_hOwner = EHandle( self );
-				pGunDrop.pev.movetype	= MOVETYPE_FOLLOW;
+				pGunDrop.pev.movetype = MOVETYPE_FOLLOW;
 				@pGunDrop.pev.aiment	= self.edict();
 
 				g_EntityFuncs.DispatchSpawn( pGunDrop.self.edict() );

@@ -58,8 +58,7 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_SPINDOWN,
+	SND_SPINDOWN = 1,
 	SND_SPINUP,
 	SND_SPIN,
 	SND_SHOOT,
@@ -68,7 +67,7 @@ enum csowsounds_e
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_rifle.wav",
+	"custom_weapons/cs16/dryfire_rifle.wav", //only here for the precache
 	"custom_weapons/cso/m134hero_spindown.wav",
 	"custom_weapons/cso/m134hero_spinup.wav",
 	"custom_weapons/cso/m134ex_spin.wav",
@@ -118,6 +117,8 @@ class weapon_m134hero : CBaseCSOWeapon
 		SetHudParamsCooldown();
 		g_iCSOWHands = HANDS_SVENCOOP;
 		m_bSwitchHands = true;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -183,17 +184,6 @@ class weapon_m134hero : CBaseCSOWeapon
 		m.End();
 
 		return true;
-	}
-
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
 	}
 
 	bool Deploy()

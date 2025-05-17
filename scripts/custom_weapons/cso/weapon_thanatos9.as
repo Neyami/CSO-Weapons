@@ -212,7 +212,7 @@ class weapon_thanatos9 : CBaseCSOWeapon
 
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
-			SetThink( ThinkFunction(this.Check_Slashing) );
+			SetThink( ThinkFunction(this.CheckSlash) );
 			pev.nextthink = g_Engine.time + CSOW_TIME_DELAY1;
 		}
 		else
@@ -574,27 +574,27 @@ class weapon_thanatos9 : CBaseCSOWeapon
 		}
 	}
 
-	void Check_Slashing()
+	void CheckSlash()
 	{
 		if( !m_pPlayer.IsAlive() )
 			return;
 
-		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 1.0f;
-		self.m_flTimeWeaponIdle = g_Engine.time + 1.5f;
+		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 1.0;
+		self.m_flTimeWeaponIdle = g_Engine.time + 1.5;
 
-		Damage_Slashing();
+		DamageSlash();
 	}
 
-	void Damage_Slashing()
+	void DamageSlash()
 	{
 		array<Vector> vecPoints(4);
 
-		float Point_Dis = 80.0f;
-		float TB_Distance = CSOW_RADIUS1 / 4.0f;
+		float Point_Dis = 80.0;
+		float TB_Distance = CSOW_RADIUS1 / 4.0;
 
 		Vector vecTargetOrigin, vecMyOrigin = m_pPlayer.pev.origin;
 
-		for( int i = 0; i < 4; i++ ) get_position( TB_Distance * (i + 1), 0.0f, 0.0f, vecPoints[i] );
+		for( int i = 0; i < 4; i++ ) get_position( TB_Distance * (i + 1), 0.0, 0.0, vecPoints[i] );
 
 		bool bHitSomeone = false;
 
@@ -687,6 +687,12 @@ void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_thanatos9::weapon_thanatos9", "weapon_thanatos9" );
 	g_ItemRegistry.RegisterWeapon( "weapon_thanatos9", "custom_weapons/cso" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_thanatos9 END

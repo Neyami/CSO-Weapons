@@ -500,6 +500,12 @@ void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_balrog9::weapon_balrog9", "weapon_balrog9" );
 	g_ItemRegistry.RegisterWeapon( "weapon_balrog9", "custom_weapons/cso" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_balrog9 END

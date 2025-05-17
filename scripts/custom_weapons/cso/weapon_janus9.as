@@ -163,7 +163,7 @@ class weapon_janus9 : CBaseCSOWeapon
 
 	void Holster( int skiplocal )
 	{
-		m_pPlayer.m_flNextAttack = g_WeaponFuncs.WeaponTimeBase() + 0.5f;
+		m_pPlayer.m_flNextAttack = g_WeaponFuncs.WeaponTimeBase() + 0.5;
 		m_pPlayer.pev.viewmodel = "";
 
 		SetThink( null );
@@ -174,7 +174,7 @@ class weapon_janus9 : CBaseCSOWeapon
 		if( !Swing(1) )
 		{
 			SetThink( ThinkFunction(this.SwingAgain) );
-			self.pev.nextthink = g_Engine.time + 0.1f;
+			self.pev.nextthink = g_Engine.time + 0.1;
 		}
 
 		if( m_iMode > 0 )
@@ -272,10 +272,10 @@ class weapon_janus9 : CBaseCSOWeapon
 
 		g_Utility.TraceLine( vecSrc, vecEnd, dont_ignore_monsters, m_pPlayer.edict(), tr );
 
-		if( tr.flFraction >= 1.0f )
+		if( tr.flFraction >= 1.0 )
 		{
 			g_Utility.TraceHull( vecSrc, vecEnd, dont_ignore_monsters, head_hull, m_pPlayer.edict(), tr );
-			if( tr.flFraction < 1.0f )
+			if( tr.flFraction < 1.0 )
 			{
 				CBaseEntity@ pHit = g_EntityFuncs.Instance( tr.pHit );
 				if ( pHit is null or pHit.IsBSPModel() )
@@ -285,12 +285,12 @@ class weapon_janus9 : CBaseCSOWeapon
 			}
 		}
 
-		if( tr.flFraction >= 1.0f )
+		if( tr.flFraction >= 1.0 )
 		{
 			if( iFirst != 0 )
 			{
 				++m_iMode;
-				m_flResetMode = g_Engine.time + 5.0f;
+				m_flResetMode = g_Engine.time + 5.0;
 
 				switch( (m_iSwing++) % 2 )
 				{
@@ -308,7 +308,7 @@ class weapon_janus9 : CBaseCSOWeapon
 		else
 		{
 			++m_iMode;
-			m_flResetMode = g_Engine.time + 5.0f;
+			m_flResetMode = g_Engine.time + 5.0;
 
 			bDidHit = true;
 
@@ -332,7 +332,7 @@ class weapon_janus9 : CBaseCSOWeapon
 
 			g_WeaponFuncs.ApplyMultiDamage( m_pPlayer.pev, m_pPlayer.pev );
 
-			float flVol = 1.0f;
+			float flVol = 1.0;
 			bool bHitWorld = true;
 
 			if( pEntity !is null )
@@ -421,6 +421,12 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_janus9::weapon_janus9", "weapon_janus9" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso::cso_aoetrigger", "cso_aoetrigger" );
 	g_ItemRegistry.RegisterWeapon( "weapon_janus9", "custom_weapons/cso" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace janus9 END

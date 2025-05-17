@@ -66,42 +66,41 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_CHANGE,
+	SND_CHANGE = 1,
+	SND_IDLE,
+	SND_THROW,
+	SND_SHOOT,
+	SND_EXPLODE,
 	SND_CLIPIN,
 	SND_CLIPOUT,
 	SND_DRAW,
 	SND_DRAWA,
 	SND_DRAWB,
 	SND_DRAWC,
-	SND_IDLE,
 	SND_RELOADA_CLIPIN,
 	SND_RELOADA_CLIPOUT,
 	SND_RELOADB_CLIPIN,
-	SND_RELOADC_CLIPIN,
-	SND_THROW,
-	SND_SHOOT,
-	SND_EXPLODE
+	SND_RELOADC_CLIPIN
 };
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_pistol.wav",
+	"custom_weapons/cs16/dryfire_pistol.wav", //only here for the precache
 	"custom_weapons/cso/bloodhunter_change.wav",
+	"custom_weapons/cso/bloodhunter_idle.wav",
+	"custom_weapons/cso/bloodhunter_throwa.wav",
+	"custom_weapons/cso/bloodhunter-1.wav",
+	"custom_weapons/cso/bloodhunter_explode.wav",
 	"custom_weapons/cso/bloodhunter_clipin.wav",
 	"custom_weapons/cso/bloodhunter_clipout.wav",
 	"custom_weapons/cso/bloodhunter_draw.wav",
 	"custom_weapons/cso/bloodhunter_drawa.wav",
 	"custom_weapons/cso/bloodhunter_drawb.wav",
 	"custom_weapons/cso/bloodhunter_drawc.wav",
-	"custom_weapons/cso/bloodhunter_idle.wav",
 	"custom_weapons/cso/bloodhunter_reloada_clipin.wav",
 	"custom_weapons/cso/bloodhunter_reloada_clipout.wav",
 	"custom_weapons/cso/bloodhunter_reloadb_clipin.wav",
-	"custom_weapons/cso/bloodhunter_reloadc_clipin.wav",
-	"custom_weapons/cso/bloodhunter_throwa.wav",
-	"custom_weapons/cso/bloodhunter-1.wav",
-	"custom_weapons/cso/bloodhunter_explode.wav"
+	"custom_weapons/cso/bloodhunter_reloadc_clipin.wav"
 };
 
 const array<string> pCSOWSprites =
@@ -125,6 +124,8 @@ class weapon_bloodhunter : CBaseCSOWeapon
 		m_uiLevel = 0;
 		m_flRedrawTime = 0.0;
 		m_flThrowGrenade = 0.0;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -185,17 +186,6 @@ class weapon_bloodhunter : CBaseCSOWeapon
 		m.End();
 
 		return true;
-	}
-
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
 	}
 
 	bool Deploy()
@@ -567,7 +557,6 @@ class bloodhunter_effect : ScriptBaseEntity
 		float flFrame;
 		flFrame = pev.frame;
 
-		CBaseEntity@ cbeOwner = g_EntityFuncs.Instance(pev.owner);
 		Vector vecOrigin, vecAngle, vecForward, vecRight, vecUp;
 
 		vecOrigin = pev.owner.vars.origin;
@@ -598,6 +587,12 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_bloodhunter::bloodhunter_effect", "bloodhunter_effect" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_bloodhunter::weapon_bloodhunter", "weapon_bloodhunter" );
 	g_ItemRegistry.RegisterWeapon( "weapon_bloodhunter", "custom_weapons/cso", "357", "", "ammo_357" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_bloodhunter END

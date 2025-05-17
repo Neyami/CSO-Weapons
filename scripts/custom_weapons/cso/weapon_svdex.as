@@ -58,15 +58,14 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_SHOOT,
+	SND_SHOOT = 1,
 	SND_SHOOT_GRENADE,
 	SND_EXPLODE
 };
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_rifle.wav",
+	"custom_weapons/cs16/dryfire_rifle.wav", //only here for the precache
 	"custom_weapons/cso/svdex-1.wav",
 	"custom_weapons/cso/svdex-launcher.wav",
 	"custom_weapons/cso/svdex_exp.wav",
@@ -104,6 +103,8 @@ class weapon_svdex : CBaseCSOWeapon
 		m_flSpreadDucking = CSOW_SPREAD_DUCKING;
 
 		m_iMode = MODE_GUN;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -168,17 +169,6 @@ class weapon_svdex : CBaseCSOWeapon
 		m.End();
 
 		return true;
-	}
-
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
 	}
 
 	bool Deploy()
@@ -461,6 +451,12 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_svdex::svd_rocket", "svd_rocket" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_svdex::weapon_svdex", CSOW_NAME );
 	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "m40a1", "ARgrenades", "ammo_762", "ammo_ARgrenades" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_svdex END

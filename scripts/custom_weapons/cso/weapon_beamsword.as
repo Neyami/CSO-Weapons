@@ -342,7 +342,7 @@ class weapon_beamsword : CBaseCSOWeapon
 		if( iHitSomething != HIT_ENEMY )
 		{
 			Vector vecWallCheck;
-			vecMyOrigin.z += 26.0f;
+			vecMyOrigin.z += 26.0;
 			get_position( flRadius - 5.0, 0.0, 0.0, vecWallCheck );
 
 			TraceResult tr;

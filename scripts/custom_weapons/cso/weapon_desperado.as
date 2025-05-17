@@ -51,9 +51,7 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_SHOOT,
-	SND_RELOAD
+	SND_SHOOT = 1
 };
 
 enum modes_e
@@ -64,7 +62,7 @@ enum modes_e
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_pistol.wav",
+	"custom_weapons/cs16/dryfire_pistol.wav", //only here for the precache
 	"custom_weapons/cso/dprd-1.wav",
 	"custom_weapons/cso/dprd_reload_m.wav"
 };
@@ -90,6 +88,8 @@ class weapon_desperado : CBaseCSOWeapon
 		m_flSpreadWalking = CSOW_SPREAD_WALKING;
 		m_flSpreadStanding = CSOW_SPREAD_STANDING;
 		m_flSpreadDucking = CSOW_SPREAD_DUCKING;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -150,17 +150,6 @@ class weapon_desperado : CBaseCSOWeapon
 		return true;
 	}
 
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], 1.0f, ATTN_NORM );
-		}
-
-		return false;
-	}
-
 	bool Deploy()
 	{
 		bool bResult;
@@ -213,7 +202,7 @@ class weapon_desperado : CBaseCSOWeapon
 		if( m_pPlayer.pev.waterlevel == WATERLEVEL_HEAD or self.m_iClip <= 0 )
 		{
 			self.m_bPlayEmptySound = true;
-			PlayEmptySound();
+			self.PlayEmptySound();
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY;
 			return;
 		}
@@ -362,6 +351,12 @@ void Register()
 
 	if( !g_CustomEntityFuncs.IsCustomEntity( "cso_buffhit" ) ) 
 		cso::RegisterBuffHit();
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_desperado END

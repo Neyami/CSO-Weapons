@@ -19,7 +19,7 @@ const float CSOW_TIME_FIRE_TO_IDLE2		= 1.3;
 const float CSOW_TIME_FIRE_TO_IDLE3		= 0.7;
 const float CSOW_TIME_RELOAD1					= 0.45;
 const float CSOW_TIME_RELOAD2					= 1.25;
-const float CSOW_TIME_CHARGE					= 1.0;
+const float CSOW_TIME_CHARGE					= 0.3;
 const float CSOW_TIME_ARROW_LIFE			= 10.0;
 const float CSOW_ARROW_SPEED					= 2000;
 //const float CSOW_ARROW_EXP_RADIUS			= 90; //Not used atm, radius is based on mob volume
@@ -46,10 +46,10 @@ const string MODEL_AMMO								= "models/w_crossbow_clip.mdl";
 
 const string SPRITE_EXPLODE							= "sprites/custom_weapons/cso/skull.spr";
 const string SPRITE_HUNTERSEYE					= "sprites/laserbeam.spr";
-//const string SPRITE_MUZZLE1						= "sprites/custom_weapons/cso/muzzleflash208.spr"; //??
-//const string SPRITE_MUZZLE2						= "sprites/custom_weapons/cso/muzzleflash210.spr"; //Charge finish
-const string SPRITE_MUZZLE3							= "sprites/custom_weapons/cso/muzzleflash211.spr"; //Draw, and pulling back the arrow after shooting?
-//const string SPRITE_MUZZLE4						= "sprites/custom_weapons/cso/muzzleflash212.spr"; //Charge idle1
+const string SPRITE_MUZZLE208						= "sprites/custom_weapons/cso/muzzleflash208.spr"; //??
+const string SPRITE_MUZZLE210						= "sprites/custom_weapons/cso/muzzleflash210.spr"; //Charge finish
+const string SPRITE_MUZZLE211						= "sprites/custom_weapons/cso/muzzleflash211.spr"; //Draw, and pulling back the arrow after shooting?
+const string SPRITE_MUZZLE212						= "sprites/custom_weapons/cso/muzzleflash212.spr"; //Charge idle1
 
 enum csow_e
 {
@@ -117,8 +117,18 @@ enum csowmodes_e
 
 enum csowattach_e
 {
-	ATTACH_MUZZLE1 = 0,	//At the center of the rotating thingy
+	ATTACH_MUZZLE1 = 1,	//At the center of the rotating thingy
 	ATTACH_MUZZLE2			//A bit further out from the first
+};
+
+enum muzzstate_e
+{
+	MUZ_DRAW1 = 1,
+	MUZ_DRAW2,
+	MUZ_SHOOT,
+	MUZ_SHOOT_CHARGED1,
+	MUZ_SHOOT_CHARGED2,
+	MUZ_SHOOT_CHARGED3
 };
 
 class weapon_failnaught : CBaseCSOWeapon
@@ -128,6 +138,7 @@ class weapon_failnaught : CBaseCSOWeapon
 	private float m_flNextLoopSound;
 	private float m_flUpdateHuntersEye;
 	private int m_iHuntersEyeSprite;
+	private uint m_uiMuzzleflashState;
 
 	void Spawn()
 	{
@@ -138,6 +149,7 @@ class weapon_failnaught : CBaseCSOWeapon
 
 		g_iCSOWHands = HANDS_SVENCOOP;
 		m_bSwitchHands = true;
+		m_uiMuzzleflashState = 0;
 
 		self.FallInit();
 	}
@@ -158,10 +170,10 @@ class weapon_failnaught : CBaseCSOWeapon
 		g_Game.PrecacheModel( cso::SPRITE_TRAIL_FAILNAUGHT_EXPLODE );
 		g_Game.PrecacheModel( SPRITE_EXPLODE );
 		m_iHuntersEyeSprite = g_Game.PrecacheModel( SPRITE_HUNTERSEYE );
-		//g_Game.PrecacheModel( SPRITE_MUZZLE1 );
-		//g_Game.PrecacheModel( SPRITE_MUZZLE2 );
-		g_Game.PrecacheModel( SPRITE_MUZZLE3 );
-		//g_Game.PrecacheModel( SPRITE_MUZZLE4 );
+		g_Game.PrecacheModel( SPRITE_MUZZLE208 );
+		g_Game.PrecacheModel( SPRITE_MUZZLE210 );
+		g_Game.PrecacheModel( SPRITE_MUZZLE211 );
+		g_Game.PrecacheModel( SPRITE_MUZZLE212 );
 
 		for( i = 1; i < pDamageMarks.length(); ++i )
 			g_Game.PrecacheModel( pDamageMarks[i] );
@@ -216,6 +228,14 @@ class weapon_failnaught : CBaseCSOWeapon
 			int iAnim = (m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) > 0) ? ANIM_DRAW : ANIM_DRAW_EMPTY;
 			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), iAnim, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DRAW;
+
+			if( iAnim == ANIM_DRAW )
+			{
+				//MakeMuzzleflash( SPRITE_MUZZLE211, 0.07, 255.0, ATTACH_MUZZLE1, 7.0 );
+				m_uiMuzzleflashState = MUZ_DRAW1;
+				SetThink( ThinkFunction(this.MuzzleflashThink) );
+				pev.nextthink = g_Engine.time;
+			}
 
 			return bResult;
 		}
@@ -275,7 +295,8 @@ class weapon_failnaught : CBaseCSOWeapon
 
 				m_flTimeCharge = g_Engine.time;
 				m_iState = STATE_CHARGE_MID;
-
+				MakeMuzzleflash( SPRITE_MUZZLE208, 0.05, 255.0, ATTACH_MUZZLE1, 30.0 );
+//{ event 5001 0 "#I208 S0.05 R0 F0 P30 T999 A1 L0 O0 X0" } 
 				break;
 			}
 
@@ -285,7 +306,7 @@ class weapon_failnaught : CBaseCSOWeapon
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.35;
 
 				m_iState = STATE_CHARGE_MID;
-
+//{ event 5001 0 "#I208 S0.05 R0 F0 P30 T999 A1 L0 O0 X0" } 
 				if( g_Engine.time >= (m_flTimeCharge + CSOW_TIME_CHARGE) )
 				{
 					self.SendWeaponAnim( ANIM_CHARGE_FINISH, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
@@ -293,6 +314,8 @@ class weapon_failnaught : CBaseCSOWeapon
 					self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = m_flNextLoopSound = g_Engine.time + 0.35;
 
 					m_iState = STATE_CHARGED_IDLE;
+					MakeMuzzleflash( SPRITE_MUZZLE210, 0.15, 255.0, ATTACH_MUZZLE2, 30.0 );
+					//{ event 5001 0 "#I210 S0.15 R0 F0 P30 T999 A1 L0 O0 X0" } 
 				}
 
 				break;
@@ -305,7 +328,7 @@ class weapon_failnaught : CBaseCSOWeapon
 
 				m_iState = STATE_CHARGED_IDLE;
 				m_flUpdateHuntersEye = g_Engine.time + CSOW_SKILL_RATE;
-
+//{ event 5001 0 "#I209 S0.5 R0 F0 P30 T999 A1 L0 O0 X0" } 
 				break;
 			}
 		}
@@ -365,6 +388,11 @@ class weapon_failnaught : CBaseCSOWeapon
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + (bInCharge ? CSOW_TIME_RELOAD2 : CSOW_TIME_RELOAD1);
 
 		m_iState = STATE_NONE;
+
+		//MakeMuzzleflash( SPRITE_MUZZLE211, 0.1, 255.0, ATTACH_MUZZLE1, 30.0, 2.0 );
+		m_uiMuzzleflashState = MUZ_SHOOT;
+		SetThink( ThinkFunction(this.MuzzleflashThink) );
+		pev.nextthink = g_Engine.time + 0.16;
 	}
 
 	void ShootCharged()
@@ -391,6 +419,10 @@ class weapon_failnaught : CBaseCSOWeapon
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD2;
 
 		m_iState = STATE_NONE;
+
+		m_uiMuzzleflashState = MUZ_SHOOT_CHARGED1;
+		SetThink( ThinkFunction(this.MuzzleflashThink) );
+		pev.nextthink = g_Engine.time + 0.25;
 	}
 
 	void WeaponIdle()
@@ -574,6 +606,77 @@ class weapon_failnaught : CBaseCSOWeapon
 		m1.End();
 	}
 
+	void MuzzleflashThink()
+	{
+		float flNextThink;
+
+		if( m_uiMuzzleflashState > 0 )
+		{
+			switch( m_uiMuzzleflashState )
+			{
+//{ event 5001 0 "#I212 S0.05 R0 F0 P30 T999 A1 L0 O0 X0" } 
+//{ event 5001 5 "#I211 S0.07 R2 F0 P30 T999 A1 L0 O0 X0" } 
+//{ event 5001 9 "#I211 S0.07 R2 F0 P30 T999 A1 L0 O0 X0" } 
+//{ event 5001 13 "#I211 S0.07 R2 F0 P30 T999 A1 L0 O0 X0" } 
+				case MUZ_DRAW1:
+				{
+					MakeMuzzleflash( SPRITE_MUZZLE212, 0.05, 255.0, ATTACH_MUZZLE1, 20.0 );
+					m_uiMuzzleflashState++;
+					flNextThink = 0.16;
+					break;
+				}
+
+				case MUZ_DRAW2:
+				{
+					MakeMuzzleflash( SPRITE_MUZZLE211, 0.07, 255.0, ATTACH_MUZZLE1, 10.0, 2.0 );
+					m_uiMuzzleflashState = 0;
+					SetThink( null );
+					return;
+				}
+
+//{ event 5011 0 "#I213 S0.07 R0 F0 P30 T999 A1 L0 O0 X1" } 
+//{ event 5001 5 "#I211 S0.1 R2 F0 P30 T999 A1 L0 O0 X0" } 
+				case MUZ_SHOOT:
+				{
+					MakeMuzzleflash( SPRITE_MUZZLE211, 0.1, 255.0, ATTACH_MUZZLE1, 30.0, 2.0 );
+					m_uiMuzzleflashState = 0;
+					SetThink( null );
+					return;
+				}
+
+//{ event 5011 0 "#I213 S0.07 R0 F0 P30 T999 A1 L0 O0 X1" } 
+//{ event 5001 15 "#I211 S0.1 R0 F0 P30 T999 A1 L0 O0 X0" } 
+//{ event 5001 19 "#I211 S0.12 R2 F0 P30 T999 A1 L0 O0 X0" } 
+//{ event 5001 24 "#I211 S0.1 R2 F0 P30 T999 A1 L0 O0 X0" } 
+				case MUZ_SHOOT_CHARGED1:
+				{
+					MakeMuzzleflash( SPRITE_MUZZLE211, 0.1, 255.0, ATTACH_MUZZLE1, 30.0 );
+					m_uiMuzzleflashState++;
+					flNextThink = 0.13;
+					break;
+				}
+
+				case MUZ_SHOOT_CHARGED2:
+				{
+					MakeMuzzleflash( SPRITE_MUZZLE211, 0.12, 255.0, ATTACH_MUZZLE1, 30.0, 2.0 );
+					m_uiMuzzleflashState++;
+					flNextThink = 0.16;
+					break;
+				}
+
+				case MUZ_SHOOT_CHARGED3:
+				{
+					MakeMuzzleflash( SPRITE_MUZZLE211, 0.1, 255.0, ATTACH_MUZZLE1, 30.0, 2.0 );
+					m_uiMuzzleflashState = 0;
+					SetThink( null );
+					return;
+				}
+			}
+		}
+
+		pev.nextthink = g_Engine.time + flNextThink;
+	}
+
 	float GetScaleForMonster( CBaseEntity@ pMonster, float flScaleIncrease = 0.4, float flScaleDecrease = 1.5 )
 	{
 		int iBaseScale = CSOW_SKILL_SIZE;
@@ -602,7 +705,7 @@ class holyarrow : ScriptBaseEntity
 	{
 		g_EntityFuncs.SetModel( self, MODEL_PROJ );
 		g_EntityFuncs.SetSize( self.pev, Vector(-1, -1, -1), Vector(1, 1, 1) );
-		g_EntityFuncs.SetOrigin( self, self.pev.origin );
+		g_EntityFuncs.SetOrigin( self, pev.origin );
 
 		pev.movetype	= MOVETYPE_FLY;
 		pev.solid		= SOLID_BBOX;
@@ -964,6 +1067,12 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_failnaught::ammo_holyarrows", "ammo_holyarrows" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_failnaught::weapon_failnaught", "weapon_failnaught" );
 	g_ItemRegistry.RegisterWeapon( "weapon_failnaught", "custom_weapons/cso", "holyarrows", "", "ammo_holyarrows" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_failnaught END

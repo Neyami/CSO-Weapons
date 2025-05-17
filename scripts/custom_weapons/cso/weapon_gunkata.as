@@ -75,8 +75,7 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_SHOOT,
+	SND_SHOOT = 1,
 	SND_SKILL1,
 	SND_SKILL2,
 	SND_SKILL3,
@@ -89,7 +88,7 @@ enum csowsounds_e
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_pistol.wav",
+	"custom_weapons/cs16/dryfire_pistol.wav", //only here for the precache
 	"custom_weapons/cso/gunkata-1.wav",
 	"custom_weapons/cso/gunkata_skill_01.wav",
 	"custom_weapons/cso/gunkata_skill_02.wav",
@@ -154,7 +153,6 @@ class weapon_gunkata : CBaseCSOWeapon
 	private int m_iRandomSkillAnim;
 	private int m_iCurSkillAnim;
 	private int m_iSetSkillAnim;
-	private int m_iSkillSoundChannel; //temp
 	private float m_flSpawnGunkataEffect;
 	private float m_flSkillKnockback;
 	private float m_flSkillEnd;
@@ -177,6 +175,8 @@ class weapon_gunkata : CBaseCSOWeapon
 		m_flSpreadWalking = CSOW_SPREAD_WALKING;
 		m_flSpreadStanding = CSOW_SPREAD_STANDING;
 		m_flSpreadDucking = CSOW_SPREAD_DUCKING;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -246,17 +246,6 @@ class weapon_gunkata : CBaseCSOWeapon
 		return true;
 	}
 
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
-	}
-
 	void Holster( int skiplocal )
 	{
 		SetThink( null );
@@ -290,7 +279,7 @@ class weapon_gunkata : CBaseCSOWeapon
 		if( m_pPlayer.pev.waterlevel == WATERLEVEL_HEAD or self.m_iClip <= 0 )
 		{
 			self.m_bPlayEmptySound = true;
-			PlayEmptySound();
+			self.PlayEmptySound();
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 0.20;
 			return;
 		}
@@ -348,7 +337,7 @@ class weapon_gunkata : CBaseCSOWeapon
 		{
 			self.SendWeaponAnim( GetWeaponAnim(ANIM_IDLE_RIGHT), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_bPlayEmptySound = true;
-			PlayEmptySound();
+			self.PlayEmptySound();
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 0.20;
 			return;
 		}
@@ -1073,6 +1062,12 @@ void Register()
 
 	if( !g_CustomEntityFuncs.IsCustomEntity( "cso_buffhit" ) ) 
 		cso::RegisterBuffHit();
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_gunkata END

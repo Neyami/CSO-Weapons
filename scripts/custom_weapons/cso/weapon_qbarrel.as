@@ -29,22 +29,17 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_CLIPIN1,
-	SND_CLIPIN2,
-	SND_CLIPOUT,
-	SND_DRAW,
-	SND_SHOOT
+	SND_SHOOT = 1
 };
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_rifle.wav",
+	"custom_weapons/cs16/dryfire_rifle.wav", //only here for the precache
+	"custom_weapons/cso/qbarrel-1.wav",
 	"custom_weapons/cso/qbarrel_clipin1.wav",
 	"custom_weapons/cso/qbarrel_clipin2.wav",
 	"custom_weapons/cso/qbarrel_clipout1.wav",
-	"custom_weapons/cso/qbarrel_draw.wav",
-	"custom_weapons/cso/qbarrel-1.wav"
+	"custom_weapons/cso/qbarrel_draw.wav"
 };
 
 class weapon_qbarrel : CBaseCSOWeapon
@@ -59,6 +54,8 @@ class weapon_qbarrel : CBaseCSOWeapon
 
 		g_iCSOWHands = HANDS_SVENCOOP;
 		m_bSwitchHands = true;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -113,17 +110,6 @@ class weapon_qbarrel : CBaseCSOWeapon
 		return true;
 	}
 	
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], 0.8, ATTN_NORM );
-		}
-
-		return false;
-	}
-
 	bool Deploy()
 	{
 		bool bResult;
@@ -269,6 +255,12 @@ void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_qbarrel::weapon_qbarrel", "weapon_qbarrel" );
 	g_ItemRegistry.RegisterWeapon( "weapon_qbarrel", "custom_weapons/cso", "buckshot", "", "ammo_buckshot" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_qbarrel END

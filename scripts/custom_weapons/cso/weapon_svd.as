@@ -40,14 +40,13 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_ZOOM,
+	SND_ZOOM = 1,
 	SND_SHOOT
 };
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_rifle.wav",
+	"custom_weapons/cs16/dryfire_rifle.wav", //only here for the precache
 	"custom_weapons/cso/zoom.wav",
 	"custom_weapons/cso/svd-1.wav",
 	"custom_weapons/cso/svd_clipin.wav",
@@ -70,6 +69,8 @@ class weapon_svd : CBaseCSOWeapon
 		m_flSpreadWalking = CSOW_SPREAD_WALKING;
 		m_flSpreadStanding = CSOW_SPREAD_STANDING;
 		m_flSpreadDucking = CSOW_SPREAD_DUCKING;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -126,17 +127,6 @@ class weapon_svd : CBaseCSOWeapon
 		m.End();
 
 		return true;
-	}
-
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
 	}
 
 	void Holster( int skiplocal )
@@ -253,6 +243,12 @@ void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_svd::weapon_svd", CSOW_NAME );
 	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "m40a1", "", "ammo_762" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_svd END

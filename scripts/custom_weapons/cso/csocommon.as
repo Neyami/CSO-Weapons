@@ -87,16 +87,16 @@ const int MK3A1_WEIGHT					= 20;
 const int BLOCKAS_WEIGHT				= 20;
 
 //SMGs
-const int CROW3_SLOT						= 4;
-const int CROW3_POSITION				= 10;
 const int P90_SLOT								= 4;
 const int P90_POSITION						= 11;
 const int THOMPSON_SLOT					= 4;
 const int THOMPSON_POSITION			= 12;
+const int CROW3_SLOT						= 4;
+const int CROW3_POSITION				= 10;
 
-const int CROW3_WEIGHT					= 10;
 const int P90_WEIGHT							= 26;
 const int THOMPSON_WEIGHT				= 10;
+const int CROW3_WEIGHT					= 10;
 
 //Assault Rifles
 const int AUG_SLOT								= 5;
@@ -127,17 +127,19 @@ const int FAILNAUGHT_WEIGHT			= 10;
 
 //Sniper Rifles
 const int AWP_SLOT							= 6;
-const int AWP_POSITION						= 10;
-const int SVD_SLOT								= 6;
-const int SVD_POSITION						= 11;
-const int SVDEX_SLOT							= 6;
+const int AWP_POSITION					= 10;
+const int SVD_SLOT							= 6;
+const int SVD_POSITION					= 11;
+const int SVDEX_SLOT						= 6;
 const int SVDEX_POSITION					= 12;
-const int M95_SLOT								= 6;
+const int M95_SLOT							= 6;
 const int M95_POSITION						= 13;
 const int SAVERY_SLOT						= 6;
 const int SAVERY_POSITION				= 14;
 const int M95TIGER_SLOT					= 6;
 const int M95TIGER_POSITION			= 15;
+const int M400_SLOT							= 6;
+const int M400_POSITION					= 16;
 
 const int AWP_WEIGHT						= 30;
 const int SVD_WEIGHT						= 30;
@@ -145,6 +147,7 @@ const int SVDEX_WEIGHT					= 30;
 const int M95_WEIGHT						= 35;
 const int SAVERY_WEIGHT					= 15;
 const int M95TIGER_WEIGHT				= 40;
+const int M400_WEIGHT						= 30;
 
 //Machine Guns
 const int AEOLIS_SLOT						= 7;
@@ -159,13 +162,16 @@ const int M134HERO_WEIGHT				= 40;
 const int M2_WEIGHT							= 25;
 
 //Special/Miscellaneous (Equipment)
-const int AT4_SLOT								= 8;
+const int AT4_SLOT							= 8;
 const int AT4_POSITION						= 10;
-const int AT4EX_SLOT							= 8;
+const int AT4EX_SLOT						= 8;
 const int AT4EX_POSITION					= 11;
+const int SALAMANDER_SLOT				= 8;
+const int SALAMANDER_POSITION		= 12;
 
-const int AT4_WEIGHT							= 30;
-const int AT4EX_WEIGHT						= 30;
+const int AT4_WEIGHT						= 30;
+const int AT4EX_WEIGHT					= 30;
+const int SALAMANDER_WEIGHT			= 30;
 
 
 

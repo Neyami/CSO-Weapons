@@ -37,25 +37,18 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_BOLTPULL,
-	SND_CLIPIN1,
-	SND_CLIPIN2,
-	SND_CLIPOUT1,
-	SND_CLIPOUT2,
-	SND_SHOOT,
-	SND_DRAW
+	SND_SHOOT = 1
 }
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_rifle.wav",
+	"custom_weapons/cs16/dryfire_rifle.wav", //only here for the precache
+	"custom_weapons/cso/gatlingm-1.wav",
 	"custom_weapons/cso/gatling_boltpull.wav",
 	"custom_weapons/cso/gatling_clipin1.wav",
 	"custom_weapons/cso/gatling_clipin2.wav",
 	"custom_weapons/cso/gatling_clipout1.wav",
 	"custom_weapons/cso/gatling_clipout2.wav",
-	"custom_weapons/cso/gatlingm-1.wav",
 	"custom_weapons/cso/usas_draw.wav"
 };
 
@@ -66,6 +59,8 @@ class weapon_volcano : CBaseCSOWeapon
 		g_EntityFuncs.SetModel( self, MODEL_WORLD );
 		self.m_iDefaultAmmo = CSOW_DEFAULT_GIVE;
 		self.m_flCustomDmg = pev.dmg;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -119,17 +114,6 @@ class weapon_volcano : CBaseCSOWeapon
 		volcano.End();
 
 		return true;
-	}
-
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], 0.8f, ATTN_NORM );
-		}
-
-		return false;
 	}
 
 	bool Deploy()
@@ -223,6 +207,12 @@ void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_volcano::weapon_volcano", "weapon_volcano" );
 	g_ItemRegistry.RegisterWeapon( "weapon_volcano", "custom_weapons/cso", "buckshot", "", "ammo_buckshot" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_volcano END

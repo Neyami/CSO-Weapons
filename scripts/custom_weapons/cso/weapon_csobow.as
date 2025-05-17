@@ -488,6 +488,12 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_bow::ammo_csoarrows", "ammo_csoarrows" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_bow::weapon_csobow", "weapon_csobow" );
 	g_ItemRegistry.RegisterWeapon( "weapon_csobow", "custom_weapons/cso", "csoarrows", "", "ammo_csoarrows" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_bow END

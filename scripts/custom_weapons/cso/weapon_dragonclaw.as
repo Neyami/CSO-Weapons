@@ -381,6 +381,12 @@ void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_dragonclaw::weapon_dragonclaw", "weapon_dragonclaw" );
 	g_ItemRegistry.RegisterWeapon( "weapon_dragonclaw", "custom_weapons/cso" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } // namespace cso_dragonclaw END

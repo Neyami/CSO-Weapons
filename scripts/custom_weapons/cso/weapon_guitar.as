@@ -56,13 +56,12 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_SHOOT
+	SND_SHOOT = 1
 };
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_rifle.wav",
+	"custom_weapons/cs16/dryfire_rifle.wav", //only here for the precache
 	"custom_weapons/cso/gt-1.wav",
 	"custom_weapons/cso/gt_clipin.wav",
 	"custom_weapons/cso/gt_clipon.wav",
@@ -102,6 +101,8 @@ class weapon_guitar : CBaseCSOWeapon
 		m_flSpreadWalking = CSOW_SPREAD_WALKING;
 		m_flSpreadStanding = CSOW_SPREAD_STANDING;
 		m_flSpreadDucking = CSOW_SPREAD_DUCKING;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -165,17 +166,6 @@ class weapon_guitar : CBaseCSOWeapon
 		return true;
 	}
 
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
-	}
-
 	void Holster( int skiplocal )
 	{
 		SetThink( null );
@@ -204,7 +194,7 @@ class weapon_guitar : CBaseCSOWeapon
 		if( m_pPlayer.pev.waterlevel == WATERLEVEL_HEAD or self.m_iClip <= 0 )
 		{
 			self.m_bPlayEmptySound = true;
-			PlayEmptySound();
+			self.PlayEmptySound();
 			self.m_flNextPrimaryAttack = g_Engine.time + 0.25;
 			return;
 		}
@@ -435,6 +425,12 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_guitar::ef_guitar", "ef_guitar" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_guitar::weapon_guitar", CSOW_NAME );
 	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "556", "", "ammo_556" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_guitar END

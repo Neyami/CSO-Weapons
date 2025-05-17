@@ -38,14 +38,13 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_SHOOT1,
+	SND_SHOOT1 = 1,
 	SND_SHOOT2
 };
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_pistol.wav",
+	"custom_weapons/cs16/dryfire_pistol.wav", //only here for the precache
 	"custom_weapons/cso/m1887craft-1.wav",
 	"custom_weapons/cso/m1887craft-2.wav",
 	"custom_weapons/cso/m1887craft_after_reload.wav",
@@ -67,6 +66,8 @@ class weapon_m1887craft : CBaseCSOWeapon
 
 		g_iCSOWHands = HANDS_SVENCOOP;
 		m_bSwitchHands = true;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -124,17 +125,6 @@ class weapon_m1887craft : CBaseCSOWeapon
 		return true;
 	}
 
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
-	}
-
 	bool Deploy()
 	{
 		bool bResult;
@@ -152,7 +142,7 @@ class weapon_m1887craft : CBaseCSOWeapon
 		if( m_pPlayer.pev.waterlevel == WATERLEVEL_HEAD )
 		{
 			self.m_bPlayEmptySound = true;
-			PlayEmptySound();
+			self.PlayEmptySound();
 			self.m_flNextPrimaryAttack = g_Engine.time + 0.15;
 			return;
 		}
@@ -164,7 +154,7 @@ class weapon_m1887craft : CBaseCSOWeapon
 			if( self.m_iClip == 0 )
 			{
 				self.m_bPlayEmptySound = true;
-				PlayEmptySound();
+				self.PlayEmptySound();
 			}
 
 			self.m_flNextPrimaryAttack = g_Engine.time + 1.0;
@@ -271,6 +261,12 @@ void Register()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m1887craft::weapon_m1887craft", CSOW_NAME );
 	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "buckshot", "", "ammo_buckshot" );
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_m1887craft END

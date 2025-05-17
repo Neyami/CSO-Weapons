@@ -42,15 +42,14 @@ enum csow_e
 
 enum csowsounds_e
 {
-	SND_EMPTY = 0,
-	SND_SHOOT,
+	SND_SHOOT = 1,
 	SND_HIT_WALL,
 	SND_HIT
 };
 
 const array<string> pCSOWSounds =
 {
-	"custom_weapons/cs16/dryfire_rifle.wav",
+	"custom_weapons/cs16/dryfire_rifle.wav", //only here for the precache
 	"custom_weapons/cso/crossbow-1.wav",
 	"custom_weapons/cso/xbow_hit1.wav",
 	"custom_weapons/cso/xbow_hitbod1.wav",
@@ -70,6 +69,8 @@ class weapon_csocrossbow : CBaseCSOWeapon
 		g_EntityFuncs.SetModel( self, MODEL_WORLD );
 		self.m_iDefaultAmmo = CSOW_DEFAULT_GIVE;
 		self.m_flCustomDmg = pev.dmg;
+
+		m_sEmptySound = pCSOWSounds[0];
 
 		self.FallInit();
 	}
@@ -129,17 +130,6 @@ class weapon_csocrossbow : CBaseCSOWeapon
 		return true;
 	}
 
-	bool PlayEmptySound()
-	{
-		if( self.m_bPlayEmptySound )
-		{
-			self.m_bPlayEmptySound = false;
-			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_EMPTY], VOL_NORM, ATTN_NORM );
-		}
-
-		return false;
-	}
-
 	bool Deploy()
 	{
 		bool bResult;
@@ -165,7 +155,7 @@ class weapon_csocrossbow : CBaseCSOWeapon
 		if( self.m_iClip <= 0 )
 		{
 			self.m_bPlayEmptySound = true;
-			PlayEmptySound();
+			self.PlayEmptySound();
 			self.m_flNextPrimaryAttack = g_Engine.time + 0.25;
 			return;
 		}
@@ -367,6 +357,12 @@ void Register()
 
 	if( !g_CustomEntityFuncs.IsCustomEntity( "ammo_csobolts" ) ) 
 		cso::RegisterCSOBolts();
+
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
 }
 
 } //namespace cso_crossbow END
