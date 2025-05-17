@@ -63,10 +63,13 @@
 #include "../custom_weapons/cso/weapon_at4"
 #include "../custom_weapons/cso/weapon_at4ex"
 
+//Other
+#include "../custom_weapons/cso/weapon_salamander"
+
 void PluginInit()
 {
 	g_Module.ScriptInfo.SetAuthor( "Nero" );
-	g_Module.ScriptInfo.SetContactInfo( "https://discord.gg/0wtJ6aAd7XOGI6vI\n" );
+	g_Module.ScriptInfo.SetContactInfo( "https://www.reddit.com/r/svencoop/\n" );
 }
 
 void MapInit()
@@ -123,4 +126,6 @@ void MapInit()
 
 	cso_at4::Register();
 	cso_at4ex::Register();
+
+	cso_salamander::Register();
 }
