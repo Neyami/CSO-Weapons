@@ -413,6 +413,18 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 <BR>
 
 
+* Cheytac M200
+
+    * ENTITIES
+    * `weapon_m400` - Weapon
+    * `ammo_762` - Ammo
+ 
+    * AMMO NAME
+    * `m40a1`
+
+<BR>
+
+
 * Barrett M95
 
     * ENTITIES
@@ -541,5 +553,19 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
  
     * AMMO NAME
     * `rockets`
+
+<BR>
+
+
+# OTHER
+* Salamander Flamethrower
+    * [Video](https://youtu.be/-SwjvvFgoIo)
+
+    * ENTITIES
+    * `weapon_salamander` - Weapon
+    * `csoproj_flame` - Projectile
+ 
+    * AMMO NAME
+    * `salamanderammo`
 
 <BR>
