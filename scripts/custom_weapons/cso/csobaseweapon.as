@@ -1,5 +1,3 @@
-#include "includes/dev/csoweapondev"
-
 int g_iCSOWHands = 0;
 
 class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
