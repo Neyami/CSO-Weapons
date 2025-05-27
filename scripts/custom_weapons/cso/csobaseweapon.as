@@ -145,7 +145,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		}
 	}
 
-	/*void MakeMuzzleflash( string szSprite, float flScale, float flRenderamt, int iAttachment, float flFramerate, float flRotation = 0.0 )
+	void MakeMuzzleflash( string szSprite, float flScale, float flRenderamt, int iAttachment, float flFramerate, float flRotation = 0.0 )
 	{
 		CSprite@ pMuzzleflash = g_EntityFuncs.CreateSprite( szSprite, pev.origin, true, flFramerate );
 		pMuzzleflash.pev.skin = m_pPlayer.entindex();
@@ -163,26 +163,6 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		}
 
 		pMuzzleflash.AnimateAndDie( flFramerate );
-	}*/
-
-	void MakeMuzzleflash( string szSprite, float flScale, float flRenderamt, int iAttachment, float flFramerate, float flRotation = 0.0 )
-	{
-		@m_pDynamicEnt = g_EntityFuncs.CreateSprite( szSprite, pev.origin, true, flFramerate );
-		m_pDynamicEnt.pev.skin = m_pPlayer.entindex();
-		m_pDynamicEnt.pev.body = iAttachment;
-		@m_pDynamicEnt.pev.aiment = m_pPlayer.edict();
-		m_pDynamicEnt.pev.movetype = MOVETYPE_FOLLOW;
-		@m_pDynamicEnt.pev.owner = m_pPlayer.edict();
-		m_pDynamicEnt.SetScale( flScale );
-		m_pDynamicEnt.SetTransparency( kRenderTransAdd, 255, 255, 255, int(flRenderamt), kRenderFxNone );
-
-		if( flRotation > 0.0 )
-		{
-			m_pDynamicEnt.KeyValue( "vp_type", "VP_TYPE::VP_ORIENTATED" );
-			m_pDynamicEnt.pev.angles = Vector( 0.0, 0.0, flRotation );
-		}
-
-		m_pDynamicEnt.AnimateAndDie( flFramerate );
 	}
 
 	void DoMuzzleflash( string szSprite, float flForward, float flRight, float flUp, float flScale, float flRenderamt, float flFramerate, float flRotation = 0.0, int iRenderMode = kRenderTransAdd )
