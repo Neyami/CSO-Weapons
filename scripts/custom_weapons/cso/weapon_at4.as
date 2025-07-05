@@ -13,21 +13,21 @@ const float CSOW_TIME_DELAY2						= 0.3;
 const float CSOW_TIME_DRAW						= 1.0;
 const float CSOW_TIME_IDLE							= 1.0;
 const float CSOW_TIME_FIRE_TO_IDLE			= 1.0;
-const float CSOW_TIME_RELOAD					= 3.7;
+const float CSOW_TIME_RELOAD						= 3.7;
 const float CSOW_ZOOM_FOV							= 40;
 const float CSOW_ROCKET_SPEED					= 1024;
 const float CSOW_ROCKET_RADIUS				= 200;
 const Vector2D CSOW_RECOIL_STANDING_X	= Vector2D(-8, -12);
 const Vector2D CSOW_RECOIL_STANDING_Y	= Vector2D(-1, 1);
-const Vector2D CSOW_RECOIL_DUCKING_X	= Vector2D(-4, -8);
-const Vector2D CSOW_RECOIL_DUCKING_Y	= Vector2D(-0.5, 0.5);
+const Vector2D CSOW_RECOIL_DUCKING_X		= Vector2D(-4, -8);
+const Vector2D CSOW_RECOIL_DUCKING_Y		= Vector2D(-0.5, 0.5);
 const Vector CSOW_OFFSETS_MUZZLE			= Vector( 34.333031, 12.009664, -5.616758 );
 
 const string CSOW_ANIMEXT							= "rpg"; //at4
 
-const string MODEL_VIEW								= "models/custom_weapons/cso/v_at4.mdl";
-const string MODEL_PLAYER							= "models/custom_weapons/cso/p_at4.mdl";
-const string MODEL_WORLD							= "models/custom_weapons/cso/w_at4.mdl";
+const string MODEL_VIEW								= "models/custom_weapons/cso/at4/v_at4.mdl";
+const string MODEL_PLAYER							= "models/custom_weapons/cso/at4/p_at4.mdl";
+const string MODEL_WORLD							= "models/custom_weapons/cso/at4/w_at4.mdl";
 const string MODEL_ROCKET							= "models/custom_weapons/cso/rpgrocket.mdl";
 
 const string SPRITE_MUZZLE							= "sprites/ballsmoke.spr";
@@ -72,8 +72,6 @@ class weapon_at4 : CBaseCSOWeapon
 		self.m_flCustomDmg = pev.dmg;
 
 		m_iWeaponType = TYPE_PRIMARY;
-		g_iCSOWHands = HANDS_SVENCOOP;
-		m_bSwitchHands = true;
 
 		m_sEmptySound = pCSOWSounds[0];
 
@@ -143,7 +141,7 @@ class weapon_at4 : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT );
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + (CSOW_TIME_DRAW-0.2);
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_DRAW;
 
@@ -175,7 +173,7 @@ class weapon_at4 : CBaseCSOWeapon
 		m_pPlayer.m_iWeaponFlash = BRIGHT_GUN_FLASH;
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 		m_pPlayer.pev.effects |= EF_MUZZLEFLASH;
-		self.SendWeaponAnim( ANIM_SHOOT2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( ANIM_SHOOT2 );
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM );
 
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
@@ -221,7 +219,7 @@ class weapon_at4 : CBaseCSOWeapon
 		if( m_pPlayer.m_iFOV != 0 )
 			SecondaryAttack();
 
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
 		BaseClass.Reload();
@@ -234,7 +232,7 @@ class weapon_at4 : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( ANIM_IDLE );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE + Math.RandomFloat(0.5, (CSOW_TIME_IDLE*2));
 	}
 }
@@ -352,15 +350,15 @@ class at4rocket : ScriptBaseEntity
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_at4::at4rocket", "at4rocket" );
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_at4::weapon_at4", CSOW_NAME );
-	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "rockets", "", "ammo_rpgclip" );
-
 	if( cso::bUseDroppedItemEffect )
 	{
 		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
 			cso::RegisterGunDrop();
 	}
+
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_at4::at4rocket", "at4rocket" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_at4::weapon_at4", CSOW_NAME );
+	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "rockets", "", "ammo_rpgclip" );
 }
 
 } //namespace cso_at4 END

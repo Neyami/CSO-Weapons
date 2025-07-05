@@ -4,7 +4,7 @@ namespace cso_failnaught
 {
 
 const bool USE_PENETRATION							= true;
-const bool ARROWS_STICK_TO_PLAYERS		= true; //no damage is dealt though
+const bool ARROWS_STICK_TO_PLAYERS			= true; //no damage is dealt though
 
 const int CSOW_DEFAULT_GIVE						= 25;
 const int CSOW_MAX_AMMO							= 250;
@@ -14,34 +14,34 @@ const float CSOW_DAMAGE2							= 200; //33 from the wiki
 const float CSOW_TIME_DELAY						= 0.3;
 const float CSOW_TIME_DRAW						= 1.5; //1.7
 const float CSOW_TIME_IDLE							= 2.7; //3.0
-const float CSOW_TIME_FIRE_TO_IDLE1		= 0.5;
-const float CSOW_TIME_FIRE_TO_IDLE2		= 1.3;
-const float CSOW_TIME_FIRE_TO_IDLE3		= 0.7;
+const float CSOW_TIME_FIRE_TO_IDLE1			= 0.5;
+const float CSOW_TIME_FIRE_TO_IDLE2			= 1.3;
+const float CSOW_TIME_FIRE_TO_IDLE3			= 0.7;
 const float CSOW_TIME_RELOAD1					= 0.45;
 const float CSOW_TIME_RELOAD2					= 1.25;
 const float CSOW_TIME_CHARGE					= 0.3;
-const float CSOW_TIME_ARROW_LIFE			= 10.0;
+const float CSOW_TIME_ARROW_LIFE				= 10.0;
 const float CSOW_ARROW_SPEED					= 2000;
 //const float CSOW_ARROW_EXP_RADIUS			= 90; //Not used atm, radius is based on mob volume
 const float CSOW_SKILL_RANGE						= 35; //in meters :ayaya:
 const float CSOW_SKILL_RATE						= 0.05;
 const float CSOW_SKILL_SIZE						= 10.0; //Base size of the rectangle (based on monster_zombie)
 const RGBA CSOW_SKILL_COLOR					= RGBA_SVENCOOP; //RGBA_RED
-const float CSOW_STACK_LIFETIME				= 5.0;
+const float CSOW_STACK_LIFETIME					= 5.0;
 
 const Vector2D CSOW_RECOIL_STANDING_X	= Vector2D(-1.0, -2.0);
 const Vector2D CSOW_RECOIL_STANDING_Y	= Vector2D(1.0, -1.0);
-const Vector2D CSOW_RECOIL_DUCKING_X	= Vector2D(0, 0);
-const Vector2D CSOW_RECOIL_DUCKING_Y	= Vector2D(0, 0);
+const Vector2D CSOW_RECOIL_DUCKING_X		= Vector2D(0, 0);
+const Vector2D CSOW_RECOIL_DUCKING_Y		= Vector2D(0, 0);
 const Vector CSOW_CONE								= VECTOR_CONE_2DEGREES;
 
 const string CSOW_ANIMEXT							= "egon";
 
-const string MODEL_VIEW								= "models/custom_weapons/cso/v_huntbow.mdl";
-const string MODEL_PLAYER							= "models/custom_weapons/cso/p_huntbow.mdl";
-const string MODEL_PLAYER_EMPTY				= "models/custom_weapons/cso/p_huntbow_empty.mdl";
-const string MODEL_WORLD							= "models/custom_weapons/cso/w_huntbow.mdl";
-const string MODEL_PROJ								= "models/custom_weapons/cso/huntbow_arrow.mdl";
+const string MODEL_VIEW								= "models/custom_weapons/cso/huntbow/v_huntbow.mdl";
+const string MODEL_PLAYER							= "models/custom_weapons/cso/huntbow/p_huntbow.mdl";
+const string MODEL_PLAYER_EMPTY				= "models/custom_weapons/cso/huntbow/p_huntbow_empty.mdl";
+const string MODEL_WORLD							= "models/custom_weapons/cso/huntbow/w_huntbow.mdl";
+const string MODEL_PROJ								= "models/custom_weapons/cso/huntbow/huntbow_arrow.mdl";
 const string MODEL_AMMO								= "models/w_crossbow_clip.mdl";
 
 const string SPRITE_EXPLODE							= "sprites/custom_weapons/cso/skull.spr";
@@ -50,6 +50,9 @@ const string SPRITE_MUZZLE208						= "sprites/custom_weapons/cso/muzzleflash208.
 const string SPRITE_MUZZLE210						= "sprites/custom_weapons/cso/muzzleflash210.spr"; //Charge finish
 const string SPRITE_MUZZLE211						= "sprites/custom_weapons/cso/muzzleflash211.spr"; //Draw, and pulling back the arrow after shooting?
 const string SPRITE_MUZZLE212						= "sprites/custom_weapons/cso/muzzleflash212.spr"; //Charge idle1
+//THE OTHER MUZZLEFLASH SPRITES ARE ENCRYPTED AND IDK HOW TO DECRYPT THEM :[
+
+const float CSOW_FRAMERATE_SHOOT			= 30.0; //0.0333
 
 enum csow_e
 {
@@ -125,6 +128,7 @@ enum muzzstate_e
 {
 	MUZ_DRAW1 = 1,
 	MUZ_DRAW2,
+	MUZ_DRAW3,
 	MUZ_SHOOT,
 	MUZ_SHOOT_CHARGED1,
 	MUZ_SHOOT_CHARGED2,
@@ -138,7 +142,7 @@ class weapon_failnaught : CBaseCSOWeapon
 	private float m_flNextLoopSound;
 	private float m_flUpdateHuntersEye;
 	private int m_iHuntersEyeSprite;
-	private uint m_uiMuzzleflashState;
+	private int m_iMuzzleflashState;
 
 	void Spawn()
 	{
@@ -147,9 +151,7 @@ class weapon_failnaught : CBaseCSOWeapon
 		self.m_iDefaultAmmo = CSOW_MAX_AMMO;
 		self.m_flCustomDmg = pev.dmg;
 
-		g_iCSOWHands = HANDS_SVENCOOP;
-		m_bSwitchHands = true;
-		m_uiMuzzleflashState = 0;
+		m_iMuzzleflashState = 0;
 
 		self.FallInit();
 	}
@@ -226,15 +228,15 @@ class weapon_failnaught : CBaseCSOWeapon
 		bool bResult;
 		{
 			int iAnim = (m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) > 0) ? ANIM_DRAW : ANIM_DRAW_EMPTY;
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), iAnim, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), iAnim, CSOW_ANIMEXT );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 
 			if( iAnim == ANIM_DRAW )
 			{
-				//MakeMuzzleflash( SPRITE_MUZZLE211, 0.07, 255.0, ATTACH_MUZZLE1, 7.0 );
-				m_uiMuzzleflashState = MUZ_DRAW1;
+				MuzzleflashCSO( 1, "#I212 S0.05 R0 F0 P30 T999 A1 L0 O0 X0" );
+				m_iMuzzleflashState = MUZ_DRAW1;
 				SetThink( ThinkFunction(this.MuzzleflashThink) );
-				pev.nextthink = g_Engine.time;
+				pev.nextthink = g_Engine.time + ((1 / CSOW_FRAMERATE_SHOOT) * 5); //on the 6th frame
 			}
 
 			return bResult;
@@ -245,8 +247,10 @@ class weapon_failnaught : CBaseCSOWeapon
 	{
 		self.m_fInReload = false;
 		m_iState = STATE_NONE;
+		m_iMuzzleflashState = 0;
 		m_flTimeCharge = 0.0;
 		m_flNextLoopSound = 0.0;
+		SetThink( null );
 
 		BaseClass.Holster( skipLocal );
 	}
@@ -280,7 +284,7 @@ class weapon_failnaught : CBaseCSOWeapon
 		{
 			case STATE_NONE: 
 			{
-				self.SendWeaponAnim( ANIM_CHARGE_START, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				self.SendWeaponAnim( ANIM_CHARGE_START );
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.5;
 
 				m_iState = STATE_CHARGE_START;
@@ -290,32 +294,33 @@ class weapon_failnaught : CBaseCSOWeapon
 
 			case STATE_CHARGE_START:
 			{
-				self.SendWeaponAnim( ANIM_CHARGE_IDLE1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				self.SendWeaponAnim( ANIM_CHARGE_IDLE1 );
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.35;
 
 				m_flTimeCharge = g_Engine.time;
 				m_iState = STATE_CHARGE_MID;
-				MakeMuzzleflash( SPRITE_MUZZLE208, 0.05, 255.0, ATTACH_MUZZLE1, 30.0 );
-//{ event 5001 0 "#I208 S0.05 R0 F0 P30 T999 A1 L0 O0 X0" } 
+				MuzzleflashCSO( 1, "#I208 S0.05 R0 F0 P30 T999 A1 L0 O0 X0" );
+
 				break;
 			}
 
 			case STATE_CHARGE_MID:
 			{
-				self.SendWeaponAnim( ANIM_CHARGE_IDLE1, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				self.SendWeaponAnim( ANIM_CHARGE_IDLE1 );
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.35;
 
 				m_iState = STATE_CHARGE_MID;
-//{ event 5001 0 "#I208 S0.05 R0 F0 P30 T999 A1 L0 O0 X0" } 
+
+				MuzzleflashCSO( 1, "#I208 S0.05 R0 F0 P30 T999 A1 L0 O0 X0" );
+
 				if( g_Engine.time >= (m_flTimeCharge + CSOW_TIME_CHARGE) )
 				{
-					self.SendWeaponAnim( ANIM_CHARGE_FINISH, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+					self.SendWeaponAnim( ANIM_CHARGE_FINISH );
 					g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_CHARGE_START_FX], VOL_NORM, ATTN_NORM );
 					self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = m_flNextLoopSound = g_Engine.time + 0.35;
 
 					m_iState = STATE_CHARGED_IDLE;
-					MakeMuzzleflash( SPRITE_MUZZLE210, 0.15, 255.0, ATTACH_MUZZLE2, 30.0 );
-					//{ event 5001 0 "#I210 S0.15 R0 F0 P30 T999 A1 L0 O0 X0" } 
+					MuzzleflashCSO( 1, "#I210 S0.15 R0 F0 P30 T999 A1 L0 O0 X0" );
 				}
 
 				break;
@@ -323,12 +328,14 @@ class weapon_failnaught : CBaseCSOWeapon
 
 			case STATE_CHARGED_IDLE:
 			{
-				self.SendWeaponAnim( ANIM_CHARGE_IDLE2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				self.SendWeaponAnim( ANIM_CHARGE_IDLE2 );
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + 0.35;
 
 				m_iState = STATE_CHARGED_IDLE;
 				m_flUpdateHuntersEye = g_Engine.time + CSOW_SKILL_RATE;
-//{ event 5001 0 "#I209 S0.5 R0 F0 P30 T999 A1 L0 O0 X0" } 
+				//this should run every time the animation restarts at frame 0
+				//MuzzleflashCSO( 1, "#I209 S0.5 R0 F0 P30 T999 A1 L0 O0 X0" ); //encrypted sprite :[
+
 				break;
 			}
 		}
@@ -356,7 +363,7 @@ class weapon_failnaught : CBaseCSOWeapon
 			m_pPlayer.pev.weaponmodel = MODEL_PLAYER_EMPTY;
 		}
 
-		self.SendWeaponAnim( bInCharge ? iShootChargedAnim : iShootNormalAnim, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( bInCharge ? iShootChargedAnim : iShootNormalAnim );
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[bInCharge ? SND_CHARGE_SHOOT : SND_SHOOT], VOL_NORM, ATTN_NORM );
 
 		Vector vecOrigin, vecEnd, vecAngles, vecVelocity;
@@ -389,10 +396,10 @@ class weapon_failnaught : CBaseCSOWeapon
 
 		m_iState = STATE_NONE;
 
-		//MakeMuzzleflash( SPRITE_MUZZLE211, 0.1, 255.0, ATTACH_MUZZLE1, 30.0, 2.0 );
-		m_uiMuzzleflashState = MUZ_SHOOT;
+		//MuzzleflashCSO( 1, "#I213 S0.07 R0 F0 P30 T999 A1 L0 O0 X1" ); //encrypted sprite :[
+		m_iMuzzleflashState = MUZ_SHOOT;
 		SetThink( ThinkFunction(this.MuzzleflashThink) );
-		pev.nextthink = g_Engine.time + 0.16;
+		pev.nextthink = g_Engine.time + ((1 / CSOW_FRAMERATE_SHOOT) * 5); //in 5 frames
 	}
 
 	void ShootCharged()
@@ -403,7 +410,7 @@ class weapon_failnaught : CBaseCSOWeapon
 		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 ) m_pPlayer.pev.weaponmodel = MODEL_PLAYER_EMPTY;
 
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
-		self.SendWeaponAnim( (m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) > 0) ? ANIM_CHARGE_SHOOT2 : ANIM_CHARGE_SHOOT2_EMPTY, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( (m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) > 0) ? ANIM_CHARGE_SHOOT2 : ANIM_CHARGE_SHOOT2_EMPTY );
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_CHARGE_SHOOT], VOL_NORM, ATTN_NORM );
 
@@ -420,9 +427,10 @@ class weapon_failnaught : CBaseCSOWeapon
 
 		m_iState = STATE_NONE;
 
-		m_uiMuzzleflashState = MUZ_SHOOT_CHARGED1;
+		//MuzzleflashCSO( 2, "#I213 S0.07 R0 F0 P30 T999 A1 L0 O0 X1" ); //encrypted sprite :[
+		m_iMuzzleflashState = MUZ_SHOOT_CHARGED1;
 		SetThink( ThinkFunction(this.MuzzleflashThink) );
-		pev.nextthink = g_Engine.time + 0.25;
+		pev.nextthink = g_Engine.time + ((1 / CSOW_FRAMERATE_SHOOT) * 15); //in 15 frames
 	}
 
 	void WeaponIdle()
@@ -451,7 +459,7 @@ class weapon_failnaught : CBaseCSOWeapon
 		else
 			iIdleAnim = ANIM_IDLE_EMPTY;
 
-		self.SendWeaponAnim( iIdleAnim, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( iIdleAnim );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
 	}
 
@@ -610,64 +618,62 @@ class weapon_failnaught : CBaseCSOWeapon
 	{
 		float flNextThink;
 
-		if( m_uiMuzzleflashState > 0 )
+		if( m_iMuzzleflashState > 0 )
 		{
-			switch( m_uiMuzzleflashState )
+			switch( m_iMuzzleflashState )
 			{
-//{ event 5001 0 "#I212 S0.05 R0 F0 P30 T999 A1 L0 O0 X0" } 
-//{ event 5001 5 "#I211 S0.07 R2 F0 P30 T999 A1 L0 O0 X0" } 
-//{ event 5001 9 "#I211 S0.07 R2 F0 P30 T999 A1 L0 O0 X0" } 
-//{ event 5001 13 "#I211 S0.07 R2 F0 P30 T999 A1 L0 O0 X0" } 
 				case MUZ_DRAW1:
 				{
-					MakeMuzzleflash( SPRITE_MUZZLE212, 0.05, 255.0, ATTACH_MUZZLE1, 20.0 );
-					m_uiMuzzleflashState++;
-					flNextThink = 0.16;
+					MuzzleflashCSO( 1, "#I211 S0.07 R2 F0 P30 T999 A1 L0 O0 X0" );
+					m_iMuzzleflashState++;
+					flNextThink = ((1 / CSOW_FRAMERATE_SHOOT) * 4); //in 4 frames
 					break;
 				}
 
 				case MUZ_DRAW2:
 				{
-					MakeMuzzleflash( SPRITE_MUZZLE211, 0.07, 255.0, ATTACH_MUZZLE1, 10.0, 2.0 );
-					m_uiMuzzleflashState = 0;
+					MuzzleflashCSO( 1, "#I211 S0.07 R2 F0 P30 T999 A1 L0 O0 X0" );
+					m_iMuzzleflashState++;
+					pev.nextthink = g_Engine.time + ((1 / CSOW_FRAMERATE_SHOOT) * 4); //in 4 frames
+					return;
+				}
+
+				case MUZ_DRAW3:
+				{
+					MuzzleflashCSO( 1, "#I211 S0.07 R2 F0 P30 T999 A1 L0 O0 X0" );
+					m_iMuzzleflashState = 0;
 					SetThink( null );
 					return;
 				}
 
-//{ event 5011 0 "#I213 S0.07 R0 F0 P30 T999 A1 L0 O0 X1" } 
-//{ event 5001 5 "#I211 S0.1 R2 F0 P30 T999 A1 L0 O0 X0" } 
 				case MUZ_SHOOT:
 				{
-					MakeMuzzleflash( SPRITE_MUZZLE211, 0.1, 255.0, ATTACH_MUZZLE1, 30.0, 2.0 );
-					m_uiMuzzleflashState = 0;
+					MuzzleflashCSO( 1, "#I211 S0.1 R2 F0 P30 T999 A1 L0 O0 X0" );
+					m_iMuzzleflashState = 0;
 					SetThink( null );
 					return;
 				}
 
-//{ event 5011 0 "#I213 S0.07 R0 F0 P30 T999 A1 L0 O0 X1" } 
-//{ event 5001 15 "#I211 S0.1 R0 F0 P30 T999 A1 L0 O0 X0" } 
-//{ event 5001 19 "#I211 S0.12 R2 F0 P30 T999 A1 L0 O0 X0" } 
-//{ event 5001 24 "#I211 S0.1 R2 F0 P30 T999 A1 L0 O0 X0" } 
 				case MUZ_SHOOT_CHARGED1:
 				{
-					MakeMuzzleflash( SPRITE_MUZZLE211, 0.1, 255.0, ATTACH_MUZZLE1, 30.0 );
-					m_uiMuzzleflashState++;
-					flNextThink = 0.13;
+					MuzzleflashCSO( 1, "#I211 S0.1 R0 F0 P30 T999 A1 L0 O0 X0" );
+					m_iMuzzleflashState++;
+					flNextThink = ((1 / CSOW_FRAMERATE_SHOOT) * 4); //in 4 frames
 					break;
 				}
 
 				case MUZ_SHOOT_CHARGED2:
 				{
-					MakeMuzzleflash( SPRITE_MUZZLE211, 0.12, 255.0, ATTACH_MUZZLE1, 30.0, 2.0 );
-					m_uiMuzzleflashState++;
-					flNextThink = 0.16;
+					MuzzleflashCSO( 1, "#I211 S0.12 R2 F0 P30 T999 A1 L0 O0 X0" );
+					m_iMuzzleflashState++;
+					flNextThink = ((1 / CSOW_FRAMERATE_SHOOT) * 5); //in 5 frames
 					break;
 				}
 
 				case MUZ_SHOOT_CHARGED3:
 				{
-					MakeMuzzleflash( SPRITE_MUZZLE211, 0.1, 255.0, ATTACH_MUZZLE1, 30.0, 2.0 );
-					m_uiMuzzleflashState = 0;
+					MuzzleflashCSO( 1, "#I211 S0.1 R2 F0 P30 T999 A1 L0 O0 X0" );
+					m_iMuzzleflashState = 0;
 					SetThink( null );
 					return;
 				}
@@ -1081,6 +1087,5 @@ void Register()
 TODO
 PrimaryAttack autoaim
 Make a proper ammo model?
-Add muzzleflashes with DoMuzzleflash ??
 Make arrows stuck in players turn with them
 */

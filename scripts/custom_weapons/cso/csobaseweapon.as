@@ -62,6 +62,13 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		}
 	}
 
+	bool PlayerHasCSOModel()
+	{
+		KeyValueBuffer@ pInfo = g_EngineFuncs.GetInfoKeyBuffer( m_pPlayer.edict() );
+		g_Game.AlertMessage( at_notice, "model: %1 at %2\n", pInfo.GetValue("model"), cso::arrsCSOPlayerModels.find(pInfo.GetValue("model")) );
+		return cso::arrsCSOPlayerModels.find( pInfo.GetValue("model") ) >= 0;
+	}
+
 	void EjectBrass( Vector vecOrigin, int iShell, int iBounce = TE_BOUNCE_SHELL, bool bRight = true, bool bUpBoost = false )
 	{
 		Vector vecVelocity;
@@ -145,43 +152,83 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		}
 	}
 
-	void MakeMuzzleflash( string szSprite, float flScale, float flRenderamt, int iAttachment, float flFramerate, float flRotation = 0.0 )
+	void MuzzleflashCSO( const int iAttachment, const string &in sMuzzleflashData )
 	{
-		CSprite@ pMuzzleflash = g_EntityFuncs.CreateSprite( szSprite, pev.origin, true, flFramerate );
-		pMuzzleflash.pev.skin = m_pPlayer.entindex();
-		pMuzzleflash.pev.body = iAttachment;
-		@pMuzzleflash.pev.aiment = m_pPlayer.edict();
-		pMuzzleflash.pev.movetype = MOVETYPE_FOLLOW;
-		@pMuzzleflash.pev.owner = m_pPlayer.edict();
-		pMuzzleflash.SetScale( flScale );
-		pMuzzleflash.SetTransparency( kRenderTransAdd, 255, 255, 255, int(flRenderamt), kRenderFxNone );
+		//"#I60 S0.09 R2.5 F0 P90 T0.15 A1 L0 O1 X0"
+		string sprite;		//I
+		float scale;		//S 0.01 - 1
+		float rotation;	//R random rotation, no idea what the numbers means
+		float fps;			//P
+		int isalpha;		//A
 
-		if( flRotation > 0.0 )
+		int unknown1;	//D 0 - 1
+		int unknown2;	//F 0 or 15
+		float unknown3;	//L 0 - 0.01
+		int unknown4;	//O 0 - 1
+		float unknown5;	//T 0.01 - 999
+		int unknown6;	//X 0
+
+		array<string> parsed = sMuzzleflashData.Split(" ");
+
+		//g_Game.AlertMessage( at_notice, "MuzzleflashCSO parsed.length %1\n", parsed.length() );
+
+		for( uint i = 0; i < parsed.length(); ++i )
 		{
-			pMuzzleflash.KeyValue( "vp_type", "VP_TYPE::VP_ORIENTATED" );
-			pMuzzleflash.pev.angles = Vector( 0.0, 0.0, flRotation );
+			parsed[i].Trim('#');
+			string sData = parsed[i].SubString( 1, parsed[i].Length()-1 );
+
+			if( parsed[i].StartsWith("I") )
+				sprite = "muzzleflash" + sData + ".spr";
+			else if( parsed[i].StartsWith("S") )
+				scale = atof( sData );
+			else if( parsed[i].StartsWith("R") )
+				rotation = atof( sData );
+			else if( parsed[i].StartsWith("P") )
+				fps = atof( sData );
+			else if( parsed[i].StartsWith("A") )
+				isalpha = atoi( sData );
+			else if( parsed[i].StartsWith("D") )
+				unknown1 = atoi( sData );
+			else if( parsed[i].StartsWith("F") )
+				unknown2 = atoi( sData );
+			else if( parsed[i].StartsWith("L") )
+				unknown3 = atof( sData );
+			else if( parsed[i].StartsWith("O") )
+				unknown4 = atoi( sData );
+			else if( parsed[i].StartsWith("T") )
+				unknown5 = atof( sData );
+			else if( parsed[i].StartsWith("X") )
+				unknown6 = atoi( sData );
 		}
 
-		pMuzzleflash.AnimateAndDie( flFramerate );
+		AdvancedMuzzleflash( iAttachment, sprite, scale, rotation, fps, isalpha, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6 );
 	}
 
-	void DoMuzzleflash( string szSprite, float flForward, float flRight, float flUp, float flScale, float flRenderamt, float flFramerate, float flRotation = 0.0, int iRenderMode = kRenderTransAdd )
+	void AdvancedMuzzleflash( int iAttachment, string sprite, float scale, float rotation, float fps, int isalpha, int unknown1, int unknown2, float unknown3, int unknown4, float unknown5, int unknown6 )
 	{
-		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
-		CSprite@ pMuzzle = g_EntityFuncs.CreateSprite( szSprite, m_pPlayer.GetGunPosition() + g_Engine.v_forward * flForward + g_Engine.v_right * flRight + g_Engine.v_up * flUp, true );
-		@pMuzzle.pev.owner = m_pPlayer.edict();
-		pMuzzle.SetScale( flScale );
-		pMuzzle.SetTransparency( iRenderMode, 255, 255, 255, int(flRenderamt), kRenderFxNone );
+		//g_Game.AlertMessage( at_notice, "Muzzleflash %1, scale: %2, rotation: %3, fps: %4, isalpha: %5\n", sprite, scale, rotation, fps, isalpha );
 
-		if( flRotation > 0.0 )
+		CSprite@ pMuzzleflash = g_EntityFuncs.CreateSprite( "sprites/custom_weapons/cso/" + sprite, pev.origin, true, fps );
+		pMuzzleflash.pev.skin = m_pPlayer.entindex();
+		pMuzzleflash.pev.body = iAttachment;
+		//@pMuzzleflash.pev.aiment = m_pPlayer.edict();
+		//pMuzzleflash.pev.movetype = MOVETYPE_FOLLOW;
+		@pMuzzleflash.pev.owner = m_pPlayer.edict();
+		pMuzzleflash.SetScale( scale );
+		pMuzzleflash.SetTransparency( kRenderTransAdd, 255, 255, 255, 255, kRenderFxNone ); //int(flRenderamt)
+
+		if( rotation > 0.0 )
 		{
-			pMuzzle.KeyValue( "vp_type", "VP_TYPE::VP_ORIENTATED" );
-			pMuzzle.pev.angles = Vector( 0.0, 0.0, flRotation );
+			//g_Game.AlertMessage( at_notice, "ROTATION: %1\n", rotation );
+			//Sprite viewport types. When overriden stored in entvars_t::sequence with EF_SPRITE_CUSTOM_VP set in entvars_t::effects for engine use.
+			pMuzzleflash.pev.sequence = VP_TYPE::VP_PARALLEL_ORITENTATED; //next update ??
+			pMuzzleflash.pev.effects = EF_SPRITE_CUSTOM_VP; //next update ??
+
+			//pMuzzleflash.KeyValue( "vp_type", "VP_TYPE::VP_PARALLEL_ORITENTATED" ); //Parallel orientated: Always face the player, but use angles to rotate the sprite.  
+			pMuzzleflash.pev.angles = Vector( 0.0, 0.0, Math.RandomFloat(0.0, 359.0) ); //I have no idea how the number is supposed to change this, if R even is related to rotation.
 		}
 
-		//pMuzzle.pev.sequence = VP_TYPE::VP_ORIENTATED; //next update ??
-		//pMuzzle.pev.effects = EF_SPRITE_CUSTOM_VP; //next update ??
-		pMuzzle.AnimateAndDie( flFramerate );
+		pMuzzleflash.AnimateAndDie( fps );
 	}
 
 	void DoMuzzleflash2( string szSprite, float flForward, float flRight, float flUp, int iScale, int iFramerate, int iFlags )
@@ -656,7 +703,8 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 						Vector vecOrigin = m_pPlayer.pev.origin;
 						get_position( 50.0, -0.05, 1.0, vecOrigin );
 
-						CBaseEntity@ pHitConfirm = g_EntityFuncs.Create( "cso_buffhit", vecOrigin, g_vecZero, false, m_pPlayer.edict() );
+						//CBaseEntity@ pHitConfirm = g_EntityFuncs.Create( "cso_buffhit", vecOrigin, g_vecZero, false, m_pPlayer.edict() );
+						HitMarker();
 					}
 
 					vecSrc = tr.vecEndPos + (vecDir * 42);
@@ -714,6 +762,21 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 
 		return iEnemiesHit;
 		//return Vector(x * flSpread, y * flSpread, 0);
+	}
+
+	void HitMarker()
+	{
+		HUDSpriteParams hudParams;
+
+		hudParams.channel = 1;
+		hudParams.flags = HUD_ELEM_ABSOLUTE_Y | HUD_ELEM_SCR_CENTER_Y | HUD_ELEM_SCR_CENTER_X | HUD_ELEM_DEFAULT_ALPHA;
+		hudParams.spritename = "custom_weapons/cso/buffhit.spr";
+		hudParams.x = 0;
+		hudParams.y = 0;
+		hudParams.color1 = RGBA_WHITE;
+		hudParams.holdTime = 0.1;
+
+		g_PlayerFuncs.HudCustomSprite( m_pPlayer, hudParams );
 	}
 
 	void DoTrail( int iTrail, Vector vecTrailstart, Vector vecTrailend )

@@ -6,7 +6,7 @@ const bool USE_GRENADE_CROSSHAIRS = true; //causes the view to be zoomed in whil
 const string CSOW_NAME						= "weapon_svdex";
 
 const int CSOW_DEFAULT_GIVE				= 20;
-const int CSOW_MAX_CLIP 						= 20;
+const int CSOW_MAX_CLIP 					= 20;
 const int CSOW_MAX_AMMO					= 180;
 const int CSOW_MAX_AMMO2					= 10;
 const int CSOW_TRACERFREQ					= 0;
@@ -19,23 +19,23 @@ const float CSOW_TIME_DELAY2				= 1.5; //switch
 const float CSOW_TIME_DELAY3				= 2.8; //grenade
 const float CSOW_TIME_DRAW				= 1.0;
 const float CSOW_TIME_IDLE					= 60.0;
-const float CSOW_TIME_RELOAD			= 3.8;
+const float CSOW_TIME_RELOAD				= 3.8;
 const float CSOW_SPREAD_JUMPING		= 0.85;
 const float CSOW_SPREAD_RUNNING		= 0.25;
 const float CSOW_SPREAD_WALKING		= 0.1;
-const float CSOW_SPREAD_STANDING	= 0.001;
+const float CSOW_SPREAD_STANDING		= 0.001;
 const float CSOW_SPREAD_DUCKING		= 0.0;
 const float CSOW_RECOIL						= 2.0;
-const Vector CSOW_SHELL_ORIGIN		= Vector( 20.0, 10.0, -4.0 ); //forward, right, up
+const Vector CSOW_SHELL_ORIGIN			= Vector( 20.0, 10.0, -4.0 ); //forward, right, up
 const Vector CSOW_MUZZLE_ORIGIN		= Vector( 16.0, 4.0, -4.0 ); //forward, right, up
 
 const string CSOW_ANIMEXT					= "sniper"; //rifle
 
-const string MODEL_VIEW						= "models/custom_weapons/cso/v_svdex.mdl";
-const string MODEL_PLAYER					= "models/custom_weapons/cso/p_svdex.mdl";
-const string MODEL_WORLD					= "models/custom_weapons/cso/w_svdex.mdl";
+const string MODEL_VIEW						= "models/custom_weapons/cso/svdex/v_svdex.mdl";
+const string MODEL_PLAYER					= "models/custom_weapons/cso/svdex/p_svdex.mdl";
+const string MODEL_WORLD					= "models/custom_weapons/cso/svdex/w_svdex.mdl";
 const string MODEL_SHELL						= "models/custom_weapons/cso/rshell_big.mdl";
-const string MODEL_GRENADE					= "models/custom_weapons/cso/shell_svdex.mdl";
+const string MODEL_GRENADE				= "models/custom_weapons/cso/shell_svdex.mdl";
 
 const string SPRITE_BEAM						= "sprites/laserbeam.spr";
 const string SPRITE_EXPLOSION1			= "sprites/fexplo.spr";
@@ -175,7 +175,7 @@ class weapon_svdex : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), m_iMode == MODE_GUN ? ANIM_DRAW : ANIM_GREN_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), m_iMode == MODE_GUN ? ANIM_DRAW : ANIM_GREN_DRAW, CSOW_ANIMEXT );
 
 			float flTime = m_iMode == MODE_GUN ? (CSOW_TIME_DRAW - 0.4) : (CSOW_TIME_DRAW + 0.4);
 
@@ -215,7 +215,7 @@ class weapon_svdex : CBaseCSOWeapon
 			m_pPlayer.pev.effects |= EF_MUZZLEFLASH;
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
-			self.SendWeaponAnim( ANIM_SHOOT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( ANIM_SHOOT );
 			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, 0.4, 0, 94 + Math.RandomLong(0, 15) );
 
 			Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
@@ -245,7 +245,7 @@ class weapon_svdex : CBaseCSOWeapon
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
 			int iAnim = bHasAmmo ? ANIM_GREN_SHOOT : ANIM_GREN_SHOOT_EMPTY;
-			self.SendWeaponAnim( iAnim, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( iAnim );
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT_GRENADE], VOL_NORM, 0.4 );
 
 			LaunchGrenade();
@@ -270,7 +270,11 @@ class weapon_svdex : CBaseCSOWeapon
 		svd_rocket@ pGrenade = cast<svd_rocket@>(CastToScriptClass(cbeGrenade));
 		pGrenade.pev.velocity = g_Engine.v_forward * CSOW_GRENADE_VELOCITY;
 
-		DoMuzzleflash( SPRITE_MUZZLE_GRENADE, CSOW_MUZZLE_ORIGIN.x, CSOW_MUZZLE_ORIGIN.y, CSOW_MUZZLE_ORIGIN.z, 0.05, 128, 20.0 );
+		//"modern" muzzleflash 
+		//"#I41 S0.06 R0 F0 P30 T0.01 A1 L0 O0"
+		//from the svdex model
+		//{ event 5021 0 "103112" } 
+		MuzzleflashCSO( 3, "#I12 S0.10 P30" );
 	}
 
 	void SecondaryAttack()
@@ -278,7 +282,7 @@ class weapon_svdex : CBaseCSOWeapon
 		if( m_iMode == MODE_GUN )
 		{
 			m_iMode = MODE_GRENADE;
-			self.SendWeaponAnim( ANIM_SWAP_TO_GREN, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( ANIM_SWAP_TO_GREN );
 
 			if( USE_GRENADE_CROSSHAIRS )
 				m_pPlayer.pev.fov = m_pPlayer.m_iFOV = 49; //Lowest possible fov to cause the crosshairs to change
@@ -286,7 +290,7 @@ class weapon_svdex : CBaseCSOWeapon
 		else
 		{
 			m_iMode = MODE_GUN;
-			self.SendWeaponAnim( ANIM_SWAP_TO_GUN, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( ANIM_SWAP_TO_GUN );
 
 			if( USE_GRENADE_CROSSHAIRS )
 				m_pPlayer.pev.fov = m_pPlayer.m_iFOV = 0;
@@ -304,7 +308,7 @@ class weapon_svdex : CBaseCSOWeapon
 		if( m_pPlayer.m_iFOV != 0 )
 			m_pPlayer.pev.fov = m_pPlayer.m_iFOV = 0;
 
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD-0.5, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD-0.5 );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
 		BaseClass.Reload();
@@ -320,7 +324,7 @@ class weapon_svdex : CBaseCSOWeapon
 		if( self.m_iClip > 0 )
 		{
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
-			self.SendWeaponAnim( m_iMode == MODE_GUN ? ANIM_IDLE : ANIM_GREN_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( m_iMode == MODE_GUN ? ANIM_IDLE : ANIM_GREN_IDLE );
 		}
 	}
 }

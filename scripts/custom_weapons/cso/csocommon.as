@@ -5,7 +5,9 @@
 namespace cso
 {
 
-const bool bUseDroppedItemEffect = true;
+const bool bUseDroppedItemEffect		= true;
+
+array<string> arrsCSOPlayerModels;
 
 //Weapon slots, positions, and weights (Auto-switch priority).
 //Melee
@@ -13,16 +15,16 @@ const int DCLAW_SLOT						= 1;
 const int DCLAW_POSITION				= 10;
 const int BEAMSWORD_SLOT				= 1;
 const int BEAMSWORD_POSITION		= 11;
-const int BALROG9_SLOT						= 1;
+const int BALROG9_SLOT					= 1;
 const int BALROG9_POSITION				= 12;
 const int JANUS9_SLOT						= 1;
 const int JANUS9_POSITION				= 13;
-const int DWAKI_SLOT							= 1;
+const int DWAKI_SLOT						= 1;
 const int DWAKI_POSITION					= 14;
-const int THANATOS9_SLOT					= 1;
+const int THANATOS9_SLOT				= 1;
 const int THANATOS9_POSITION			= 15;
 const int RIPPER_SLOT						= 1;
-const int RIPPER_POSITION					= 16;
+const int RIPPER_POSITION				= 16;
 const int DUALSWORD_SLOT				= 1;
 const int DUALSWORD_POSITION		= 17;
 
@@ -36,8 +38,8 @@ const int RIPPER_WEIGHT					= 10;
 const int DUALSWORD_WEIGHT			= 10;
 
 //Pistols
-const int ELITES_SLOT							= 2;
-const int ELITES_POSITION					= 10;
+const int ELITES_SLOT						= 2;
+const int ELITES_POSITION				= 10;
 const int M950_SLOT							= 2;
 const int M950_POSITION					= 11;
 const int SKULL2_SLOT						= 2;
@@ -46,7 +48,7 @@ const int BLOODHUNTER_SLOT			= 2;
 const int BLOODHUNTER_POSITION	= 13;
 const int DESPERADO_SLOT				= 2;
 const int DESPERADO_POSITION			= 14;
-const int GUNKATA_SLOT						= 2;
+const int GUNKATA_SLOT					= 2;
 const int GUNKATA_POSITION				= 15;
 const int M1887CRAFT_SLOT				= 2;
 const int M1887CRAFT_POSITION		= 16;
@@ -64,64 +66,70 @@ const int M3_SLOT								= 3;
 const int M3_POSITION						= 10;
 const int USAS12_SLOT						= 3;
 const int USAS12_POSITION				= 11;
-const int M1887_SLOT							= 3;
+const int M1887_SLOT						= 3;
 const int M1887_POSITION					= 12;
-const int QBARREL_SLOT						= 3;
+const int QBARREL_SLOT					= 3;
 const int QBARREL_POSITION				= 13;
 const int SKULL11_SLOT						= 3;
 const int SKULL11_POSITION				= 14;
 const int VOLCANO_SLOT					= 3;
 const int VOLCANO_POSITION				= 15;
-const int MK3A1_SLOT							= 3;
+const int MK3A1_SLOT						= 3;
 const int MK3A1_POSITION					= 16;
-const int BLOCKAS_SLOT						= 3;
+const int BLOCKAS_SLOT					= 3;
 const int BLOCKAS_POSITION				= 17;
 
 const int M3_WEIGHT							= 20;
 const int USAS12_WEIGHT					= 20;
 const int M1887_WEIGHT					= 20;
 const int QBARREL_WEIGHT				= 20;
-const int SKULL11_WEIGHT					= 20;
+const int SKULL11_WEIGHT				= 20;
 const int VOLCANO_WEIGHT				= 20;
 const int MK3A1_WEIGHT					= 20;
 const int BLOCKAS_WEIGHT				= 20;
 
 //SMGs
-const int P90_SLOT								= 4;
+const int P90_SLOT							= 4;
 const int P90_POSITION						= 11;
 const int THOMPSON_SLOT					= 4;
 const int THOMPSON_POSITION			= 12;
 const int CROW3_SLOT						= 4;
 const int CROW3_POSITION				= 10;
 
-const int P90_WEIGHT							= 26;
-const int THOMPSON_WEIGHT				= 10;
+const int P90_WEIGHT						= 26;
+const int THOMPSON_WEIGHT			= 10;
 const int CROW3_WEIGHT					= 10;
 
 //Assault Rifles
-const int AUG_SLOT								= 5;
-const int AUG_POSITION						= 10;
+const int AK47_SLOT							= 5;
+const int AK47_POSITION					= 10;
+const int AUG_SLOT							= 5;
+const int AUG_POSITION					= 11;
 const int GUITAR_SLOT						= 5;
-const int GUITAR_POSITION				= 11;
+const int GUITAR_POSITION				= 12;
 const int ETHEREAL_SLOT					= 5;
-const int ETHEREAL_POSITION			= 12;
+const int ETHEREAL_POSITION			= 13;
 const int CSOCROSSBOW_SLOT			= 5;
-const int CSOCROSSBOW_POSITION	= 13;
+const int CSOCROSSBOW_POSITION	= 14;
 const int PLASMAGUN_SLOT				= 5;
-const int PLASMAGUN_POSITION			= 14;
-const int AUGEX_SLOT							= 5;
-const int AUGEX_POSITION					= 15;
-const int CSOBOW_SLOT						= 5;
-const int CSOBOW_POSITION				= 16;
+const int PLASMAGUN_POSITION			= 15;
+const int AUGEX_SLOT						= 5;
+const int AUGEX_POSITION					= 16;
+const int BUFFAK_SLOT						= 5;
+const int BUFFAK_POSITION				= 17;
+const int CSOBOW_SLOT					= 5;
+const int CSOBOW_POSITION				= 18;
 const int FAILNAUGHT_SLOT				= 5;
-const int FAILNAUGHT_POSITION		= 17;
+const int FAILNAUGHT_POSITION		= 19;
 
+const int AK47_WEIGHT						= 25;
 const int AUG_WEIGHT						= 25;
 const int GUITAR_WEIGHT					= 10;
 const int ETHEREAL_WEIGHT				= 10;
 const int CSOCROSSBOW_WEIGHT		= 10;
 const int PLASMAGUN_WEIGHT			= 20;
 const int AUGEX_WEIGHT					= 30;
+const int BUFFAK_WEIGHT					= 30;
 const int CSOBOW_WEIGHT				= 10;
 const int FAILNAUGHT_WEIGHT			= 10;
 
@@ -186,7 +194,6 @@ const array<string> pBPTextures =
 	"c2a2_dr",	//Blast Door
 	"c2a5_dr"	//Secure Access
 };
-
 
 const float CSO_AZ_MULTIPLIER	= 1.2; //Anti-Zombie
 
@@ -355,6 +362,34 @@ CBaseEntity@ ShootCustomProjectile( string classname, string mdl, Vector origin,
 	g_EntityFuncs.DispatchSpawn( shootEnt.edict() );
 
 	return shootEnt;
+}
+
+void ReadCSOPlayerModels()
+{
+	arrsCSOPlayerModels.resize( 0 );
+
+	File@ file = g_FileSystem.OpenFile( "scripts/plugins/cso/data/csomodels.txt", OpenFile::READ );
+
+	if( file !is null and file.IsOpen() )
+	{
+		while( !file.EOFReached() )
+		{
+			string sLine;
+			file.ReadLine(sLine);
+			//fix for linux
+			string sFix = sLine.SubString( sLine.Length() - 1, 1 );
+			if( sFix == " " or sFix == "\n" or sFix == "\r" or sFix == "\t" )
+				sLine = sLine.SubString( 0, sLine.Length() - 1 );
+
+			//comment
+			if( sLine.SubString(0,1) == "#" or sLine.SubString(0,1) == ";" or sLine.SubString(0,2) == "//" or sLine.IsEmpty() ) 
+				continue;
+
+			arrsCSOPlayerModels.insertLast( sLine );
+		}
+
+		file.Close();
+	}
 }
 
 double MetersToUnits( float flMeters ) { return flMeters/0.0254; }

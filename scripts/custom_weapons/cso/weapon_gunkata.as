@@ -7,51 +7,53 @@ namespace cso_gunkata
 
 const bool USE_INFINITE_AMMO						= true; //The original has infinite ammo
 const bool USE_PENETRATION							= true;
-const bool bSpecialRenderingGunKata			= true; //only display ef_gunkata to other players, and ef_gunkataweapon to current player
-const bool bSpecialRenderingShadows			= true; //only display ef_gunkatashadow to other players
+const bool bSpecialRenderingGunKata				= true; //only display ef_gunkata to other players, and ef_gunkataweapon to current player
+const bool bSpecialRenderingShadows				= true; //only display ef_gunkatashadow to other players
 const string CSOW_NAME								= "weapon_gunkata";
 
 const int CSOW_DEFAULT_GIVE						= 36;
-const int CSOW_MAX_CLIP 								= 36;
+const int CSOW_MAX_CLIP 							= 36;
 const int CSOW_MAX_AMMO							= 180;
 const int CSOW_TRACERFREQ							= 0;
 const float CSOW_DAMAGE								= 20;
-const float CSOW_SKILL_RADIUS_FAR			= cso::MetersToUnits(6);
-const float CSOW_SKILL_RADIUS_CLOSE		= cso::MetersToUnits(3);
+const float CSOW_SKILL_RADIUS_FAR				= cso::MetersToUnits(6);
+const float CSOW_SKILL_RADIUS_CLOSE			= cso::MetersToUnits(3);
 const float CSOW_SKILL_DAMAGE_FAR			= 9.9; //default 99
 const float CSOW_SKILL_DAMAGE_CLOSE		= 10.9; //default 109
-const float CSOW_SKILL_KNOCKBACK			= 80;
+const float CSOW_SKILL_KNOCKBACK				= 80;
 const float CSOW_TIME_DELAY1						= 0.095; //between shots
 const float CSOW_TIME_DELAY2						= 0.35; //between switching hands
 const float CSOW_TIME_DELAY3						= 0.25; //SecondaryAttack
 const float CSOW_TIME_DRAW						= 1.0;
 const float CSOW_TIME_IDLE							= 6.0;
-const float CSOW_TIME_RELOAD					= 2.0;
+const float CSOW_TIME_RELOAD						= 2.0;
 const float CSOW_TIME_SKILL_AMMO				= 0.1; //How fast to decrease ammo during gun kata
 const float CSOW_TIME_SKILL_EFFECT			= 0.5; //How often to spawn ef_gunkata
 const float CSOW_SPREAD_JUMPING				= 0.1; //0.20
 const float CSOW_SPREAD_RUNNING				= 0.06; //0.15
 const float CSOW_SPREAD_WALKING				= 0.03; //0.1
-const float CSOW_SPREAD_STANDING			= 0.02;
+const float CSOW_SPREAD_STANDING				= 0.02;
 const float CSOW_SPREAD_DUCKING				= 0.02;
 const Vector2D CSOW_RECOIL_STANDING_X	= Vector2D(-0.5, -1.0);
 const Vector2D CSOW_RECOIL_STANDING_Y	= Vector2D(0, 0);
-const Vector2D CSOW_RECOIL_DUCKING_X	= Vector2D(-0.5, -1.0);
-const Vector2D CSOW_RECOIL_DUCKING_Y	= Vector2D(0, 0);
-const Vector CSOW_SHELL_ORIGIN_R			= Vector(17.0, -8.0, -4.0); //forward, right, up
-const Vector CSOW_SHELL_ORIGIN_L			= Vector(17.0, 8.0, -4.0); //forward, right, up
+const Vector2D CSOW_RECOIL_DUCKING_X		= Vector2D(-0.5, -1.0);
+const Vector2D CSOW_RECOIL_DUCKING_Y		= Vector2D(0, 0);
+const Vector CSOW_SHELL_ORIGIN_R				= Vector(17.0, -8.0, -4.0); //forward, right, up
+const Vector CSOW_SHELL_ORIGIN_L				= Vector(17.0, 8.0, -4.0); //forward, right, up
 
 const string CSOW_ANIMEXT							= "uzis"; //gunkata
 
-const string MODEL_VIEW								= "models/custom_weapons/cso/v_gunkata.mdl";
-const string MODEL_PLAYER1							= "models/custom_weapons/cso/p_gunkata.mdl";
-const string MODEL_PLAYER2							= "models/custom_weapons/cso/p_gunkata2.mdl";
-const string MODEL_WORLD							= "models/custom_weapons/cso/w_gunkata.mdl";
-const string MODEL_GUNKATA							= "models/custom_weapons/cso/ef_gunkata.mdl";
+const string MODEL_VIEW								= "models/custom_weapons/cso/gunkata/v_gunkata.mdl";
+const string MODEL_PLAYER1							= "models/custom_weapons/cso/gunkata/p_gunkata.mdl";
+//const string MODEL_PLAYER2							= "models/custom_weapons/cso/gunkata/p_gunkata2.mdl";
+const string MODEL_WORLD							= "models/custom_weapons/cso/gunkata/w_gunkata.mdl";
+const string MODEL_GUNKATA							= "models/custom_weapons/cso/gunkata/ef_gunkata.mdl";
 const string MODEL_BLAST								= "models/custom_weapons/cso/ef_scorpion_hole.mdl";
-const string MODEL_SHADOW_MAN				= "models/custom_weapons/cso/ef_gunkata_man.mdl";
-const string MODEL_SHADOW_WOMAN			= "models/custom_weapons/cso/ef_gunkata_woman.mdl";
+const string MODEL_SHADOW_MAN					= "models/custom_weapons/cso/gunkata/ef_gunkata_man.mdl";
+const string MODEL_SHADOW_WOMAN			= "models/custom_weapons/cso/gunkata/ef_gunkata_woman.mdl";
 const string MODEL_SHELL								= "models/custom_weapons/cso/pshell.mdl";
+
+const float CSOW_FRAMERATE_SHOOT			= 30.0; //0.0333
 
 enum csow_e
 {
@@ -76,6 +78,7 @@ enum csow_e
 enum csowsounds_e
 {
 	SND_SHOOT = 1,
+	//SND_IDLE, //unused atm, way too loud imo
 	SND_SKILL1,
 	SND_SKILL2,
 	SND_SKILL3,
@@ -90,18 +93,18 @@ const array<string> pCSOWSounds =
 {
 	"custom_weapons/cs16/dryfire_pistol.wav", //only here for the precache
 	"custom_weapons/cso/gunkata-1.wav",
+	//"custom_weapons/cso/gunkata_idle.wav", //unused atm, way too loud imo
 	"custom_weapons/cso/gunkata_skill_01.wav",
 	"custom_weapons/cso/gunkata_skill_02.wav",
 	"custom_weapons/cso/gunkata_skill_03.wav",
 	"custom_weapons/cso/gunkata_skill_04.wav",
 	"custom_weapons/cso/gunkata_skill_05.wav",
 	"custom_weapons/cso/gunkata_skill_last_exp.wav",
-	"custom_weapons/cso/turbulent9_hit1.wav", //make sure these are the correct sounds ??
-	"custom_weapons/cso/turbulent9_hit2.wav",
+	"custom_weapons/cso/turbulent9/turbulent9_hit1.wav", //make sure these are the correct sounds ??
+	"custom_weapons/cso/turbulent9/turbulent9_hit2.wav",
 	"custom_weapons/cso/gunkata_skill_last.wav",
 	"custom_weapons/cso/gunkata_draw.wav",
 	"custom_weapons/cso/gunkata_draw2.wav",
-	//"custom_weapons/cso/gunkata_idle.wav", //unused atm, way too loud imo
 	"custom_weapons/cso/gunkata_reload.wav",
 	"custom_weapons/cso/gunkata_reload2.wav"
 };
@@ -166,8 +169,6 @@ class weapon_gunkata : CBaseCSOWeapon
 		self.m_iDefaultAmmo = CSOW_DEFAULT_GIVE;
 		self.m_flCustomDmg = pev.dmg;
 
-		g_iCSOWHands = HANDS_SVENCOOP;
-		m_bSwitchHands = true;
 		m_iGunKataNum = 0;
 
 		m_flSpreadJumping = CSOW_SPREAD_JUMPING;
@@ -187,13 +188,14 @@ class weapon_gunkata : CBaseCSOWeapon
 
 		g_Game.PrecacheModel( MODEL_VIEW );
 		g_Game.PrecacheModel( MODEL_PLAYER1 );
-		g_Game.PrecacheModel( MODEL_PLAYER2 );
+		//g_Game.PrecacheModel( MODEL_PLAYER2 );
 		g_Game.PrecacheModel( MODEL_WORLD );
 		g_Game.PrecacheModel( MODEL_GUNKATA );
 		g_Game.PrecacheModel( MODEL_BLAST );
 		g_Game.PrecacheModel( MODEL_SHADOW_MAN );
 		g_Game.PrecacheModel( MODEL_SHADOW_WOMAN );
 		g_Game.PrecacheModel( cso::SPRITE_HITMARKER );
+		g_Game.PrecacheModel( "sprites/custom_weapons/cso/muzzleflash77.spr" );
 
 		m_iShell = g_Game.PrecacheModel( MODEL_SHELL );
 
@@ -213,19 +215,18 @@ class weapon_gunkata : CBaseCSOWeapon
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/" + CSOW_NAME + ".txt" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud18.spr" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud176.spr" );
-		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/muzzleflash77.spr" );
-		g_Game.PrecacheGeneric( "events/cso/muzzle_gunkata_left.txt" );
-		g_Game.PrecacheGeneric( "events/cso/muzzle_gunkata_right.txt" );
+		//g_Game.PrecacheGeneric( "events/cso/muzzle_gunkata_left.txt" );
+		//g_Game.PrecacheGeneric( "events/cso/muzzle_gunkata_right.txt" );
 	}
 
 	bool GetItemInfo( ItemInfo& out info )
 	{
 		info.iMaxAmmo1	= CSOW_MAX_AMMO;
-		info.iMaxClip 		= CSOW_MAX_CLIP;
+		info.iMaxClip 			= CSOW_MAX_CLIP;
 		info.iSlot				= cso::GUNKATA_SLOT - 1;
-		info.iPosition		= cso::GUNKATA_POSITION - 1;
+		info.iPosition			= cso::GUNKATA_POSITION - 1;
 		info.iWeight			= cso::GUNKATA_WEIGHT;
-		info.iFlags			= ITEM_FLAG_NOAUTOSWITCHEMPTY;
+		info.iFlags				= ITEM_FLAG_NOAUTOSWITCHEMPTY;
 
 		return true;
 	}
@@ -260,13 +261,13 @@ class weapon_gunkata : CBaseCSOWeapon
 		RemoveGunkataEffect();
 
 		BaseClass.Holster( skiplocal );
-	} 
+	}
 
 	bool Deploy()
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER1), GetWeaponAnim(ANIM_DRAW_RIGHT), CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER1), GetWeaponAnim(ANIM_DRAW_RIGHT), CSOW_ANIMEXT );
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 0.1;
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_DRAW;
 
@@ -312,11 +313,21 @@ class weapon_gunkata : CBaseCSOWeapon
 		{
 			iAnimation = GetWeaponState() == STATE_RIGHT ? ANIM_SHOOT_LEFT_LAST : ANIM_SHOOT_RIGHT_LAST;
 			flDelay = CSOW_TIME_DELAY2;
+
+			if( iAnimation == ANIM_SHOOT_RIGHT_LAST )
+				MuzzleflashCSO( 1, "#I77 S0.06 R2 F0 P30 T0.1 A1 L0 O0 X0" );
+			else
+				MuzzleflashCSO( 3, "#I77 S0.06 R2 F0 P60 T0.1 A1 L0 O0 X2" );
 		}
 		else
 		{
 			iAnimation = GetWeaponState() == STATE_RIGHT ? ANIM_SHOOT_RIGHT : ANIM_SHOOT_LEFT;
 			flDelay = CSOW_TIME_DELAY1;
+
+			if( iAnimation == ANIM_SHOOT_RIGHT )
+				MuzzleflashCSO( 1, "#I77 S0.06 R2 F0 P30 T0.1 A1 L0 O0 X0" );
+			else
+				MuzzleflashCSO( 3, "#I77 S0.06 R2 F0 P60 T0.1 A1 L0 O0 X2" );
 		}
 
 		m_pPlayer.m_szAnimExtension = GetWeaponState(-1) == STATE_RIGHT ? "uzis_right" : "uzis_left";
@@ -324,7 +335,7 @@ class weapon_gunkata : CBaseCSOWeapon
 
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + flDelay;
 		self.m_flTimeWeaponIdle = g_Engine.time + flDelay + 0.5;
-		self.SendWeaponAnim( iAnimation, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( iAnimation );
 
 		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * vecShellOrigin.x - g_Engine.v_right * vecShellOrigin.y + g_Engine.v_up * vecShellOrigin.z, m_iShell, TE_BOUNCE_SHELL, (GetWeaponState(-1) == STATE_RIGHT ? true : false) );
 	}
@@ -335,7 +346,7 @@ class weapon_gunkata : CBaseCSOWeapon
 
 		if( m_pPlayer.pev.waterlevel == WATERLEVEL_HEAD or (self.m_iClip <= 0 and m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 and m_iSkillState == SKILLSTATE_LOOP) )
 		{
-			self.SendWeaponAnim( GetWeaponAnim(ANIM_IDLE_RIGHT), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( GetWeaponAnim(ANIM_IDLE_RIGHT) );
 			self.m_bPlayEmptySound = true;
 			self.PlayEmptySound();
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 0.20;
@@ -357,8 +368,19 @@ class weapon_gunkata : CBaseCSOWeapon
 			if( iAnim == 10 or iAnim == 11) flDelay = 0.7;
 			else flDelay = 1.03;
 
-			self.SendWeaponAnim( iAnim, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( iAnim );
 			m_iSetSkillAnim = iAnim;
+
+			if( iAnim == ANIM_SKILL3 )
+			{
+				SetThink( ThinkFunction(this.MuzzleflashThinkSkill3) );
+				pev.nextthink = g_Engine.time + ((1 / CSOW_FRAMERATE_SHOOT) * 3); //on the 4th frame
+			}
+			else if( iAnim == ANIM_SKILL4 )
+			{
+				SetThink( ThinkFunction(this.MuzzleflashThinkSkill4) );
+				pev.nextthink = g_Engine.time + ((1 / CSOW_FRAMERATE_SHOOT) * 24); //on the 25th frame
+			}
 		}
 		else
 		{
@@ -379,9 +401,15 @@ class weapon_gunkata : CBaseCSOWeapon
 			m_iSetSkillAnim = iAnim;
 		}
 
-		m_pPlayer.m_szAnimExtension = m_arrsAnimationExtensions[ Math.RandomLong(0, m_arrsAnimationExtensions.length()-1) ];
+		if( PlayerHasCSOModel() )
+			m_pPlayer.m_szAnimExtension = "gunkata";
+		else
+		{
+			m_pPlayer.m_szAnimExtension = m_arrsAnimationExtensions[ Math.RandomLong(0, m_arrsAnimationExtensions.length()-1) ];
+			m_pPlayer.pev.angles.y = Math.RandomFloat( 0.0, 359.0 );
+		}
+
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
-		m_pPlayer.pev.angles.y = Math.RandomFloat( 0.0, 359.0 );
 
 		bool isMallarding = ((m_pPlayer.pev.flags & FL_DUCKING) == 1) ? true : false;
 		SpawnShadow( isMallarding ? m_iCurSkillAnim + 6 : m_iCurSkillAnim );
@@ -427,16 +455,8 @@ class weapon_gunkata : CBaseCSOWeapon
 			pTarget.TraceAttack( m_pPlayer.pev, flDamage, g_Engine.v_forward, tr, DMG_SLASH | DMG_NEVERGIB );
 			g_WeaponFuncs.ApplyMultiDamage( m_pPlayer.pev, m_pPlayer.pev );
 
-			CreateBuffHit();
+			HitMarker();
 		}
-	}
-
-	void CreateBuffHit()
-	{
-		Vector vecOrigin = m_pPlayer.pev.origin;
-		cso::get_position( m_pPlayer.edict(), 50.0, -0.05, 1.0, vecOrigin );
-
-		CBaseEntity@ pHitConfirm = g_EntityFuncs.Create( "cso_buffhit", vecOrigin, g_vecZero, false, m_pPlayer.edict() );
 	}
 
 	void Reload()
@@ -449,7 +469,7 @@ class weapon_gunkata : CBaseCSOWeapon
 
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_RELOAD-0.2;
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
-			self.SendWeaponAnim( GetWeaponAnim(ANIM_RELOAD_RIGHT), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( GetWeaponAnim(ANIM_RELOAD_RIGHT) );
 
 			SetThink( ThinkFunction(this.ReloadThink) );
 			pev.nextthink = g_Engine.time + CSOW_TIME_RELOAD-0.2;
@@ -459,7 +479,7 @@ class weapon_gunkata : CBaseCSOWeapon
 			if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 )
 				return;
 
-			self.DefaultReload( CSOW_MAX_CLIP, GetWeaponAnim(ANIM_RELOAD_RIGHT), CSOW_TIME_RELOAD-0.2, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.DefaultReload( CSOW_MAX_CLIP, GetWeaponAnim(ANIM_RELOAD_RIGHT), CSOW_TIME_RELOAD-0.2 );
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 		}
 
@@ -489,8 +509,9 @@ class weapon_gunkata : CBaseCSOWeapon
 			return;
 
 		m_pPlayer.m_szAnimExtension = CSOW_ANIMEXT;
+		m_pPlayer.SetAnimation( PLAYER_IDLE );
 
-		self.SendWeaponAnim( GetWeaponAnim(ANIM_IDLE_RIGHT), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( GetWeaponAnim(ANIM_IDLE_RIGHT) );
 		self.m_flTimeWeaponIdle = g_Engine.time + Math.RandomLong( CSOW_TIME_IDLE, CSOW_TIME_IDLE*2 );
 	}
 
@@ -500,6 +521,9 @@ class weapon_gunkata : CBaseCSOWeapon
 
 		if( m_flSkillKnockback > 0.0 and m_flSkillKnockback < g_Engine.time and m_iSkillState == SKILLSTATE_END_START )
 		{
+			m_pPlayer.m_szAnimExtension = "gunkataend";
+			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
+			
 			KnockbackCheck();
 
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 0.97;
@@ -536,7 +560,7 @@ class weapon_gunkata : CBaseCSOWeapon
 		{
 			RemoveGunkataEffect();
 
-			self.SendWeaponAnim( GetWeaponAnim(ANIM_DRAW_RIGHT), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( GetWeaponAnim(ANIM_DRAW_RIGHT) );
 
 			float flDelay = ( m_iSkillState == SKILLSTATE_END ? 0.5 : 1.0 );
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 0.1;
@@ -559,7 +583,7 @@ class weapon_gunkata : CBaseCSOWeapon
 
 			m_flSkillKnockback = g_Engine.time + 0.66;
 
-			self.SendWeaponAnim( GetWeaponAnim(ANIM_SKILL_LAST), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( GetWeaponAnim(ANIM_SKILL_LAST) );
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 1.57;
 			self.m_flTimeWeaponIdle = g_Engine.time + 1.57;
 
@@ -708,7 +732,7 @@ class weapon_gunkata : CBaseCSOWeapon
 			pAnim.m_flRemoveTime = flRemoveTime;
 
 			pAnim.pev.sequence = iAnim;
-			pAnim.pev.body = (m_bSwitchHands ? g_iCSOWHands : 0);
+			pAnim.pev.body = 0;
 			pAnim.pev.colormap = m_pPlayer.pev.colormap;
 
 			g_EntityFuncs.DispatchSpawn( pAnim.self.edict() );
@@ -785,6 +809,18 @@ class weapon_gunkata : CBaseCSOWeapon
 				}
 			}
 		}
+	}
+
+	void MuzzleflashThinkSkill3()
+	{
+		MuzzleflashCSO( 1, "#I77 S0.06 R2 F0 P30 T0.1 A1 L0 O0" );
+		SetThink( null );
+	}
+
+	void MuzzleflashThinkSkill4()
+	{
+		MuzzleflashCSO( 3, "#I77 S0.06 R2 F0 P30 T0.1 A1 L0 O0" );
+		SetThink( null );
 	}
 
 	int GetWeaponAnim( int iRightAnimation ) //returns the correct animation depending on weaponstate
@@ -1053,25 +1089,26 @@ class ef_gunkatashadow : ScriptBaseEntity
 
 void Register()
 {
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
+
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_gunkata::ef_gunkatashadow", "ef_gunkatashadow" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_gunkata::ef_gunkataweapon", "ef_gunkataweapon" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_gunkata::ef_gunkatablast", "ef_gunkatablast" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_gunkata::ef_gunkata", "ef_gunkata" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_gunkata::weapon_gunkata", CSOW_NAME );
 	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "44MAG" );
-
-	if( !g_CustomEntityFuncs.IsCustomEntity( "cso_buffhit" ) ) 
-		cso::RegisterBuffHit();
-
-	if( cso::bUseDroppedItemEffect )
-	{
-		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
-			cso::RegisterGunDrop();
-	}
 }
 
 } //namespace cso_gunkata END
 
 /* TODO
-Make use of ef_gunkata.spr
+	Make use of ef_gunkata.spr
+
+	Make use of p_gunkata2.mdl
+
+	Figure out a way to make the arms used by ef_gunkataweapon match the ones the weapon does??
 */

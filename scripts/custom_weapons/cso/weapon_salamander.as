@@ -314,17 +314,18 @@ class weapon_salamander : CBaseCSOWeapon
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso::csoproj_flame", "csoproj_flame" );
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_salamander::weapon_salamander", CSOW_NAME );
-	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "salamanderammo" );
-
-	cso::RegisterDotEnt();
-
 	if( cso::bUseDroppedItemEffect )
 	{
 		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
 			cso::RegisterGunDrop();
 	}
+
+	if( !g_CustomEntityFuncs.IsCustomEntity( "cso_dotent" ) )
+		cso::RegisterDotEnt();
+
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso::csoproj_flame", "csoproj_flame" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_salamander::weapon_salamander", CSOW_NAME );
+	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "salamanderammo" );
 }
 
 } //namespace cso_salamander END

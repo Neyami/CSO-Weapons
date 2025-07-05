@@ -1,5 +1,3 @@
-#include "dev/csodeventities"
-
 namespace cso
 {
 
@@ -64,87 +62,6 @@ void RegisterGunDrop()
 {
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso::ef_gundrop", "ef_gundrop" );
 	g_Game.PrecacheOther( "ef_gundrop" );
-}
-
-class cso_buffhit : ScriptBaseEntity
-{
-	private float m_flRemoveTime;
-
-	void Spawn()
-	{
-		Precache();
-
-		pev.scale = 0.13;
-		pev.frame = 0.0;
-		pev.framerate = 1.0;
-		pev.movetype = MOVETYPE_NONE;
-		pev.solid = SOLID_NOT;
-		pev.rendermode = kRenderGlow;
-		pev.renderfx = kRenderFxNoDissipation;
-		pev.renderamt = 190;
-
-		g_EntityFuncs.SetOrigin( self, pev.origin );
-		g_EntityFuncs.SetModel( self, SPRITE_HITMARKER );
-
-		m_flRemoveTime = g_Engine.time + 0.1;
-
-		SetThink( ThinkFunction(this.HitMarkerThink) );
-		pev.nextthink = g_Engine.time;
-	}
-
-	void Precache()
-	{
-		g_Game.PrecacheModel( SPRITE_HITMARKER );
-	}
-
-	void HitMarkerThink()
-	{
-		pev.nextthink = g_Engine.time + 0.01;
-
-		if( pev.owner is null )
-		{
-			g_EntityFuncs.Remove( self );
-			return;
-		}
-
-		Vector vecOrigin;
-		get_position( pev.owner, 50.0, -0.05, 0.0, vecOrigin );
-		g_EntityFuncs.SetOrigin( self, vecOrigin );
-
-		/*NetworkMessage m1( MSG_ONE_UNRELIABLE, NetworkMessages::SVC_TEMPENTITY, pev.owner );
-			m1.WriteByte( TE_SPRITE );
-			m1.WriteCoord( vecOrigin.x );
-			m1.WriteCoord( vecOrigin.y );
-			m1.WriteCoord( vecOrigin.z );
-			m1.WriteShort( g_EngineFuncs.ModelIndex(SPRITE_HITMARKER) );
-			m1.WriteByte( 2 );//scale
-			m1.WriteByte( 255 );//brightness
-		m1.End();*/
-
-		if( g_Engine.time >= m_flRemoveTime )
-			g_EntityFuncs.Remove( self );
-	}
-
-	void get_position( edict_t@ pOwner, float flForward, float flRight, float flUp, Vector &out vecOut )
-	{
-		Vector vecOrigin, vecAngle, vecForward, vecRight, vecUp;
-
-		vecOrigin = pOwner.vars.origin;
-		vecUp = pOwner.vars.view_ofs; //GetGunPosition() ??
-		vecOrigin = vecOrigin + vecUp;
-
-		vecAngle = pOwner.vars.v_angle; //if normal entity: use pev.angles
-
-		g_EngineFuncs.AngleVectors( vecAngle, vecForward, vecRight, vecUp );
-
-		vecOut = vecOrigin + vecForward * flForward + vecRight * flRight + vecUp * flUp;
-	}
-}
-
-void RegisterBuffHit()
-{
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso::cso_buffhit", "cso_buffhit" );
-	g_Game.PrecacheOther( "cso_buffhit" );
 }
 
 class cso_fldamage : ScriptBaseEntity
@@ -461,6 +378,103 @@ class csoproj_flame : ScriptBaseEntity
 		pev.solid = SOLID_NOT;
 		SetTouch( null );
 	}
+}
+
+class csoproj_buffak : ScriptBaseEntity
+{
+	private float m_flRemoveTime;
+
+	void Spawn()
+	{
+		Precache();
+
+		g_EntityFuncs.SetModel( self, "sprites/custom_weapons/cso/muzzleflash19.spr" );
+		g_EntityFuncs.SetSize( self.pev, Vector(-1.0, -1.0, -1.0), Vector(1.0, 1.0, 1.0) );
+		g_EntityFuncs.SetOrigin( self, pev.origin );
+
+		pev.movetype = MOVETYPE_FLY;
+		pev.solid    = SOLID_TRIGGER; //SOLID_BBOX
+		pev.rendermode = kRenderTransAdd;
+		pev.renderamt = 80;
+		pev.scale = 0.15;
+		pev.gravity = 0.01; //?
+
+		m_flRemoveTime = g_Engine.time + 5.0;
+
+		pev.nextthink = g_Engine.time;
+		SetThink( ThinkFunction(this.FlyThink) );
+	}
+
+	void Precache()
+	{
+		g_Game.PrecacheModel( "sprites/custom_weapons/cso/muzzleflash19.spr" );
+		g_Game.PrecacheModel( "sprites/custom_weapons/cso/ef_buffak_hit.spr" );
+	}
+
+	void FlyThink()
+	{
+		pev.nextthink = g_Engine.time + 0.01;
+
+		if( g_Engine.time >= m_flRemoveTime )
+			g_EntityFuncs.Remove( self );
+	}
+
+	void Touch( CBaseEntity@ pOther )
+	{
+		if( pOther.edict() is pev.owner or pOther.pev.classname == self.GetClassname() ) //is checking the classname NEEDED ??
+			return;
+
+		if( pOther.pev.takedamage != DAMAGE_NO and pOther.IsAlive() )
+		{
+			if( g_EntityFuncs.Instance(pev.owner).IRelationship(pOther) > R_NO )
+			{
+				TraceResult tr;
+				g_Utility.TraceLine( pOther.Center(), pOther.Center(), ignore_monsters, pev.owner, tr );
+
+				g_WeaponFuncs.ClearMultiDamage();
+				pOther.TraceAttack( pev.owner.vars, pev.dmg, g_Engine.v_forward, tr, DMG_NEVERGIB );
+				g_WeaponFuncs.ApplyMultiDamage( self.pev, pev.owner.vars );
+				//pOther.TakeDamage( self.pev, pev.owner.vars, pev.dmg, DMG_NEVERGIB );
+			}
+		}
+
+		pev.velocity = g_vecZero;
+		pev.movetype = MOVETYPE_NONE;
+		pev.solid = SOLID_NOT;
+		SetTouch( null );
+
+		Explode();
+
+		g_EntityFuncs.Remove( self );
+	}
+
+	void Explode()
+	{
+		TraceResult tr;
+		Vector vecOrigin = pev.origin - pev.velocity.Normalize() * 32;
+		g_Utility.TraceLine( vecOrigin, vecOrigin + pev.velocity.Normalize() * 64, ignore_monsters, self.edict(), tr );
+
+		// Pull out of the wall a bit
+		if( tr.flFraction != 1.0 )
+			vecOrigin = tr.vecEndPos + ( tr.vecPlaneNormal *  0.6 );
+
+		NetworkMessage m1( MSG_PVS, NetworkMessages::SVC_TEMPENTITY, vecOrigin );
+			m1.WriteByte( TE_EXPLOSION );
+			m1.WriteCoord( vecOrigin.x );
+			m1.WriteCoord( vecOrigin.y );
+			m1.WriteCoord( vecOrigin.z );
+			m1.WriteShort( g_EngineFuncs.ModelIndex("sprites/custom_weapons/cso/ef_buffak_hit.spr") );
+			m1.WriteByte( 5 ); // scale * 10
+			m1.WriteByte( 15 ); // framerate
+			m1.WriteByte( TE_EXPLFLAG_NODLIGHTS|TE_EXPLFLAG_NOSOUND|TE_EXPLFLAG_NOPARTICLES );
+		m1.End();
+
+		//g_SoundSystem.EmitSound( self.edict(), CHAN_BODY, pCSOWSounds[SND_EXPLODE], VOL_NORM, ATTN_NORM );
+		g_WeaponFuncs.RadiusDamage( vecOrigin, self.pev, pev.owner.vars, pev.dmg, MetersToUnits(2), CLASS_PLAYER, DMG_LAUNCH ); 
+	}
+
+	//WHY THE FUCK CAN'T YOU ACCESS IT FROM csocommon.as ?!
+	double MetersToUnits( float flMeters ) { return flMeters/0.0254; }
 }
 
 } //namespace cso END

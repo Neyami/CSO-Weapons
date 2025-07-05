@@ -5,7 +5,7 @@ const bool USE_PENETRATION					= true;
 const bool USE_INFINITE_AMMO				= true; //The original has infinite ammo
 
 const int CSOW_DEFAULT_GIVE				= 7;
-const int CSOW_MAX_CLIP 						= 7;
+const int CSOW_MAX_CLIP 					= 7;
 const int CSOW_MAX_AMMO					= 999;
 const int CSOW_TRACERFREQ					= 0;
 const float CSOW_DAMAGE						= 35;
@@ -14,24 +14,26 @@ const float CSOW_TIME_DRAW				= 0.2f;
 const float CSOW_TIME_IDLE					= 3.0;
 const float CSOW_TIME_IDLE_RUN			= 0.6;
 const float CSOW_TIME_FIRE_TO_IDLE	= 0.6;
-const float CSOW_TIME_RELOAD			= 0.7;
+const float CSOW_TIME_RELOAD				= 0.7;
 const float CSOW_TIME_SWAP				= 0.2;
 const float CSOW_SPREAD_JUMPING		= 0.20;
 const float CSOW_SPREAD_RUNNING		= 0.15;
 const float CSOW_SPREAD_WALKING		= 0.1;
-const float CSOW_SPREAD_STANDING	= 0.05;
+const float CSOW_SPREAD_STANDING		= 0.05;
 const float CSOW_SPREAD_DUCKING		= 0.02;
 
 const string CSOW_ANIMEXT					= "onehanded";
 
-const string MODEL_VIEW						= "models/custom_weapons/cso/v_desperado.mdl";
-const string MODEL_PLAYER_R				= "models/custom_weapons/cso/p_desperado_m.mdl";
-const string MODEL_PLAYER_L				= "models/custom_weapons/cso/p_desperado_w.mdl";
-const string MODEL_WORLD					= "models/custom_weapons/cso/w_desperado.mdl";
+const string MODEL_VIEW						= "models/custom_weapons/cso/desperado/v_desperado.mdl";
+const string MODEL_PLAYER_R				= "models/custom_weapons/cso/desperado/p_desperado_m.mdl";
+const string MODEL_PLAYER_L				= "models/custom_weapons/cso/desperado/p_desperado_w.mdl";
+const string MODEL_WORLD					= "models/custom_weapons/cso/desperado/w_desperado.mdl";
+
+const float CSOW_FRAMERATE_SHOOT	= 30.0; //0.0333
 
 enum csow_e
 {
-	ANIM_IDLE_M = 0,
+	ANIM_IDLE_R = 0,
 	ANIM_RUN_START_R,
 	ANIM_RUN_IDLE_R,
 	ANIM_RUN_END_R,
@@ -105,6 +107,8 @@ class weapon_desperado : CBaseCSOWeapon
 		g_Game.PrecacheModel( MODEL_PLAYER_L );
 		g_Game.PrecacheModel( MODEL_WORLD );
 		g_Game.PrecacheModel( cso::SPRITE_HITMARKER );
+		g_Game.PrecacheModel( "sprites/custom_weapons/cso/muzzleflash59.spr" );
+		g_Game.PrecacheModel( "sprites/custom_weapons/cso/muzzleflash60.spr" );
 
 		for( i = 0; i < pCSOWSounds.length(); ++i )
 			g_SoundSystem.PrecacheSound( pCSOWSounds[i] );
@@ -116,10 +120,8 @@ class weapon_desperado : CBaseCSOWeapon
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/weapon_desperado.txt" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud164.spr" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud18.spr" );
-		g_Game.PrecacheGeneric( "sprites/cso/muzzleflash59.spr" );
-		g_Game.PrecacheGeneric( "sprites/cso/muzzleflash60.spr" );
-		g_Game.PrecacheGeneric( "events/muzzle_desperado_m.txt" );
-		g_Game.PrecacheGeneric( "events/muzzle_desperado_w.txt" );
+		//g_Game.PrecacheGeneric( "events/cso/muzzle_desperado_m.txt" );
+		//g_Game.PrecacheGeneric( "events/cso/muzzle_desperado_w.txt" );
 	}
 
 	bool GetItemInfo( ItemInfo& out info )
@@ -232,6 +234,9 @@ class weapon_desperado : CBaseCSOWeapon
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE;
 
 		m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH;
+
+		SetThink( ThinkFunction(this.MuzzleflashThink) );
+		pev.nextthink = g_Engine.time + ((1 / CSOW_FRAMERATE_SHOOT) * 2); //on the 3rd frame
 	}
 
 	void Reload()
@@ -243,6 +248,7 @@ class weapon_desperado : CBaseCSOWeapon
 			if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 )
 				return;
 
+			SetThink( null );
 			self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD_R + m_iMode, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
@@ -250,6 +256,8 @@ class weapon_desperado : CBaseCSOWeapon
 		}
 		else
 		{
+			SetThink( null );
+
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_RELOAD;
 
 			self.SendWeaponAnim( ANIM_RELOAD_R + m_iMode, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
@@ -310,7 +318,7 @@ class weapon_desperado : CBaseCSOWeapon
 		}
 		else
 		{
-			self.SendWeaponAnim( ANIM_IDLE_M + m_iMode, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( ANIM_IDLE_R + m_iMode, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
 		}
 	}
@@ -342,6 +350,14 @@ class weapon_desperado : CBaseCSOWeapon
 	{
 		return( (m_pPlayer.pev.button & IN_FORWARD) != 0 and (m_pPlayer.pev.button & (IN_ATTACK|IN_ATTACK2)) == 0 and (m_pPlayer.pev.flags & FL_DUCKING) == 0 );
 	}
+
+	void MuzzleflashThink()
+	{
+		if( m_iMode == MODE_RIGHT )
+			MuzzleflashCSO( 1, "#I60 S0.09 R2.5 F0 P90 T0.15 A1 L0 O1 X0" );
+		else
+			MuzzleflashCSO( 3, "#I59 S0.088 R2.5 F0 P90 T0.15 A1 L0 O1 X2" );
+	}
 }
 
 void Register()
@@ -349,8 +365,8 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_desperado::weapon_desperado", "weapon_desperado" );
 	g_ItemRegistry.RegisterWeapon( "weapon_desperado", "custom_weapons/cso", "44FD" ); //.44 Fast Draw
 
-	if( !g_CustomEntityFuncs.IsCustomEntity( "cso_buffhit" ) ) 
-		cso::RegisterBuffHit();
+	//if( !g_CustomEntityFuncs.IsCustomEntity( "cso_buffhit" ) ) 
+		//cso::RegisterBuffHit();
 
 	if( cso::bUseDroppedItemEffect )
 	{

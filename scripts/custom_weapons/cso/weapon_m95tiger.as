@@ -33,25 +33,22 @@ const float CSOW_CLAW_LIFETIME		= 2.5;
 
 const string CSOW_ANIMEXT				= "sniper"; //rifle
 
-const string MODEL_VIEW					= "models/custom_weapons/cso/v_m95tiger.mdl";
-const string MODEL_PLAYER				= "models/custom_weapons/cso/p_m95tiger.mdl";
-const string MODEL_WORLD				= "models/custom_weapons/cso/w_m95tiger.mdl";
+const string MODEL_VIEW					= "models/custom_weapons/cso/m95tiger/v_m95tiger.mdl";
+const string MODEL_PLAYER				= "models/custom_weapons/cso/m95tiger/p_m95tiger.mdl";
+const string MODEL_WORLD				= "models/custom_weapons/cso/m95tiger/w_m95tiger.mdl";
 const string MODEL_SHELL					= "models/custom_weapons/cso/rshell_big.mdl";
-const string MODEL_TIGER					= "models/custom_weapons/cso/ef_m95tiger.mdl";
-const string MODEL_NET						= "models/custom_weapons/cso/ef_m95tiger_net.mdl";
-const string MODEL_NETHIT				= "models/custom_weapons/cso/ef_m95tiger_nethit.mdl";
-const string MODEL_SCOPE_R				= "models/custom_weapons/cso/m95tiger_scope_red.mdl";
-const string MODEL_SCOPE_Y				= "models/custom_weapons/cso/m95tiger_scope_yellow.mdl";
+const string MODEL_TIGER					= "models/custom_weapons/cso/m95tiger/ef_m95tiger.mdl";
+const string MODEL_NET						= "models/custom_weapons/cso/m95tiger/ef_m95tiger_net.mdl";
+const string MODEL_NETHIT				= "models/custom_weapons/cso/m95tiger/ef_m95tiger_nethit.mdl";
+const string MODEL_SCOPE_R				= "models/custom_weapons/cso/m95tiger/m95tiger_scope_red.mdl";
+const string MODEL_SCOPE_Y				= "models/custom_weapons/cso/m95tiger/m95tiger_scope_yellow.mdl";
 
-const string SPRITE_MUZZLE1				= "sprites/custom_weapons/cso/muzzleflash80.spr";
-const string SPRITE_MUZZLE2				= "sprites/custom_weapons/cso/muzzleflash59.spr";
 const string SPRITE_NETHIT				= "sprites/custom_weapons/cso/ef_m95tiger_nethit.spr";
 const string SPRITE_CLAW					= "sprites/custom_weapons/cso/ef_m95tiger_scratch.spr";
 
 enum bodygroup_e
 {
-	BODYGROUP_HANDS = 4,
-	BODYGROUP_SYMBOL
+	BODYGROUP_SYMBOL = 5
 };
 
 enum csow_e
@@ -108,8 +105,6 @@ class weapon_m95tiger : CBaseCSOWeapon
 		self.m_iDefaultSecAmmo = CSOW_MAX_AMMO2;
 		self.m_flCustomDmg = pev.dmg;
 
-		g_iCSOWHands = HANDS_SVENCOOP;
-		m_bSwitchHands = true;
 		m_iKilledMobs = 0;
 		m_bSkillActive = false;
 		m_iBodyConfig = 0;
@@ -132,8 +127,8 @@ class weapon_m95tiger : CBaseCSOWeapon
 		g_Game.PrecacheModel( MODEL_SCOPE_R );
 		g_Game.PrecacheModel( MODEL_SCOPE_Y );
 
-		g_Game.PrecacheModel( SPRITE_MUZZLE1 );
-		g_Game.PrecacheModel( SPRITE_MUZZLE2 );
+		g_Game.PrecacheModel( "sprites/custom_weapons/cso/muzzleflash59.spr" );
+		g_Game.PrecacheModel( "sprites/custom_weapons/cso/muzzleflash80.spr" );
 		g_Game.PrecacheModel( SPRITE_NETHIT );
 		g_Game.PrecacheModel( SPRITE_CLAW );
 		g_Game.PrecacheModel( cso::SPRITE_HITMARKER );
@@ -165,11 +160,11 @@ class weapon_m95tiger : CBaseCSOWeapon
 	bool GetItemInfo( ItemInfo& out info )
 	{
 		info.iMaxAmmo1 	= cso::MAXCARRY_BMG50;
-		info.iMaxClip 		= CSOW_MAX_CLIP;
+		info.iMaxClip 			= CSOW_MAX_CLIP;
 		info.iAmmo1Drop	= CSOW_DEFAULT_GIVE; 
 		info.iMaxAmmo2 	= CSOW_MAX_AMMO2;
 		info.iSlot				= cso::M95TIGER_SLOT - 1;
-		info.iPosition		= cso::M95TIGER_POSITION - 1;
+		info.iPosition			= cso::M95TIGER_POSITION - 1;
 		info.iWeight			= cso::M95TIGER_WEIGHT;
 
 		return true;
@@ -208,7 +203,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? GetBodygroup() : 0) );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, GetBodygroup() );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 			self.m_flNextSecondaryAttack = g_Engine.time + 1.0;
 
@@ -288,12 +283,12 @@ class weapon_m95tiger : CBaseCSOWeapon
 		int iEnemiesHit = FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_M95TIGER, CSOW_TRACERFREQ, flDamage, 5, (CSOF_ALWAYSDECAL|CSOF_HITMARKER|CSOF_ARMORPEN), Vector(CSOW_MUZZLE_ORIGIN.x, CSOW_MUZZLE_ORIGIN.y, CSOW_MUZZLE_ORIGIN.z) );
 		m_iKilledMobs += iEnemiesHit;
 
-		self.SendWeaponAnim( ANIM_SHOOT, 0, (m_bSwitchHands ? GetBodygroup() : 0) );
+		self.SendWeaponAnim( ANIM_SHOOT, 0, GetBodygroup() );
 
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM, 0, 94 + Math.RandomLong(0, 15) );
 
 		HandleAmmoReduction( 1 );
-		DoMuzzleflash( SPRITE_MUZZLE1, CSOW_MUZZLE_ORIGIN.x, CSOW_MUZZLE_ORIGIN.y, CSOW_MUZZLE_ORIGIN.z, Math.RandomFloat(0.08, 0.09), 150, 30.0, 240.0 );
+		MuzzleflashCSO( 1, "#I80 S0.13 R2 F0 P30 T999 A1 L0 O0 X0" );
 
 		self.m_flTimeWeaponIdle = g_Engine.time + 2.0;
 		m_pPlayer.pev.punchangle.x -= CSOW_RECOIL;
@@ -308,12 +303,12 @@ class weapon_m95tiger : CBaseCSOWeapon
 		m_pPlayer.m_iWeaponVolume = BIG_EXPLOSION_VOLUME;
 		m_pPlayer.m_iWeaponFlash = NORMAL_GUN_FLASH;
 
-		self.SendWeaponAnim( ANIM_SHOOT_NET, 0, (m_bSwitchHands ? GetBodygroup() : 0) );
+		self.SendWeaponAnim( ANIM_SHOOT_NET, 0, GetBodygroup() );
 
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT_NET], VOL_NORM, ATTN_NORM, 0, 94 + Math.RandomLong(0, 15) );
 
 		HandleAmmoReduction( 0, 0, 0, 1 );
-		DoMuzzleflash( SPRITE_MUZZLE2, CSOW_MUZZLE_ORIGIN.x, CSOW_MUZZLE_ORIGIN.y, CSOW_MUZZLE_ORIGIN.z, Math.RandomFloat(0.13, 0.14), 150, 30.0, 240.0 );
+		MuzzleflashCSO( 3, "#I59 S0.18 R2 F0 P30 T999 A1 L0 O0 X0" );
 
 		FireNet();
 
@@ -337,7 +332,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 
 	void LaunchTiger()
 	{
-		self.SendWeaponAnim( ANIM_SHOOT_TIGER, 0, (m_bSwitchHands ? GetBodygroup() : 0) );
+		self.SendWeaponAnim( ANIM_SHOOT_TIGER, 0, GetBodygroup() );
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT_TIGER], VOL_NORM, ATTN_NORM, 0, 94 + Math.RandomLong(0, 15) );
 		g_PlayerFuncs.ScreenFade( m_pPlayer, Vector(117, 196, 70), 0.5, 0.2, 70, 0 );
 		m_iKilledMobs = 0;
@@ -384,7 +379,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 		if( m_pPlayer.m_iFOV != 0 )
 			SecondaryAttack();
 
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, (m_bSwitchHands ? GetBodygroup() : 0) );
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, GetBodygroup() );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
 		BaseClass.Reload();
@@ -400,7 +395,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 
 		if( self.m_iClip > 0 )
 		{
-			self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? GetBodygroup() : 0) );
+			self.SendWeaponAnim( ANIM_IDLE, 0, GetBodygroup() );
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
 
 			if( m_bSkillActive )
@@ -440,15 +435,9 @@ class weapon_m95tiger : CBaseCSOWeapon
 	private int GetBodygroup()
 	{
 		if( m_bSkillActive )
-		{
-			m_iBodyConfig = g_ModelFuncs.SetBodygroup( g_ModelFuncs.ModelIndex(MODEL_VIEW), m_iBodyConfig, BODYGROUP_HANDS, g_iCSOWHands );
 			m_iBodyConfig = g_ModelFuncs.SetBodygroup( g_ModelFuncs.ModelIndex(MODEL_VIEW), m_iBodyConfig, BODYGROUP_SYMBOL, 1 );
-		}
 		else
-		{
-			m_iBodyConfig = g_ModelFuncs.SetBodygroup( g_ModelFuncs.ModelIndex(MODEL_VIEW), m_iBodyConfig, BODYGROUP_HANDS, g_iCSOWHands );
 			m_iBodyConfig = g_ModelFuncs.SetBodygroup( g_ModelFuncs.ModelIndex(MODEL_VIEW), m_iBodyConfig, BODYGROUP_SYMBOL, 0 );
-		}
 
 		return m_iBodyConfig;
 	}
@@ -728,17 +717,27 @@ class m95_tiger : ScriptBaseAnimating
 
 				CBaseEntity@ pClaw = g_EntityFuncs.Create( "ef_claw", pTarget.Center(), g_vecZero, false, pTarget.edict() );
 				//@pClaw.pev.aiment = pTarget.edict(); //places the effect at the feet :(
-				CreateBuffHit();
+				HitMarker();
 			}
 		}
 	}
 
-	void CreateBuffHit()
+	void HitMarker()
 	{
-		Vector vecOrigin = pev.owner.vars.origin;
-		cso::get_position( pev.owner, 50.0, -0.05, 1.0, vecOrigin );
+		if( pev.owner is null ) return;
+		CBasePlayer@ pPlayer = cast<CBasePlayer@>( g_EntityFuncs.Instance(pev.owner) );
 
-		CBaseEntity@ pHitConfirm = g_EntityFuncs.Create( "cso_buffhit", vecOrigin, g_vecZero, false, pev.owner );
+		HUDSpriteParams hudParams;
+
+		hudParams.channel = 1;
+		hudParams.flags = HUD_ELEM_ABSOLUTE_Y | HUD_ELEM_SCR_CENTER_Y | HUD_ELEM_SCR_CENTER_X | HUD_ELEM_DEFAULT_ALPHA;
+		hudParams.spritename = "custom_weapons/cso/buffhit.spr";
+		hudParams.x = 0;
+		hudParams.y = 0;
+		hudParams.color1 = RGBA_WHITE;
+		hudParams.holdTime = 0.1;
+
+		g_PlayerFuncs.HudCustomSprite( pPlayer, hudParams );
 	}
 }
 
@@ -802,24 +801,21 @@ class ef_claw : ScriptBaseEntity
 
 void Register()
 {
+	if( cso::bUseDroppedItemEffect )
+	{
+		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
+			cso::RegisterGunDrop();
+	}
+
+	if( !g_CustomEntityFuncs.IsCustomEntity( "ammo_50bmg" ) ) 
+		cso::Register50BMG();
+
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m95tiger::net_shot", "net_shot" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m95tiger::net_hit", "net_hit" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m95tiger::m95_tiger", "m95_tiger" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m95tiger::ef_claw", "ef_claw" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m95tiger::weapon_m95tiger", "weapon_m95tiger" );
 	g_ItemRegistry.RegisterWeapon( "weapon_m95tiger", "custom_weapons/cso", "50bmg", "csonets", "ammo_50bmg" );
-
-	if( !g_CustomEntityFuncs.IsCustomEntity( "ammo_50bmg" ) ) 
-		cso::Register50BMG();
-
-	if( !g_CustomEntityFuncs.IsCustomEntity( "cso_buffhit" ) ) 
-		cso::RegisterBuffHit();
-
-	if( cso::bUseDroppedItemEffect )
-	{
-		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
-			cso::RegisterGunDrop();
-	}
 }
 
 } //namespace cso_m95tiger END

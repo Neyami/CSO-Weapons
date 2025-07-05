@@ -19,14 +19,14 @@ const float CSOW_FLAME_SPEED				= 640.0;
 
 const string CSOW_ANIMEXT					= "saw";
 
-const string AEOLIS_MODEL_VIEW			= "models/custom_weapons/cso/v_aeolis.mdl";
-const string AEOLIS_MODEL_PLAYER		= "models/custom_weapons/cso/p_aeolis.mdl";
-const string AEOLIS_MODEL_WORLD		= "models/custom_weapons/cso/w_aeolis.mdl";
+const string AEOLIS_MODEL_VIEW			= "models/custom_weapons/cso/aeolis/v_aeolis.mdl";
+const string AEOLIS_MODEL_PLAYER		= "models/custom_weapons/cso/aeolis/p_aeolis.mdl";
+const string AEOLIS_MODEL_WORLD		= "models/custom_weapons/cso/aeolis/w_aeolis.mdl";
 const string AEOLIS_MODEL_SHELL			= "models/custom_weapons/cso/shell_556_big.mdl";
-const string AEOLIS_MODEL_CLIP			= "models/custom_weapons/cso/clip_aeolis.mdl";
+const string AEOLIS_MODEL_CLIP			= "models/custom_weapons/cso/aeolis/clip_aeolis.mdl";
 const string SPRITE_FLAME						= "sprites/custom_weapons/cso/flame_puff01.spr";
 
-const Vector CSOW_SHELL_ORIGIN		= Vector(15.0, 13.0, -10.0); //forward, right, up
+const Vector CSOW_SHELL_ORIGIN			= Vector(15.0, 13.0, -10.0); //forward, right, up
 
 enum csow_e
 {
@@ -53,7 +53,7 @@ const array<string> pCSOWSounds =
 	"custom_weapons/cso/aeolis_idle2.wav",
 	"custom_weapons/cso/flamegun-1.wav",
 	"custom_weapons/cso/flamegun-2.wav",
-	"custom_weapons/cso/papin_steam.wav",
+	"custom_weapons/cso/papin/papin_steam.wav",
 	"custom_weapons/cso/aeolis_clipin1.wav",
 	"custom_weapons/cso/aeolis_clipin2.wav",
 	"custom_weapons/cso/aeolis_clipin3.wav",
@@ -144,7 +144,7 @@ class weapon_aeolis : CBaseCSOWeapon
 		bool bResult;
 		{
 			m_iInAttack = 0;
-			bResult = self.DefaultDeploy( self.GetV_Model( AEOLIS_MODEL_VIEW ), self.GetP_Model( AEOLIS_MODEL_PLAYER ), AEOLIS_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			bResult = self.DefaultDeploy( self.GetV_Model( AEOLIS_MODEL_VIEW ), self.GetP_Model( AEOLIS_MODEL_PLAYER ), AEOLIS_DRAW, CSOW_ANIMEXT );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + AEOLIS_TIME_DRAW;
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_IDLE], 0.5, ATTN_NORM );
 			heatCount = 1;
@@ -172,14 +172,14 @@ class weapon_aeolis : CBaseCSOWeapon
 		if( m_pPlayer.pev.waterlevel == WATERLEVEL_HEAD or self.m_iClip <= 0 )
 		{
 			self.PlayEmptySound();
-			self.m_flNextPrimaryAttack = g_Engine.time + 0.15f;
+			self.m_flNextPrimaryAttack = g_Engine.time + 0.15;
 
 			return;
 		}
 
 		if( m_iInAttack == 2 )
 		{
-			self.m_flNextSecondaryAttack = g_Engine.time + 0.5f;
+			self.m_flNextSecondaryAttack = g_Engine.time + 0.5;
 			WeaponIdle();
 
 			return;
@@ -193,7 +193,7 @@ class weapon_aeolis : CBaseCSOWeapon
 		
 		--self.m_iClip;
 
-		self.SendWeaponAnim( AEOLIS_SHOOT_BULLET, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( AEOLIS_SHOOT_BULLET );
 
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], 1, ATTN_NORM, 0, 94 + Math.RandomLong( 0, 0xf ) );
 		
@@ -251,7 +251,7 @@ class weapon_aeolis : CBaseCSOWeapon
 
 		m_pPlayer.pev.punchangle.x = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? AEOLIS_RECOIL_X/2 : AEOLIS_RECOIL_X;
 		m_pPlayer.pev.punchangle.y = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? AEOLIS_RECOIL_Y/2 : AEOLIS_RECOIL_Y;
-		m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH;
+		m_pPlayer.pev.effects |= EF_MUZZLEFLASH;
 		self.m_flNextPrimaryAttack = g_Engine.time + AEOLIS_DELAY_PRIMARY;
 		self.m_flTimeWeaponIdle = g_Engine.time + AEOLIS_TIME_FIRE_TO_IDLE;
 	}
@@ -268,7 +268,7 @@ class weapon_aeolis : CBaseCSOWeapon
 		
 		if( m_iAnimate == 0 and m_pPlayer.m_rgAmmo(self.m_iSecondaryAmmoType) > 0 )
 		{
-			self.SendWeaponAnim( AEOLIS_SHOOT_FLAME, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( AEOLIS_SHOOT_FLAME );
 			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_FLAME1], 0.9, ATTN_NORM, SND_FORCE_LOOP, 95 + Math.RandomLong( 0, 10 ) );
 			m_iAnimate = 1;
 
@@ -329,10 +329,10 @@ class weapon_aeolis : CBaseCSOWeapon
 		if( m_pPlayer.m_rgAmmo( self.m_iPrimaryAmmoType ) <= 0 or self.m_iClip >= AEOLIS_MAX_CLIP or (m_pPlayer.pev.button & IN_ATTACK) != 0 )
 			return;
 
-		self.DefaultReload( AEOLIS_MAX_CLIP, AEOLIS_RELOAD, AEOLIS_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
-		self.m_flTimeWeaponIdle = g_Engine.time + 4.0f;
+		self.DefaultReload( AEOLIS_MAX_CLIP, AEOLIS_RELOAD, AEOLIS_TIME_RELOAD );
+		self.m_flTimeWeaponIdle = g_Engine.time + 4.0;
 
-		self.pev.nextthink = g_Engine.time + 1.25f;
+		self.pev.nextthink = g_Engine.time + 1.25;
 		SetThink( ThinkFunction(EjectClipThink) );
 		heatCount = 0;
 		m_iAnimate = 0;
@@ -401,24 +401,25 @@ class weapon_aeolis : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( AEOLIS_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( AEOLIS_IDLE );
 		self.m_flTimeWeaponIdle = g_Engine.time + AEOLIS_TIME_IDLE;
 	}
 }
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso::csoproj_flame", "csoproj_flame" );
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_aeolis::weapon_aeolis", "weapon_aeolis" );
-	g_ItemRegistry.RegisterWeapon( "weapon_aeolis", "custom_weapons/cso", "556", "aeolisflame", "ammo_556" );
-
-	cso::RegisterDotEnt();
-
 	if( cso::bUseDroppedItemEffect )
 	{
 		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
 			cso::RegisterGunDrop();
 	}
+
+	if( !g_CustomEntityFuncs.IsCustomEntity( "cso_dotent" ) )
+		cso::RegisterDotEnt();
+
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso::csoproj_flame", "csoproj_flame" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_aeolis::weapon_aeolis", "weapon_aeolis" );
+	g_ItemRegistry.RegisterWeapon( "weapon_aeolis", "custom_weapons/cso", "556", "aeolisflame", "ammo_556" );
 }
 
 } //namespace cso_aeolis END

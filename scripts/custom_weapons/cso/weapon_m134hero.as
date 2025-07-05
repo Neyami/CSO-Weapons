@@ -598,9 +598,6 @@ class weapon_m134hero : CBaseCSOWeapon
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m134hero::weapon_m134hero", "weapon_m134hero" );
-	g_ItemRegistry.RegisterWeapon( "weapon_m134hero", "custom_weapons/cso", "762mg", "", "ammo_762mg" );
-
 	if( !g_CustomEntityFuncs.IsCustomEntity( "ammo_762mg" ) )
 		cso::Register762MG();
 
@@ -609,6 +606,9 @@ void Register()
 		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
 			cso::RegisterGunDrop();
 	}
+
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m134hero::weapon_m134hero", "weapon_m134hero" );
+	g_ItemRegistry.RegisterWeapon( "weapon_m134hero", "custom_weapons/cso", "762mg", "", "ammo_762mg" );
 }
 
 } //namespace cso_m134hero END

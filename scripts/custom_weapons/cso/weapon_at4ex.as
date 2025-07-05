@@ -27,10 +27,10 @@ const Vector CSOW_OFFSETS_MUZZLE			= Vector( 34.333031, 12.009664, -5.616758 );
 
 const string CSOW_ANIMEXT							= "rpg"; //at4
 
-const string MODEL_VIEW								= "models/custom_weapons/cso/v_at4ex.mdl";
-const string MODEL_VIEW_SCOPE					= "models/custom_weapons/cso/v_crossbow_scope.mdl";
-const string MODEL_PLAYER							= "models/custom_weapons/cso/p_at4ex.mdl";
-const string MODEL_WORLD							= "models/custom_weapons/cso/w_at4ex.mdl";
+const string MODEL_VIEW								= "models/custom_weapons/cso/at4ex/v_at4ex.mdl";
+const string MODEL_VIEW_SCOPE					= "models/custom_weapons/cso/at4ex/v_at4ex_scope.mdl"; //v_crossbow_scope
+const string MODEL_PLAYER							= "models/custom_weapons/cso/at4ex/p_at4ex.mdl";
+const string MODEL_WORLD							= "models/custom_weapons/cso/at4ex/w_at4ex.mdl";
 const string MODEL_ROCKET							= "models/custom_weapons/cso/rpgrocket.mdl";
 
 const string SPRITE_MUZZLE							= "sprites/ballsmoke.spr";
@@ -82,8 +82,6 @@ class weapon_at4ex : CBaseCSOWeapon
 		self.m_flCustomDmg = pev.dmg;
 
 		m_iWeaponType = TYPE_PRIMARY;
-		g_iCSOWHands = HANDS_SVENCOOP;
-		m_bSwitchHands = true;
 
 		m_sEmptySound = pCSOWSounds[0];
 
@@ -154,7 +152,7 @@ class weapon_at4ex : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT );
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + (CSOW_TIME_DRAW-0.2);
 			self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_IDLE + Math.RandomFloat(0.5, (CSOW_TIME_IDLE*2)));
 
@@ -186,7 +184,7 @@ class weapon_at4ex : CBaseCSOWeapon
 		m_pPlayer.m_iWeaponFlash = BRIGHT_GUN_FLASH;
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 		m_pPlayer.pev.effects |= EF_MUZZLEFLASH;
-		self.SendWeaponAnim( ANIM_SHOOT2, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( ANIM_SHOOT2 );
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM );
 
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
@@ -256,7 +254,7 @@ class weapon_at4ex : CBaseCSOWeapon
 		if( m_pPlayer.m_iFOV != 0 )
 			SecondaryAttack();
 
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
 		BaseClass.Reload();
@@ -269,7 +267,7 @@ class weapon_at4ex : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( ANIM_IDLE );
 		self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_IDLE + Math.RandomFloat(0.5, (CSOW_TIME_IDLE*2)));
 	}
 
@@ -478,15 +476,19 @@ class at4exrocket : ScriptBaseEntity
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_at4ex::at4exrocket", "at4exrocket" );
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_at4ex::weapon_at4ex", CSOW_NAME );
-	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "rockets", "", "ammo_rpgclip" );
-
 	if( cso::bUseDroppedItemEffect )
 	{
 		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
 			cso::RegisterGunDrop();
 	}
+
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_at4ex::at4exrocket", "at4exrocket" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_at4ex::weapon_at4ex", CSOW_NAME );
+	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "rockets", "", "ammo_rpgclip" );
 }
 
 } //namespace cso_at4ex END
+
+/* TODO
+	Make use of at4_charge.wav ??
+*/

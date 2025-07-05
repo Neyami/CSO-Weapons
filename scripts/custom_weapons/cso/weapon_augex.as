@@ -5,7 +5,7 @@ const bool USE_CSLIKE_RECOIL						= false;
 const bool USE_PENETRATION							= true;
 
 const int CSOW_DEFAULT_GIVE						= 30;
-const int CSOW_MAX_CLIP 								= 30;
+const int CSOW_MAX_CLIP 							= 30;
 const int CSOW_MAX_AMMO1							= 90;
 const int CSOW_MAX_AMMO2							= 10;
 const int CSOW_TRACERFREQ							= 2;
@@ -17,30 +17,30 @@ const float CSOW_TIME_DELAY1						= 0.0825;
 const float CSOW_TIME_DELAY2						= 3.0;
 const float CSOW_TIME_DRAW						= 0.75;
 const float CSOW_TIME_IDLE							= 20.0;
-const float CSOW_TIME_RELOAD					= 3.0;
-const float CSOW_TIME_FIRE_TO_IDLE1		= 1.9;
-const float CSOW_TIME_FIRE_TO_IDLE2		= 4.9;
-const float CSOW_TIME_FIRE_TO_IDLE3		= 3.9;
+const float CSOW_TIME_RELOAD						= 3.0;
+const float CSOW_TIME_FIRE_TO_IDLE1			= 1.9;
+const float CSOW_TIME_FIRE_TO_IDLE2			= 4.9;
+const float CSOW_TIME_FIRE_TO_IDLE3			= 3.9;
 const float CSOW_SPREAD_JUMPING				= 0.20;
 const float CSOW_SPREAD_RUNNING				= 0.01785;
 const float CSOW_SPREAD_WALKING				= 0.01785;
-const float CSOW_SPREAD_STANDING			= 0.01718;
+const float CSOW_SPREAD_STANDING				= 0.01718;
 const float CSOW_SPREAD_DUCKING				= 0.01289;
 const Vector2D CSOW_RECOIL_STANDING_X	= Vector2D(-1, -3);
 const Vector2D CSOW_RECOIL_STANDING_Y	= Vector2D(0, 0);
-const Vector2D CSOW_RECOIL_DUCKING_X	= Vector2D(0, 0);
-const Vector2D CSOW_RECOIL_DUCKING_Y	= Vector2D(0, 0);
-const Vector CSOW_SHELL_ORIGIN				= Vector(17.0, 14.0, -8.0); //forward, right, up
+const Vector2D CSOW_RECOIL_DUCKING_X		= Vector2D(0, 0);
+const Vector2D CSOW_RECOIL_DUCKING_Y		= Vector2D(0, 0);
+const Vector CSOW_SHELL_ORIGIN					= Vector(17.0, 14.0, -8.0); //forward, right, up
 const Vector CSOW_MUZZLE_ORIGIN				= Vector(16.0, 4.0, -4.0); //forward, right, up
 const Vector CSOW_OFFSETS_MUZZLE			= Vector( 31.973907, 7.026306, -3.801437 );
 
 const string CSOW_ANIMEXT							= "m16"; //rifle
 
-const string MODEL_VIEW								= "models/custom_weapons/cso/v_augex.mdl";
-const string MODEL_PLAYER							= "models/custom_weapons/cso/p_augex.mdl";
-const string MODEL_WORLD							= "models/custom_weapons/cso/w_augex.mdl";
+const string MODEL_VIEW								= "models/custom_weapons/cso/augex/v_augex.mdl";
+const string MODEL_PLAYER							= "models/custom_weapons/cso/augex/p_augex.mdl";
+const string MODEL_WORLD							= "models/custom_weapons/cso/augex/w_augex.mdl";
 const string MODEL_SHELL								= "models/custom_weapons/cso/pshell.mdl";
-const string MODEL_GRENADE							= "models/custom_weapons/cso/shell_svdex.mdl";
+const string MODEL_GRENADE						= "models/custom_weapons/cso/shell_svdex.mdl";
 
 const string SPRITE_BEAM								= "sprites/laserbeam.spr";
 const string SPRITE_EXPLOSION1					= "sprites/fexplo.spr";
@@ -89,8 +89,6 @@ class weapon_augex : CBaseCSOWeapon
 
 		m_flAccuracy = 0.2;
 		m_iShotsFired = 0;
-		g_iCSOWHands = HANDS_SVENCOOP;
-		m_bSwitchHands = true;
 
 		m_flSpreadJumping = CSOW_SPREAD_JUMPING;
 		m_flSpreadRunning = CSOW_SPREAD_RUNNING;
@@ -174,7 +172,7 @@ class weapon_augex : CBaseCSOWeapon
 			m_flAccuracy = 0.2;
 			m_iShotsFired = 0;
 
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT );
 			self.m_flNextPrimaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 			self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_DRAW*2);
 
@@ -199,7 +197,7 @@ class weapon_augex : CBaseCSOWeapon
 			m_pPlayer.m_iWeaponFlash = BRIGHT_GUN_FLASH;
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 			m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH; //Needed??
-			self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2) );
 			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM, 0, 94 + Math.RandomLong(0, 15) );
 
 			Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
@@ -251,7 +249,7 @@ class weapon_augex : CBaseCSOWeapon
 		int iPenetration = USE_PENETRATION ? 2 : 0;
 		/*Vector vecDir = */FireBullets3( vecSrc, g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_556MM, CSOW_TRACERFREQ, CSOW_DAMAGE, 0.96, 0, CSOW_OFFSETS_MUZZLE ); //CSOF_ALWAYSDECAL ??
 
-		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2) );
 
 		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x + g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell );
 
@@ -287,7 +285,7 @@ class weapon_augex : CBaseCSOWeapon
 		if( m_pPlayer.m_rgAmmo(self.m_iSecondaryAmmoType) > 0 )
 		{
 			LaunchGrenade();
-			self.SendWeaponAnim( ANIM_SHOOT_GRENADE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( ANIM_SHOOT_GRENADE );
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_ITEM, pCSOWSounds[SND_SHOOT_GRENADE], VOL_NORM, ATTN_NORM );
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY2;
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE2;
@@ -295,13 +293,14 @@ class weapon_augex : CBaseCSOWeapon
 		else
 		{
 			LaunchGrenade();
-			self.SendWeaponAnim( ANIM_SHOOT_GRENADE_EMPTY, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( ANIM_SHOOT_GRENADE_EMPTY );
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_ITEM, pCSOWSounds[SND_SHOOT_GRENADE_EMPTY], VOL_NORM, ATTN_NORM );
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + (CSOW_TIME_DELAY2-0.4);
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE3;
 		}
 
-		DoMuzzleflash( SPRITE_MUZZLE, CSOW_MUZZLE_ORIGIN.x, CSOW_MUZZLE_ORIGIN.y, CSOW_MUZZLE_ORIGIN.z, 0.05, 128, 20.0 );
+		//{ event 5001 0 "#I12 S0.12 R2 F0 P30 T0.12 A1 L0 O0" } 
+		MuzzleflashCSO( 3, "#I12 S0.12 R2 F0 P30 T0.12 A1 L0 O0" );
 	}
 
 	void LaunchGrenade()
@@ -330,7 +329,7 @@ class weapon_augex : CBaseCSOWeapon
 		m_iShotsFired = 0;
 		m_bDelayFire = false;
 
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
 		BaseClass.Reload();
@@ -345,7 +344,7 @@ class weapon_augex : CBaseCSOWeapon
 			return;
 
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
-		self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( ANIM_IDLE );
 	}
 
 	void ItemPostFrame()

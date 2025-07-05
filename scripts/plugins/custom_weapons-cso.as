@@ -1,8 +1,7 @@
 #include "../custom_weapons/cso/csobaseweapon"
 #include "../custom_weapons/cso/csocommon"
 
-
-//Melee
+//Melee (8)
 #include "../custom_weapons/cso/weapon_balrog9"
 #include "../custom_weapons/cso/weapon_dragonclaw"
 #include "../custom_weapons/cso/weapon_janus9"
@@ -12,7 +11,7 @@
 #include "../custom_weapons/cso/weapon_ripper"
 #include "../custom_weapons/cso/weapon_dualsword"
 
-//Pistols
+//Pistols (7)
 #include "../custom_weapons/cso/weapon_elites"
 #include "../custom_weapons/cso/weapon_desperado"
 #include "../custom_weapons/cso/weapon_m950"
@@ -21,7 +20,7 @@
 #include "../custom_weapons/cso/weapon_gunkata"
 #include "../custom_weapons/cso/weapon_m1887craft"
 
-//Shotguns
+//Shotguns (8)
 #include "../custom_weapons/cso/weapon_m3"
 #include "../custom_weapons/cso/weapon_usas12"
 #include "../custom_weapons/cso/weapon_m1887"
@@ -31,12 +30,12 @@
 #include "../custom_weapons/cso/weapon_mk3a1"
 #include "../custom_weapons/cso/weapon_blockas"
 
-//Submachine Guns
-#include "../custom_weapons/cso/weapon_crow3"
+//Submachine Guns (3)
 #include "../custom_weapons/cso/weapon_p90"
 #include "../custom_weapons/cso/weapon_thompson"
+#include "../custom_weapons/cso/weapon_crow3"
 
-//Assault Rifles
+//Assault Rifles (8)
 #include "../custom_weapons/cso/weapon_aug"
 #include "../custom_weapons/cso/weapon_guitar"
 #include "../custom_weapons/cso/weapon_ethereal"
@@ -46,24 +45,25 @@
 #include "../custom_weapons/cso/weapon_csobow"
 #include "../custom_weapons/cso/weapon_failnaught"
 
-//Sniper Rifles
+//Sniper Rifles (7)
 #include "../custom_weapons/cso/weapon_awp"
+#include "../custom_weapons/cso/weapon_m400"
 #include "../custom_weapons/cso/weapon_svd"
 #include "../custom_weapons/cso/weapon_svdex"
 #include "../custom_weapons/cso/weapon_m95"
 #include "../custom_weapons/cso/weapon_savery"
 #include "../custom_weapons/cso/weapon_m95tiger"
 
-//Machine Guns
+//Machine Guns (3)
 #include "../custom_weapons/cso/weapon_aeolis"
 #include "../custom_weapons/cso/weapon_m134hero"
 #include "../custom_weapons/cso/weapon_m2"
 
-//Explosives
+//Explosives (2)
 #include "../custom_weapons/cso/weapon_at4"
 #include "../custom_weapons/cso/weapon_at4ex"
 
-//Other
+//Other (1)
 #include "../custom_weapons/cso/weapon_salamander"
 
 void PluginInit()
@@ -74,6 +74,8 @@ void PluginInit()
 
 void MapInit()
 {
+	cso::ReadCSOPlayerModels();
+
 	cso_balrog9::Register();
 	cso_dragonclaw::Register();
 	cso_janus9::Register();
@@ -100,9 +102,9 @@ void MapInit()
 	cso_mk3a1::Register();
 	cso_blockas::Register();
 
-	cso_crow3::Register();
 	cso_p90::Register();
 	cso_thompson::Register();
+	cso_crow3::Register();
 
 	cso_aug::Register();
 	cso_guitar::Register();
@@ -114,6 +116,7 @@ void MapInit()
 	cso_failnaught::Register();
 
 	cso_awp::Register();
+	cso_m400::Register();
 	cso_svd::Register();
 	cso_svdex::Register();
 	cso_m95::Register();
