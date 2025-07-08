@@ -1,6 +1,5 @@
 #include "includes/csoenums"
 #include "includes/csoentities"
-#include "includes/csoammo"
 
 namespace cso
 {
@@ -416,3 +415,16 @@ void get_position( edict_t@ pOwner, float flForward, float flRight, float flUp, 
 }
 
 } //namespace cso END
+
+/*
+TODO
+	Make a special ammo entity for CSO weapons ??
+		CBasePlayerWeapon@ pWeapon = cast<CBasePlayerWeapon@>( pPlayer.m_hActiveItem.GetEntity() );
+
+		if( pWeapon.PrimaryAmmoIndex() > -1 )
+			pPlayer.GiveAmmo( pWeapon.iMaxAmmo1(), pWeapon.pszAmmo1(), pWeapon.iMaxAmmo1() );
+
+		if(pWeapon.SecondaryAmmoIndex() > -1)
+			pPlayer.GiveAmmo( pWeapon.iMaxAmmo2(), pWeapon.pszAmmo2(), pWeapon.iMaxAmmo2() );
+
+*/

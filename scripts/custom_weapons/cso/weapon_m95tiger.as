@@ -5,6 +5,7 @@ const bool USE_PENETRATION				= true;
 
 const int CSOW_DEFAULT_GIVE			= 20;
 const int CSOW_MAX_CLIP 				= 20;
+const int CSOW_MAX_AMMO				= 50;
 const int CSOW_MAX_AMMO2				= 7;
 const int CSOW_ZOOMFOV					= 20;
 const int CSOW_TRACERFREQ				= 0;
@@ -31,7 +32,8 @@ const float CSOW_TIGER_DAMAGE		= 149; //zombies: 7413, scenario: 14,826
 const float CSOW_TIGER_RADIUS		= 120.0;
 const float CSOW_CLAW_LIFETIME		= 2.5;
 
-const string CSOW_ANIMEXT				= "sniper"; //rifle
+const string CSOW_ANIMEXT				= "sniper";
+const string CSOW_ANIMEXT_CSO		= "sniper"; //rifle bugged atm
 
 const string MODEL_VIEW					= "models/custom_weapons/cso/m95tiger/v_m95tiger.mdl";
 const string MODEL_PLAYER				= "models/custom_weapons/cso/m95tiger/p_m95tiger.mdl";
@@ -159,7 +161,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 
 	bool GetItemInfo( ItemInfo& out info )
 	{
-		info.iMaxAmmo1 	= cso::MAXCARRY_BMG50;
+		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
 		info.iMaxClip 			= CSOW_MAX_CLIP;
 		info.iAmmo1Drop	= CSOW_DEFAULT_GIVE; 
 		info.iMaxAmmo2 	= CSOW_MAX_AMMO2;
@@ -203,7 +205,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, GetBodygroup() );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, PlayerHasCSOModel() ? CSOW_ANIMEXT_CSO : CSOW_ANIMEXT, 0, GetBodygroup() );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 			self.m_flNextSecondaryAttack = g_Engine.time + 1.0;
 
@@ -354,7 +356,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 			case 0:
 			{
 				m_pPlayer.pev.fov = m_pPlayer.m_iFOV = CSOW_ZOOMFOV;
-				m_pPlayer.m_szAnimExtension = "sniperscope";
+				m_pPlayer.m_szAnimExtension = PlayerHasCSOModel() ? CSOW_ANIMEXT_CSO : "sniperscope";
 				m_pPlayer.pev.viewmodel = m_bSkillActive ? MODEL_SCOPE_Y : MODEL_SCOPE_R;
 				break;
 			}
@@ -363,7 +365,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 			{
 				m_pPlayer.pev.viewmodel = MODEL_VIEW;
 				m_pPlayer.pev.fov = m_pPlayer.m_iFOV = 0;
-				m_pPlayer.m_szAnimExtension = "sniper";
+				m_pPlayer.m_szAnimExtension = PlayerHasCSOModel() ? CSOW_ANIMEXT_CSO : CSOW_ANIMEXT;
 			}
 		}
 
@@ -807,15 +809,12 @@ void Register()
 			cso::RegisterGunDrop();
 	}
 
-	if( !g_CustomEntityFuncs.IsCustomEntity( "ammo_50bmg" ) ) 
-		cso::Register50BMG();
-
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m95tiger::net_shot", "net_shot" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m95tiger::net_hit", "net_hit" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m95tiger::m95_tiger", "m95_tiger" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m95tiger::ef_claw", "ef_claw" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m95tiger::weapon_m95tiger", "weapon_m95tiger" );
-	g_ItemRegistry.RegisterWeapon( "weapon_m95tiger", "custom_weapons/cso", "50bmg", "csonets", "ammo_50bmg" );
+	g_ItemRegistry.RegisterWeapon( "weapon_m95tiger", "custom_weapons/cso", "m95tigerammo", "m95tigernets" ); //"50bmg", "csonets", "ammo_50bmg"
 }
 
 } //namespace cso_m95tiger END

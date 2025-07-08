@@ -3,31 +3,34 @@ namespace cso_p90
 
 const bool USE_PENETRATION							= true;
 
-const int CSOW_MAX_CLIP 								= 50;
+const int CSOW_DEFAULT_GIVE						= 50;
+const int CSOW_MAX_CLIP 							= 50;
+const int CSOW_MAX_CARRY 							= 200; //100 original
 const int CSOW_TRACERFREQ							= 2;
 const float CSOW_DAMAGE								= 21;
 const float CSOW_TIME_DELAY						= 0.086;
 const float CSOW_TIME_DRAW						= 1.0;
 const float CSOW_TIME_IDLE							= 20.0;
 const float CSOW_TIME_FIRE_TO_IDLE			= 1.0;
-const float CSOW_TIME_RELOAD					= 3.4;
+const float CSOW_TIME_RELOAD						= 3.4;
 const float CSOW_SPREAD_JUMPING				= 0.3;
 const float CSOW_SPREAD_RUNNING				= 0.115;
 const float CSOW_SPREAD_WALKING				= 0.050;
-const float CSOW_SPREAD_STANDING			= 0.025;
+const float CSOW_SPREAD_STANDING				= 0.025;
 const float CSOW_SPREAD_DUCKING				= 0.02;
 const Vector2D CSOW_RECOIL_STANDING_X	= Vector2D(-1, -3);
 const Vector2D CSOW_RECOIL_STANDING_Y	= Vector2D(0, 0);
-const Vector2D CSOW_RECOIL_DUCKING_X	= Vector2D(0, 0);
-const Vector2D CSOW_RECOIL_DUCKING_Y	= Vector2D(0, 0);
-const Vector CSOW_SHELL_ORIGIN				= Vector(20.0, -12.0, -8.0); //forward, right, up
+const Vector2D CSOW_RECOIL_DUCKING_X		= Vector2D(0, 0);
+const Vector2D CSOW_RECOIL_DUCKING_Y		= Vector2D(0, 0);
+const Vector CSOW_SHELL_ORIGIN					= Vector(20.0, -12.0, -8.0); //forward, right, up
 const Vector CSOW_OFFSETS_MUZZLE			= Vector( 15.259552, 4.463806, -3.458954 );
 
-const string CSOW_ANIMEXT							= "mp5"; //carbine
+const string CSOW_ANIMEXT							= "mp5";
+const string CSOW_ANIMEXT_CSO					= "carbine";
 
-const string MODEL_VIEW								= "models/custom_weapons/cso/v_p90.mdl";
-const string MODEL_PLAYER							= "models/custom_weapons/cso/p_p90.mdl";
-const string MODEL_WORLD							= "models/custom_weapons/cso/w_p90.mdl";
+const string MODEL_VIEW								= "models/custom_weapons/cso/p90/v_p90.mdl";
+const string MODEL_PLAYER							= "models/custom_weapons/cso/p90/p_p90.mdl";
+const string MODEL_WORLD							= "models/custom_weapons/cso/p90/w_p90.mdl";
 const string MODEL_SHELL								= "models/custom_weapons/cso/rshell.mdl";
 
 enum csow_e
@@ -61,7 +64,7 @@ class weapon_p90 : CBaseCSOWeapon
 	{
 		Precache();
 		g_EntityFuncs.SetModel( self, MODEL_WORLD );
-		self.m_iDefaultAmmo = cso::GIVE_57MM;
+		self.m_iDefaultAmmo = CSOW_DEFAULT_GIVE;
 		self.m_flCustomDmg = pev.dmg;
 
 		m_flSpreadJumping = CSOW_SPREAD_JUMPING;
@@ -108,10 +111,10 @@ class weapon_p90 : CBaseCSOWeapon
 
 	bool GetItemInfo( ItemInfo& out info )
 	{
-		info.iMaxAmmo1 	= cso::MAXCARRY_57MM;
-		info.iMaxClip 		= CSOW_MAX_CLIP;
+		info.iMaxAmmo1 	= CSOW_MAX_CARRY;
+		info.iMaxClip 			= CSOW_MAX_CLIP;
 		info.iSlot				= cso::P90_SLOT - 1;
-		info.iPosition		= cso::P90_POSITION - 1;
+		info.iPosition			= cso::P90_POSITION - 1;
 		info.iWeight			= cso::P90_WEIGHT;
 
 		return true;
@@ -135,7 +138,7 @@ class weapon_p90 : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, PlayerHasCSOModel() ? CSOW_ANIMEXT_CSO : CSOW_ANIMEXT );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 
 			return bResult;
@@ -157,7 +160,7 @@ class weapon_p90 : CBaseCSOWeapon
 		m_pPlayer.m_iWeaponFlash = DIM_GUN_FLASH;
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 		m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH;
-		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT3), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT3) );
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM, 0, 84 + Math.RandomLong(0, 15) );
 
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
@@ -182,7 +185,7 @@ class weapon_p90 : CBaseCSOWeapon
 		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 or self.m_iClip >= CSOW_MAX_CLIP or (m_pPlayer.pev.button & IN_ATTACK) != 0 )
 			return;
 
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
 		BaseClass.Reload();
@@ -195,24 +198,21 @@ class weapon_p90 : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( ANIM_IDLE );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
 	}
 }
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_p90::weapon_p90", "weapon_p90" );
-	g_ItemRegistry.RegisterWeapon( "weapon_p90", "custom_weapons/cso", "57mm", "ammo_57mm" );
-
-	if( !g_CustomEntityFuncs.IsCustomEntity( "ammo_57mm" ) ) 
-		cso::Register57MM();
-
 	if( cso::bUseDroppedItemEffect )
 	{
 		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
 			cso::RegisterGunDrop();
 	}
+
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_p90::weapon_p90", "weapon_p90" );
+	g_ItemRegistry.RegisterWeapon( "weapon_p90", "custom_weapons/cso", "p90ammo" ); //"57mm", "", "ammo_57mm"
 }
 
 } //namespace cso_p90 END

@@ -488,7 +488,10 @@ class weapon_gunkata : CBaseCSOWeapon
 
 	void ReloadThink()
 	{
-		m_pPlayer.m_szAnimExtension = CSOW_ANIMEXT;
+		if( PlayerHasCSOModel() )
+			m_pPlayer.m_szAnimExtension = "gunkata";
+		else
+			m_pPlayer.m_szAnimExtension = CSOW_ANIMEXT;
 
 		while( self.m_iClip < CSOW_MAX_CLIP )
 		{
@@ -1100,7 +1103,7 @@ void Register()
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_gunkata::ef_gunkatablast", "ef_gunkatablast" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_gunkata::ef_gunkata", "ef_gunkata" );
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_gunkata::weapon_gunkata", CSOW_NAME );
-	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "44MAG" );
+	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "gunkataammo" ); //44MAG
 }
 
 } //namespace cso_gunkata END

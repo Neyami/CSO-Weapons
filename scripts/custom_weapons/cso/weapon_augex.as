@@ -34,7 +34,8 @@ const Vector CSOW_SHELL_ORIGIN					= Vector(17.0, 14.0, -8.0); //forward, right,
 const Vector CSOW_MUZZLE_ORIGIN				= Vector(16.0, 4.0, -4.0); //forward, right, up
 const Vector CSOW_OFFSETS_MUZZLE			= Vector( 31.973907, 7.026306, -3.801437 );
 
-const string CSOW_ANIMEXT							= "m16"; //rifle
+const string CSOW_ANIMEXT							= "mp5";
+const string CSOW_ANIMEXT_CSO					= "rifle";
 
 const string MODEL_VIEW								= "models/custom_weapons/cso/augex/v_augex.mdl";
 const string MODEL_PLAYER							= "models/custom_weapons/cso/augex/p_augex.mdl";
@@ -142,11 +143,11 @@ class weapon_augex : CBaseCSOWeapon
 	{
 		info.iMaxAmmo1 	= CSOW_MAX_AMMO1;
 		info.iMaxAmmo2 	= CSOW_MAX_AMMO2;
-		info.iMaxClip 		= CSOW_MAX_CLIP;
+		info.iMaxClip 			= CSOW_MAX_CLIP;
 		info.iSlot				= cso::AUGEX_SLOT - 1;
-		info.iPosition		= cso::AUGEX_POSITION - 1;
+		info.iPosition			= cso::AUGEX_POSITION - 1;
 		info.iWeight			= cso::AUGEX_WEIGHT;
-		info.iFlags			= ITEM_FLAG_SELECTONEMPTY | ITEM_FLAG_NOAUTOSWITCHEMPTY;
+		info.iFlags				= ITEM_FLAG_SELECTONEMPTY | ITEM_FLAG_NOAUTOSWITCHEMPTY;
 
 		return true;
 	}
@@ -172,7 +173,7 @@ class weapon_augex : CBaseCSOWeapon
 			m_flAccuracy = 0.2;
 			m_iShotsFired = 0;
 
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, PlayerHasCSOModel() ? CSOW_ANIMEXT_CSO : CSOW_ANIMEXT );
 			self.m_flNextPrimaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 			self.m_flTimeWeaponIdle = g_Engine.time + (CSOW_TIME_DRAW*2);
 
@@ -564,15 +565,15 @@ class augex_grenade : ScriptBaseEntity
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_augex::augex_grenade", "augex_grenade" );
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_augex::weapon_augex", "weapon_augex" );
-	g_ItemRegistry.RegisterWeapon( "weapon_augex", "custom_weapons/cso", "556", "ARgrenades", "ammo_556", "ammo_ARgrenades" );
-
 	if( cso::bUseDroppedItemEffect )
 	{
 		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
 			cso::RegisterGunDrop();
 	}
+
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_augex::augex_grenade", "augex_grenade" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_augex::weapon_augex", "weapon_augex" );
+	g_ItemRegistry.RegisterWeapon( "weapon_augex", "custom_weapons/cso", "augexammo1", "augexammo2" ); //"556", "ARgrenades", "ammo_556", "ammo_ARgrenades"
 }
 
 } //namespace cso_augex END

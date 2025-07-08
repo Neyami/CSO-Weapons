@@ -1,26 +1,29 @@
 namespace cso_ripper
 {
 
-const int CSOW_DEFAULT_GIVE					= 200;
-const int CSOW_MAX_CLIP 						= 200;
-const int CSOW_DAMAGE1							= 20;
-const float CSOW_RANGE1							= 90;
-const float CSOW_RADIUS1						= 90;
-const float CSOW_DAMAGE2						= 85;
-const float CSOW_RANGE2							= 75;
-const float CSOW_RADIUS2						= 120;
-const float CSOW_KNOCKBACK					= 250;
-const float CSOW_TIME_DRAW					= 1.5;
-const float CSOW_TIME_RELOAD				= 3.0;
-const float CSOW_TIME_DELAY1					= 0.075;
-const float CSOW_TIME_DELAY2					= 1.2;
-const float CSOW_TIME_IDLE						= 5.0;
+const int CSOW_DEFAULT_GIVE		= 200;
+const int CSOW_MAX_CLIP 			= 200;
+const int CSOW_MAX_CARRY 			= 200;
+const int CSOW_DAMAGE1				= 20;
+const float CSOW_RANGE1				= 90;
+const float CSOW_RADIUS1			= 90;
+const float CSOW_DAMAGE2			= 85;
+const float CSOW_RANGE2				= 75;
+const float CSOW_RADIUS2			= 120;
+const float CSOW_KNOCKBACK		= 250;
+const float CSOW_TIME_DRAW		= 1.5;
+const float CSOW_TIME_RELOAD		= 3.0;
+const float CSOW_TIME_DELAY1		= 0.075;
+const float CSOW_TIME_DELAY2		= 1.2;
+const float CSOW_TIME_IDLE			= 5.0;
 
-const string CSOW_ANIMEXT	= "minigun";
+const string CSOW_ANIMEXT			= "minigun";
+const string CSOW_ANIMEXT_CSO1	= "chainsaw";
+const string CSOW_ANIMEXT_CSO2	= "chainsaw2";
 
-const string MODEL_VIEW		= "models/custom_weapons/cso/v_chainsaw.mdl";
-const string MODEL_PLAYER	= "models/custom_weapons/cso/p_chainsaw.mdl";
-const string MODEL_WORLD	= "models/custom_weapons/cso/w_chainsaw.mdl";
+const string MODEL_VIEW				= "models/custom_weapons/cso/chainsaw/v_chainsaw.mdl";
+const string MODEL_PLAYER			= "models/custom_weapons/cso/chainsaw/p_chainsaw.mdl";
+const string MODEL_WORLD			= "models/custom_weapons/cso/chainsaw/w_chainsaw.mdl";
 
 enum csow_e
 {
@@ -88,8 +91,6 @@ class weapon_ripper : CBaseCSOWeapon
 		self.m_flCustomDmg = pev.dmg;
 
 		m_iWeaponState = STATE_NONE;
-		g_iCSOWHands = HANDS_SVENCOOP;
-		m_bSwitchHands = true;
 
 		self.FallInit();
 	}
@@ -121,12 +122,12 @@ class weapon_ripper : CBaseCSOWeapon
 
 	bool GetItemInfo( ItemInfo& out info )
 	{
-		info.iMaxAmmo1	= cso::MAXCARRY_GASOLINE;
-		info.iMaxClip		= CSOW_MAX_CLIP;
+		info.iMaxAmmo1	= CSOW_MAX_CARRY;
+		info.iMaxClip			= CSOW_MAX_CLIP;
 		info.iSlot				= cso::RIPPER_SLOT - 1;
-		info.iPosition		= cso::RIPPER_POSITION - 1;
+		info.iPosition			= cso::RIPPER_POSITION - 1;
 		info.iWeight			= cso::RIPPER_WEIGHT;
-		info.iFlags			= ITEM_FLAG_SELECTONEMPTY | ITEM_FLAG_NOAUTOSWITCHEMPTY;
+		info.iFlags				= ITEM_FLAG_SELECTONEMPTY | ITEM_FLAG_NOAUTOSWITCHEMPTY;
 
 		return true;
 	}
@@ -149,7 +150,7 @@ class weapon_ripper : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, PlayerHasCSOModel() ? CSOW_ANIMEXT_CSO1 : CSOW_ANIMEXT );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 
 			return bResult;
@@ -179,7 +180,7 @@ class weapon_ripper : CBaseCSOWeapon
 		{
 			case STATE_NONE:
 			{
-				self.SendWeaponAnim( ANIM_ATTACK1_START, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				self.SendWeaponAnim( ANIM_ATTACK1_START );
 				g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_ATTACK1_START], VOL_NORM, ATTN_NORM );
 				g_SoundSystem.StopSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_IDLE] );
 
@@ -192,7 +193,7 @@ class weapon_ripper : CBaseCSOWeapon
 			case STATE_LOOP:
 			{
 				if( m_pPlayer.pev.weaponanim != ANIM_ATTACK1_LOOP )
-					self.SendWeaponAnim( ANIM_ATTACK1_LOOP, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+					self.SendWeaponAnim( ANIM_ATTACK1_LOOP );
 
 				float flDamage = CSOW_DAMAGE1;
 				if( self.m_flCustomDmg > 0 )
@@ -207,6 +208,7 @@ class weapon_ripper : CBaseCSOWeapon
 				vecRecoil.y = Math.RandomFloat( -1.0, 1.0 );
 				m_pPlayer.pev.punchangle = vecRecoil;
 
+				m_pPlayer.m_szAnimExtension = PlayerHasCSOModel() ? CSOW_ANIMEXT_CSO1 : CSOW_ANIMEXT;
 				m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
 				HandleAmmoReduction( 1 );
@@ -221,9 +223,9 @@ class weapon_ripper : CBaseCSOWeapon
 	void SecondaryAttack()
 	{
 		if( self.m_iClip > 0 )
-			self.SendWeaponAnim( Math.RandomLong(ANIM_SLASH1, ANIM_SLASH2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( Math.RandomLong(ANIM_SLASH1, ANIM_SLASH2) );
 		else
-			self.SendWeaponAnim( Math.RandomLong(ANIM_SLASH3, ANIM_SLASH4), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( Math.RandomLong(ANIM_SLASH3, ANIM_SLASH4) );
 
 		Vector vecRecoil;
 		vecRecoil.x = -5.0;
@@ -236,6 +238,7 @@ class weapon_ripper : CBaseCSOWeapon
 
 		CheckMeleeAttack( CSOW_RANGE2, CSOW_RADIUS2, flDamage, true );
 
+		m_pPlayer.m_szAnimExtension = PlayerHasCSOModel() ? CSOW_ANIMEXT_CSO2 : CSOW_ANIMEXT;
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
 
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_DELAY2;
@@ -246,7 +249,8 @@ class weapon_ripper : CBaseCSOWeapon
 		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 or self.m_iClip >= CSOW_MAX_CLIP )
 			return;
 
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		m_pPlayer.m_szAnimExtension = PlayerHasCSOModel() ? CSOW_ANIMEXT_CSO1 : CSOW_ANIMEXT;
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
 		BaseClass.Reload();
@@ -257,11 +261,13 @@ class weapon_ripper : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
+		m_pPlayer.m_szAnimExtension = PlayerHasCSOModel() ? CSOW_ANIMEXT_CSO1 : CSOW_ANIMEXT;
+
 		if( self.m_iClip <= 0 )
-			self.SendWeaponAnim( ANIM_EMPTY, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( ANIM_EMPTY );
 		else
 		{
-			self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( ANIM_IDLE );
 			g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_IDLE], 0.8, ATTN_NORM );
 		}
 
@@ -282,7 +288,7 @@ class weapon_ripper : CBaseCSOWeapon
 
 			case STATE_END:
 			{
-				self.SendWeaponAnim( ANIM_ATTACK1_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				self.SendWeaponAnim( ANIM_ATTACK1_END );
 
 				m_iWeaponState = STATE_NONE;
 				g_SoundSystem.StopSound( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_ATTACK1_LOOP] );
@@ -427,17 +433,14 @@ class weapon_ripper : CBaseCSOWeapon
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_ripper::weapon_ripper", "weapon_ripper" );
-	g_ItemRegistry.RegisterWeapon( "weapon_ripper", "custom_weapons/cso", "gasoline", "", "ammo_gasoline" );
-
-	if( !g_CustomEntityFuncs.IsCustomEntity( "ammo_gasoline" ) ) 
-		cso::RegisterGasoline();
-
 	if( cso::bUseDroppedItemEffect )
 	{
 		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
 			cso::RegisterGunDrop();
 	}
+
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_ripper::weapon_ripper", "weapon_ripper" );
+	g_ItemRegistry.RegisterWeapon( "weapon_ripper", "custom_weapons/cso", "ripperammo" ); //"gasoline", "", "ammo_gasoline"
 }
 
 } //namespace cso_ripper END

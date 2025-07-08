@@ -4,7 +4,7 @@ namespace cso_m95
 const bool USE_PENETRATION				= true;
 
 const int CSOW_DEFAULT_GIVE			= 5;
-const int CSOW_MAX_CLIP 					= 5;
+const int CSOW_MAX_CLIP 				= 5;
 const int CSOW_MAX_AMMO				= 50;
 const int CSOW_TRACERFREQ				= 0;
 const float CSOW_DAMAGE					= 280; //145
@@ -12,15 +12,16 @@ const float CSOW_TIME_DELAY1			= 1.47;
 const float CSOW_TIME_DELAY2			= 0.3;
 const float CSOW_TIME_DRAW			= 1.45;
 const float CSOW_TIME_IDLE				= 60.0;
-const float CSOW_TIME_RELOAD		= 4.0;
+const float CSOW_TIME_RELOAD			= 4.0;
 const float CSOW_RECOIL					= 4.0;
-const Vector CSOW_SHELL_ORIGIN	= Vector(16.0, 9.0, -9.0); //forward, right, up
+const Vector CSOW_SHELL_ORIGIN		= Vector(16.0, 9.0, -9.0); //forward, right, up
 
-const string CSOW_ANIMEXT				= "sniper"; //rifle
+const string CSOW_ANIMEXT				= "sniper";
+const string CSOW_ANIMEXT_CSO		= "sniper"; //rifle bugged atm
 
-const string MODEL_VIEW					= "models/custom_weapons/cso/v_m95.mdl";
-const string MODEL_PLAYER				= "models/custom_weapons/cso/p_m95.mdl";
-const string MODEL_WORLD				= "models/custom_weapons/cso/w_m95.mdl";
+const string MODEL_VIEW					= "models/custom_weapons/cso/m95/v_m95.mdl";
+const string MODEL_PLAYER				= "models/custom_weapons/cso/m95/p_m95.mdl";
+const string MODEL_WORLD				= "models/custom_weapons/cso/m95/w_m95.mdl";
 const string MODEL_SHELL					= "models/custom_weapons/cso/rshell_big.mdl";
 
 enum csow_e
@@ -60,9 +61,6 @@ class weapon_m95 : CBaseCSOWeapon
 		g_EntityFuncs.SetModel( self, MODEL_WORLD );
 		self.m_iDefaultAmmo = CSOW_DEFAULT_GIVE;
 		self.m_flCustomDmg = pev.dmg;
-
-		g_iCSOWHands = HANDS_SVENCOOP;
-		m_bSwitchHands = true;
 
 		m_sEmptySound = pCSOWSounds[0];
 
@@ -138,7 +136,7 @@ class weapon_m95 : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER), ANIM_DRAW, PlayerHasCSOModel() ? CSOW_ANIMEXT_CSO : CSOW_ANIMEXT );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 			self.m_flNextSecondaryAttack = g_Engine.time + 1.0;
 
@@ -185,7 +183,7 @@ class weapon_m95 : CBaseCSOWeapon
 
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
 
-		m_flEjectBrass = g_Engine.time + 0.55;
+		m_flEjectBrass = g_Engine.time + 0.858;
 		m_pPlayer.m_iWeaponVolume = BIG_EXPLOSION_VOLUME;
 		m_pPlayer.m_iWeaponFlash = NORMAL_GUN_FLASH;
 
@@ -197,7 +195,7 @@ class weapon_m95 : CBaseCSOWeapon
 		int iPenetration = USE_PENETRATION ? 6 : 1;
 		FireBullets3( vecSrc, g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_338MAG, CSOW_TRACERFREQ, flDamage, 1, CSOF_ALWAYSDECAL|CSOF_ARMORPEN );
 
-		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2) );
 
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM, 0, 94 + Math.RandomLong(0, 15) );
 
@@ -213,9 +211,9 @@ class weapon_m95 : CBaseCSOWeapon
 	{
 		switch( m_pPlayer.m_iFOV )
 		{
-			case 0: m_pPlayer.pev.fov = m_pPlayer.m_iFOV = 40; m_pPlayer.m_szAnimExtension = "sniperscope"; break;
+			case 0: m_pPlayer.pev.fov = m_pPlayer.m_iFOV = 40; m_pPlayer.m_szAnimExtension = PlayerHasCSOModel() ? CSOW_ANIMEXT_CSO : "sniperscope"; break;
 			case 40: m_pPlayer.pev.fov = m_pPlayer.m_iFOV = 10; break;
-			default: m_pPlayer.pev.fov = m_pPlayer.m_iFOV = 0; m_pPlayer.m_szAnimExtension = "sniper"; break;
+			default: m_pPlayer.pev.fov = m_pPlayer.m_iFOV = 0; m_pPlayer.m_szAnimExtension = PlayerHasCSOModel() ? CSOW_ANIMEXT_CSO : CSOW_ANIMEXT; break;
 		}
 
 		g_SoundSystem.EmitSound( m_pPlayer.edict(), CHAN_ITEM, pCSOWSounds[SND_ZOOM], 0.2, 2.4 );
@@ -233,7 +231,7 @@ class weapon_m95 : CBaseCSOWeapon
 			SecondaryAttack();
 		}
 
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD );
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
 		BaseClass.Reload();
@@ -250,7 +248,7 @@ class weapon_m95 : CBaseCSOWeapon
 		if( self.m_iClip > 0 )
 		{
 			self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_IDLE;
-			self.SendWeaponAnim( ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( ANIM_IDLE );
 		}
 	}
 
@@ -287,17 +285,14 @@ class weapon_m95 : CBaseCSOWeapon
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m95::weapon_m95", "weapon_m95" );
-	g_ItemRegistry.RegisterWeapon( "weapon_m95", "custom_weapons/cso", "50bmg", "", "ammo_50bmg" );
-
-	if( !g_CustomEntityFuncs.IsCustomEntity( "ammo_50bmg" ) ) 
-		cso::Register50BMG();
-
 	if( cso::bUseDroppedItemEffect )
 	{
 		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
 			cso::RegisterGunDrop();
 	}
+
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m95::weapon_m95", "weapon_m95" );
+	g_ItemRegistry.RegisterWeapon( "weapon_m95", "custom_weapons/cso", "m95ammo" ); //"50bmg", "", "ammo_50bmg"
 }
 
 } //namespace cso_m95 END

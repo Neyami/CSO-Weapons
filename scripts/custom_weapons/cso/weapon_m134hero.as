@@ -1,41 +1,42 @@
 //Based on AMXX Plugin M134 Vulcan by Dias Leon
 namespace cso_m134hero
 {
-const int CSOW_DEFAULT_GIVE					= 300;
-const int CSOW_MAX_CLIP 						= 300;
-const int CSOW_MAX_AMMO						= 600;
-const float CSOW_DAMAGE						= 23; // Normal: 23, Zombie: 111, Scenario: 53
-const float CSOW_TIME_DELAY1					= 0.04;
-const float CSOW_TIME_DELAY2					= 0.02;
-const float CSOW_TIME_DRAW					= 1.0;
-const float CSOW_TIME_IDLE						= 2.0;
-const float CSOW_TIME_FIRE_TO_IDLE		= 1.0;
-const float CSOW_TIME_RELOAD				= 5.0;
+const int CSOW_DEFAULT_GIVE						= 300;
+const int CSOW_MAX_CLIP 							= 300;
+const int CSOW_MAX_AMMO							= 300;
+const float CSOW_DAMAGE								= 23; // Normal: 23, Zombie: 111, Scenario: 53
+const float CSOW_TIME_DELAY1						= 0.04;
+const float CSOW_TIME_DELAY2						= 0.02;
+const float CSOW_TIME_DRAW						= 1.0;
+const float CSOW_TIME_IDLE							= 2.0;
+const float CSOW_TIME_FIRE_TO_IDLE			= 1.0;
+const float CSOW_TIME_RELOAD						= 5.0;
 const Vector2D CSOW_RECOIL_STANDING_X	= Vector2D(-1.5, 1.5);
 const Vector2D CSOW_RECOIL_STANDING_Y	= Vector2D(-1.5, 1.5);
-const Vector2D CSOW_RECOIL_DUCKING_X	= Vector2D(-0.5, 0.5);
-const Vector2D CSOW_RECOIL_DUCKING_Y	= Vector2D(-0.5, 0.5);
-const Vector CSOW_CONE_STANDING			= VECTOR_CONE_5DEGREES;
-const Vector CSOW_CONE_CROUCHING		= VECTOR_CONE_4DEGREES;
-const Vector CSOW_SHELL_ORIGIN1			= Vector(10, -2.5, -17.5); //forward, right, up
-const Vector CSOW_SHELL_ORIGIN2			= Vector(10, 4.5, -17.5); //forward, right, up
+const Vector2D CSOW_RECOIL_DUCKING_X		= Vector2D(-0.5, 0.5);
+const Vector2D CSOW_RECOIL_DUCKING_Y		= Vector2D(-0.5, 0.5);
+const Vector CSOW_CONE_STANDING				= VECTOR_CONE_5DEGREES;
+const Vector CSOW_CONE_CROUCHING			= VECTOR_CONE_4DEGREES;
+const Vector CSOW_SHELL_ORIGIN1				= Vector(10, -2.5, -17.5); //forward, right, up
+const Vector CSOW_SHELL_ORIGIN2				= Vector(10, 4.5, -17.5); //forward, right, up
 
-const string CSOW_ANIMEXT						= "minigun";
+const string CSOW_ANIMEXT							= "minigun";
+const string CSOW_ANIMEXT_CSO					= "m134";
 
-const string MODEL_VIEW							= "models/custom_weapons/cso/v_m134hero.mdl";
-const string MODEL_PLAYER_IDLE				= "models/custom_weapons/cso/p_m134hero_idle.mdl";
-const string MODEL_PLAYER_SPIN				= "models/custom_weapons/cso/p_m134hero_spin.mdl";
-const string MODEL_WORLD						= "models/custom_weapons/cso/w_m134hero.mdl";
-const string MODEL_SHELL1						= "models/custom_weapons/cso/shell762_m134_01.mdl";
-const string MODEL_SHELL2						= "models/custom_weapons/cso/shell762_m134.mdl";
+const string MODEL_VIEW								= "models/custom_weapons/cso/m134hero/v_m134hero.mdl";
+const string MODEL_PLAYER_IDLE					= "models/custom_weapons/cso/m134hero/p_m134hero_idle.mdl";
+const string MODEL_PLAYER_SPIN					= "models/custom_weapons/cso/m134hero/p_m134hero_spin.mdl";
+const string MODEL_WORLD							= "models/custom_weapons/cso/m134hero/w_m134hero.mdl";
+const string MODEL_SHELL1							= "models/custom_weapons/cso/shell762_m134_01.mdl";
+const string MODEL_SHELL2							= "models/custom_weapons/cso/shell762_m134.mdl";
 
-const string SPRITE_STEAM						= "sprites/custom_weapons/cso/m134hero_steam.spr";
+const string SPRITE_STEAM							= "sprites/custom_weapons/cso/m134hero_steam.spr";
 
-const string SPRITE_HUD							= "custom_weapons/cso/progressbar.spr"; //from Outerbeast
-const int CSOW_HUD_MAXFRAME				= 10;
+const string SPRITE_HUD								= "custom_weapons/cso/progressbar.spr"; //from Outerbeast
+const int CSOW_HUD_MAXFRAME					= 10;
 const int CSOW_HUD_CHANNEL_CD				= 6;
-const float CSOW_HUD_CD_X						= 0;
-const float CSOW_HUD_CD_Y						= 256;
+const float CSOW_HUD_CD_X							= 0;
+const float CSOW_HUD_CD_Y							= 256;
 
 enum csow_e
 {
@@ -115,8 +116,6 @@ class weapon_m134hero : CBaseCSOWeapon
 		m_bFired = false;
 		m_iCooldown = 0;
 		SetHudParamsCooldown();
-		g_iCSOWHands = HANDS_SVENCOOP;
-		m_bSwitchHands = true;
 
 		m_sEmptySound = pCSOWSounds[0];
 
@@ -161,13 +160,13 @@ class weapon_m134hero : CBaseCSOWeapon
 
 	bool GetItemInfo( ItemInfo& out info )
 	{
-		info.iMaxAmmo1 	= CSOW_MAX_AMMO;
-		info.iMaxClip 		= CSOW_MAX_CLIP;
-		info.iAmmo1Drop	= 100;
-		info.iSlot			= cso::M134HERO_SLOT - 1;
-		info.iPosition		= cso::M134HERO_POSITION - 1;
-		info.iWeight		= cso::M134HERO_WEIGHT;
-		info.iFlags			= ITEM_FLAG_NOAUTORELOAD; //removing this may interfere with the overheating if the weapon is fired until out of clip-ammo
+		info.iMaxAmmo1	= CSOW_MAX_AMMO;
+		info.iMaxClip			= CSOW_MAX_CLIP;
+		//info.iAmmo1Drop	= 100;
+		info.iSlot				= cso::M134HERO_SLOT - 1;
+		info.iPosition			= cso::M134HERO_POSITION - 1;
+		info.iWeight			= cso::M134HERO_WEIGHT;
+		info.iFlags				= ITEM_FLAG_NOAUTORELOAD; //removing this may interfere with the overheating if the weapon is fired until out of clip-ammo
 
 		return true;
 	}
@@ -190,7 +189,7 @@ class weapon_m134hero : CBaseCSOWeapon
 	{
 		bool bResult;
 		{
-			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER_IDLE), m_bOverheated ? ANIM_OH_DRAW : ANIM_DRAW, CSOW_ANIMEXT, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			bResult = self.DefaultDeploy( self.GetV_Model(MODEL_VIEW), self.GetP_Model(MODEL_PLAYER_IDLE), m_bOverheated ? ANIM_OH_DRAW : ANIM_DRAW, PlayerHasCSOModel() ? CSOW_ANIMEXT_CSO : CSOW_ANIMEXT );
 			self.m_flTimeWeaponIdle = self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DRAW;
 
 			return bResult;
@@ -234,7 +233,7 @@ class weapon_m134hero : CBaseCSOWeapon
 		}
 		else if( m_iState == STATE_BEGIN )
 		{
-			if( m_pPlayer.pev.weaponanim != ANIM_SHOOT_END ) self.SendWeaponAnim( ANIM_SHOOT_START, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			if( m_pPlayer.pev.weaponanim != ANIM_SHOOT_END ) self.SendWeaponAnim( ANIM_SHOOT_START );
 			m_pPlayer.pev.weaponmodel = MODEL_PLAYER_SPIN;
 
 			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, 0.52, 0, 94 + Math.RandomLong(0, 15) );
@@ -248,8 +247,8 @@ class weapon_m134hero : CBaseCSOWeapon
 		{
 			if( self.m_iClip > 0 )
 			{
-				if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_LOOP, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
-				else self.SendWeaponAnim( ANIM_SFIRE_LOOP, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_LOOP );
+				else self.SendWeaponAnim( ANIM_SFIRE_LOOP );
 
 				ScreenShake();
 
@@ -259,7 +258,7 @@ class weapon_m134hero : CBaseCSOWeapon
 			else
 			{
 				m_iState = STATE_END;
-				self.SendWeaponAnim( ANIM_SHOOT_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				self.SendWeaponAnim( ANIM_SHOOT_END );
 				m_pPlayer.pev.weaponmodel = MODEL_PLAYER_IDLE;
 
 				g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SPINDOWN], VOL_NORM, 0.52, 0, 94 + Math.RandomLong(0, 15) );
@@ -293,7 +292,7 @@ class weapon_m134hero : CBaseCSOWeapon
 		}
 		else if( m_iState == STATE_BEGIN )
 		{
-			if( m_pPlayer.pev.weaponanim != ANIM_SHOOT_END ) self.SendWeaponAnim( ANIM_SFIRE_START, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			if( m_pPlayer.pev.weaponanim != ANIM_SHOOT_END ) self.SendWeaponAnim( ANIM_SFIRE_START );
 			m_pPlayer.pev.weaponmodel = MODEL_PLAYER_SPIN;
 
 			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SPINUP], VOL_NORM, 0.52, 0, 94 + Math.RandomLong(0, 15) );
@@ -309,8 +308,8 @@ class weapon_m134hero : CBaseCSOWeapon
 		{
 			if( self.m_iClip > 0 )
 			{
-				if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_LOOP, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
-				else self.SendWeaponAnim( ANIM_SFIRE_LOOP, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_LOOP );
+				else self.SendWeaponAnim( ANIM_SFIRE_LOOP );
 
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + 0.5;
 				self.m_flTimeWeaponIdle = g_Engine.time + 1.0;
@@ -333,7 +332,7 @@ class weapon_m134hero : CBaseCSOWeapon
 		if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) <= 0 or self.m_iClip >= CSOW_MAX_CLIP or m_bOverheated or (m_pPlayer.pev.button & IN_ATTACK) != 0 )
 			return;
 
-		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.DefaultReload( CSOW_MAX_CLIP, ANIM_RELOAD, CSOW_TIME_RELOAD );
 
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_RELOAD;
 
@@ -347,7 +346,7 @@ class weapon_m134hero : CBaseCSOWeapon
 		if( self.m_flTimeWeaponIdle > g_Engine.time )
 			return;
 
-		self.SendWeaponAnim( m_bOverheated ? ANIM_OH_IDLE : ANIM_IDLE, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( m_bOverheated ? ANIM_OH_IDLE : ANIM_IDLE );
 		self.m_flTimeWeaponIdle = g_Engine.time + 20.0;
 
 		if( m_iState == STATE_LOOP )
@@ -361,7 +360,7 @@ class weapon_m134hero : CBaseCSOWeapon
 			if( m_pPlayer.m_rgAmmo(self.m_iPrimaryAmmoType) > 0 )
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + 0.25; //??
 
-			if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_END );
 			else Overheat_Begin();
 
 			m_pPlayer.pev.weaponmodel = MODEL_PLAYER_IDLE;
@@ -426,15 +425,15 @@ class weapon_m134hero : CBaseCSOWeapon
 					Vector vecAiming = g_Engine.v_forward;
 					Vector vecShootCone = (m_pPlayer.pev.flags & FL_DUCKING != 0) ? CSOW_CONE_CROUCHING : CSOW_CONE_STANDING;
 
-					m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0f, BULLET_PLAYER_CUSTOMDAMAGE, 4, CSOW_DAMAGE );
+					m_pPlayer.FireBullets( 1, vecSrc, vecAiming, vecShootCone, 8192.0, BULLET_PLAYER_CUSTOMDAMAGE, 4, CSOW_DAMAGE );
 					DoDecalGunshot( vecSrc, vecAiming, vecShootCone.x, vecShootCone.y, BULLET_PLAYER_SAW, true );
 				}
 				else
 				{
 					m_iState = STATE_END;
-					if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+					if( !m_bRapidMode ) self.SendWeaponAnim( ANIM_SHOOT_END );
 					else Overheat_Begin();
-					//else self.SendWeaponAnim( ANIM_SFIRE_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+					//else self.SendWeaponAnim( ANIM_SFIRE_END );
 
 					self.m_flTimeWeaponIdle = g_Engine.time + 2.5;
 					self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + 0.25;
@@ -495,7 +494,7 @@ class weapon_m134hero : CBaseCSOWeapon
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + (m_flFiringTime + 1.0);
 				self.m_flTimeWeaponIdle = g_Engine.time + 3.5;
 
-				self.SendWeaponAnim( ANIM_OH_START, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				self.SendWeaponAnim( ANIM_OH_START );
 
 				ShowCooldownBar();
 				m_flCooldownRate = (m_flFiringTime + 1.0) / CSOW_HUD_MAXFRAME;
@@ -507,7 +506,7 @@ class weapon_m134hero : CBaseCSOWeapon
 				self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + 0.25;
 				self.m_flTimeWeaponIdle = g_Engine.time + 2.5;
 
-				self.SendWeaponAnim( ANIM_SFIRE_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+				self.SendWeaponAnim( ANIM_SFIRE_END );
 			}
 		}
 		else
@@ -515,7 +514,7 @@ class weapon_m134hero : CBaseCSOWeapon
 			self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + 0.25;
 			self.m_flTimeWeaponIdle = g_Engine.time + 2.5;
 
-			self.SendWeaponAnim( ANIM_SFIRE_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+			self.SendWeaponAnim( ANIM_SFIRE_END );
 		}
 	}
 
@@ -526,7 +525,7 @@ class weapon_m134hero : CBaseCSOWeapon
 		m_flCooldownRate = 0.0;
 		m_flFiringTime = 0.0;
 
-		self.SendWeaponAnim( ANIM_OH_END, 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
+		self.SendWeaponAnim( ANIM_OH_END );
 
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack  = g_Engine.time + 2.0;
 		self.m_flTimeWeaponIdle = g_Engine.time + 2.5;
@@ -598,9 +597,6 @@ class weapon_m134hero : CBaseCSOWeapon
 
 void Register()
 {
-	if( !g_CustomEntityFuncs.IsCustomEntity( "ammo_762mg" ) )
-		cso::Register762MG();
-
 	if( cso::bUseDroppedItemEffect )
 	{
 		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
@@ -608,14 +604,14 @@ void Register()
 	}
 
 	g_CustomEntityFuncs.RegisterCustomEntity( "cso_m134hero::weapon_m134hero", "weapon_m134hero" );
-	g_ItemRegistry.RegisterWeapon( "weapon_m134hero", "custom_weapons/cso", "762mg", "", "ammo_762mg" );
+	g_ItemRegistry.RegisterWeapon( "weapon_m134hero", "custom_weapons/cso", "m134heroammo" ); //"762mg", "", "ammo_762mgbox"
 }
 
 } //namespace cso_m134hero END
 
 /*
 TODO
-Fix p_model (placement and angle)
-Fix thing with overheating
+	Fix p_model (placement and angle)
+	Fix thing with overheating
 
 */

@@ -4,7 +4,7 @@ namespace cso_crossbow
 const string CSOW_NAME								= "weapon_csocrossbow";
 
 const int CSOW_DEFAULT_GIVE						= 50;
-const int CSOW_MAX_CLIP 								= 50;
+const int CSOW_MAX_CLIP 							= 50;
 const int CSOW_MAX_AMMO							= 200;
 const float CSOW_DAMAGE								= 30; //42 ??
 const float CSOW_TIME_DELAY1						= 0.14; //430 RPM ??
@@ -12,23 +12,24 @@ const float CSOW_TIME_DELAY2						= 0.25;
 const float CSOW_TIME_DRAW						= 1.0;
 const float CSOW_TIME_IDLE							= 1.9;
 const float CSOW_TIME_FIRE_TO_IDLE			= 1.0;
-const float CSOW_TIME_RELOAD					= 3.5;
+const float CSOW_TIME_RELOAD						= 3.5;
 const Vector2D CSOW_RECOIL_STANDING_X	= Vector2D(-0.5, -1.0);
 const Vector2D CSOW_RECOIL_STANDING_Y	= Vector2D(-0.5, 0.5);
-const Vector2D CSOW_RECOIL_DUCKING_X	= Vector2D(-0.5, -1.0);
-const Vector2D CSOW_RECOIL_DUCKING_Y	= Vector2D(-0.5, 0.5);
+const Vector2D CSOW_RECOIL_DUCKING_X		= Vector2D(-0.5, -1.0);
+const Vector2D CSOW_RECOIL_DUCKING_Y		= Vector2D(-0.5, 0.5);
 
 const int CSOW_ZOOMFOV								= 30;
 const int BOLT_AIR_VELOCITY							= 2000;
 const int BOLT_WATER_VELOCITY					= 1000;
 
 const string CSOW_ANIMEXT							= "bow";
+//const string CSOW_ANIMEXT_CSO					= "rifle";
 const string CSOW_ANIMEXT_ZOOM				= "bowscope";
 
-const string MODEL_VIEW								= "models/custom_weapons/cso/v_crossbow.mdl";
-const string MODEL_VIEW_SCOPE					= "models/custom_weapons/cso/v_crossbow_scope.mdl";
-const string MODEL_PLAYER							= "models/custom_weapons/cso/p_crossbow.mdl";
-const string MODEL_WORLD							= "models/custom_weapons/cso/w_crossbow.mdl";
+const string MODEL_VIEW								= "models/custom_weapons/cso/crossbow/v_crossbow.mdl";
+const string MODEL_VIEW_SCOPE					= "models/custom_weapons/cso/crossbow/v_crossbow_scope.mdl";
+const string MODEL_PLAYER							= "models/custom_weapons/cso/crossbow/p_crossbow.mdl";
+const string MODEL_WORLD							= "models/custom_weapons/cso/crossbow/w_crossbow.mdl";
 const string MODEL_BOLT								= "models/custom_weapons/cso/crossbow_bolt.mdl";
 
 enum csow_e
@@ -84,7 +85,7 @@ class weapon_csocrossbow : CBaseCSOWeapon
 		g_Game.PrecacheModel( MODEL_PLAYER );
 		g_Game.PrecacheModel( MODEL_WORLD );
 		g_Game.PrecacheModel( MODEL_BOLT );
-		g_Game.PrecacheModel( cso::MODEL_CSOBOLTS );
+		g_Game.PrecacheModel( "sprites/custom_weapons/cso/muzzleflash12.spr" );
 
 		if( cso::bUseDroppedItemEffect )
 			g_Game.PrecacheModel( cso::CSO_ITEMDISPLAY_MODEL );
@@ -205,6 +206,12 @@ class weapon_csocrossbow : CBaseCSOWeapon
 			flRecoilMult = 0.25;
 
 		HandleRecoil( CSOW_RECOIL_STANDING_X*flRecoilMult, CSOW_RECOIL_STANDING_Y*flRecoilMult, CSOW_RECOIL_DUCKING_X*flRecoilMult, CSOW_RECOIL_DUCKING_Y*flRecoilMult );
+
+		//"modern" muzzleflash 
+		//"#I41 S0.06 R0 F0 P30 T0.01 A1 L0 O0"
+		//from the csocrossbow model
+		//{ event 5001 0 "100112" } 
+		MuzzleflashCSO( 1, "#I12 S0.08 R2 P60" );
 
 		self.m_flNextPrimaryAttack = g_Engine.time + CSOW_TIME_DELAY1;
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE;
@@ -351,18 +358,15 @@ class csobolt : ScriptBaseEntity
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_crossbow::csobolt", "csobolt" );
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_crossbow::weapon_csocrossbow", CSOW_NAME );
-	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "csobolts", "", "ammo_csobolts" );
-
-	if( !g_CustomEntityFuncs.IsCustomEntity( "ammo_csobolts" ) ) 
-		cso::RegisterCSOBolts();
-
 	if( cso::bUseDroppedItemEffect )
 	{
 		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
 			cso::RegisterGunDrop();
 	}
+
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_crossbow::csobolt", "csobolt" );
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_crossbow::weapon_csocrossbow", CSOW_NAME );
+	g_ItemRegistry.RegisterWeapon( CSOW_NAME, "custom_weapons/cso", "csoxbowammo" ); //"csobolts", "", "ammo_csobolts"
 }
 
 } //namespace cso_crossbow END
