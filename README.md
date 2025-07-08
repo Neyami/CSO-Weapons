@@ -8,10 +8,6 @@ AS Plugins by me, sometimes with code converted from various AMXX plugins.
 
 Some of the weapons aren't 100% finished but they're mostly tweaks such as muzzleflashes, animations, bulletspread, damage, and such.
 
-It'll look really messy but should be relatively easy to use anyway.
-
-Hopefully I can make it better in the future, but health reasons and being busy IRL currently prevents me from doing so.
-
 The plugin `custom_weapons-cso.as` can be used if you're not using a buymenu plugin to register the weapons, the `give` command can be used, but I would recommend using AFBase for the `.player_give` command (among many other extremely useful things)
 
 https://github.com/Zode/AFBase
