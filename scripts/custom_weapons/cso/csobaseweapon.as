@@ -65,7 +65,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 	bool PlayerHasCSOModel()
 	{
 		KeyValueBuffer@ pInfo = g_EngineFuncs.GetInfoKeyBuffer( m_pPlayer.edict() );
-		g_Game.AlertMessage( at_notice, "model: %1 at %2\n", pInfo.GetValue("model"), cso::arrsCSOPlayerModels.find(pInfo.GetValue("model")) );
+		//g_Game.AlertMessage( at_notice, "model: %1 at %2\n", pInfo.GetValue("model"), cso::arrsCSOPlayerModels.find(pInfo.GetValue("model")) );
 		return cso::arrsCSOPlayerModels.find( pInfo.GetValue("model") ) >= 0;
 	}
 
