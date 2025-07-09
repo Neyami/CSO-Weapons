@@ -71,6 +71,16 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
 <BR>
 
+* Ripper
+
+    * ENTITIES
+    * `weapon_ripper` - Weapon
+
+    * AMMO NAME
+    * `ripperammo`
+
+<BR>
+
 * Dual Sword Phantom Slayer
     * ENTITIES
     * `weapon_dualsword` - Weapon
@@ -147,7 +157,7 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
     * `ef_gunkatashadow` - Shadow Effect
  
     * AMMO NAME
-    * `44MAG`
+    * `gunkataammo`
 
 <BR>
 
@@ -256,10 +266,9 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
     * ENTITIES
     * `weapon_p90` - Weapon
-    * `ammo_57mm` - Ammo
  
     * AMMO NAME
-    * `57mm`
+    * `p90ammo`
 
 <BR>
 
@@ -279,16 +288,27 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
     * ENTITIES
     * `weapon_thompson` - Weapon
-    * `ammo_45acp` - Ammo
  
     * AMMO NAME
-    * `45acp`
+    * `thompsonammo`
 
 <BR>
 
 
 
 # ASSAULT RIFLES
+* AK-47
+
+    * ENTITIES
+    * `weapon_ak47` - Weapon
+ 
+    * AMMO NAME
+    * `ak47ammo`
+
+
+<BR>
+
+
 * Steyr AUG A1
 
     * ENTITIES
@@ -318,10 +338,9 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
     * ENTITIES
     * `weapon_ethereal` - Weapon
-    * `ammo_ether` - Ammo
  
     * AMMO NAME
-    * `ether`
+    * `etherealammo`
 
 <BR>
 
@@ -331,10 +350,9 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
     * ENTITIES
     * `weapon_csocrossbow` - Weapon
-    * `ammo_csobolts` - Ammo
  
     * AMMO NAME
-    * `csobolts`
+    * `csoxbowammo`
 
 <BR>
 
@@ -361,8 +379,22 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
     * `augex_grenade` - Projectile
  
     * AMMO NAME
-    * `556`
-    * `ARgrenades`
+    * `augexammo1`
+    * `augexammo2`
+
+
+<BR>
+
+
+
+* AK-47 Paladin
+
+    * ENTITIES
+    * `weapon_buffak` - Weapon
+    * `csoproj_buffak` - Projectile
+ 
+    * AMMO NAME
+    * `buffak47ammo`
 
 
 <BR>
@@ -425,10 +457,9 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
     * ENTITIES
     * `weapon_m95` - Weapon
-    * `ammo_50bmg` - Ammo
  
     * AMMO NAME
-    * `50bmg`
+    * `m95ammo`
 
 <BR>
 
@@ -448,14 +479,14 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
     * ENTITIES
     * `weapon_m95tiger` - Weapon
-    * `ammo_50bmg` - Ammo
     * `net_shot` - Net Projectile
     * `net_hit` - Net Holding Mobs
     * `m95_tiger` - Skill Tiger
     * `ef_claw` - Skill Hit Effect
  
     * AMMO NAME
-    * `50bmg`
+    * `m95tigerammo`
+    * `m95tigernets`
 
 <BR>
 
@@ -505,10 +536,9 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
     * ENTITIES
     * `weapon_m134hero` - Weapon
-    * `ammo_762mg` - Ammo
  
     * AMMO NAME
-    * `762mg`
+    * `m134heroammo`
 
 
 <BR>
@@ -519,10 +549,9 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
     * ENTITIES
     * `weapon_m2` - Weapon
-    * `ammo_50bmg` - Ammo
  
     * AMMO NAME
-    * `50bmg`
+    * `m2ammo`
 
 <BR>
 
