@@ -215,8 +215,6 @@ class weapon_gunkata : CBaseCSOWeapon
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/" + CSOW_NAME + ".txt" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud18.spr" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud176.spr" );
-		//g_Game.PrecacheGeneric( "events/cso/muzzle_gunkata_left.txt" );
-		//g_Game.PrecacheGeneric( "events/cso/muzzle_gunkata_right.txt" );
 	}
 
 	bool GetItemInfo( ItemInfo& out info )

@@ -35,13 +35,15 @@
 #include "../custom_weapons/cso/weapon_thompson"
 #include "../custom_weapons/cso/weapon_crow3"
 
-//Assault Rifles (8)
+//Assault Rifles (10)
+#include "../custom_weapons/cso/weapon_ak47"
 #include "../custom_weapons/cso/weapon_aug"
 #include "../custom_weapons/cso/weapon_guitar"
 #include "../custom_weapons/cso/weapon_ethereal"
 #include "../custom_weapons/cso/weapon_csocrossbow"
 #include "../custom_weapons/cso/weapon_plasmagun"
 #include "../custom_weapons/cso/weapon_augex"
+#include "../custom_weapons/cso/weapon_buffak"
 #include "../custom_weapons/cso/weapon_csobow"
 #include "../custom_weapons/cso/weapon_failnaught"
 
@@ -106,12 +108,14 @@ void MapInit()
 	cso_thompson::Register();
 	cso_crow3::Register();
 
+	cso_ak47::Register();
 	cso_aug::Register();
 	cso_guitar::Register();
 	cso_ethereal::Register();
 	cso_crossbow::Register();
 	cso_plasmagun::Register();
 	cso_augex::Register();
+	cso_buffak::Register();
 	cso_bow::Register();
 	cso_failnaught::Register();
 

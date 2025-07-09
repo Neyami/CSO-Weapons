@@ -120,8 +120,6 @@ class weapon_desperado : CBaseCSOWeapon
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/weapon_desperado.txt" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud164.spr" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud18.spr" );
-		//g_Game.PrecacheGeneric( "events/cso/muzzle_desperado_m.txt" );
-		//g_Game.PrecacheGeneric( "events/cso/muzzle_desperado_w.txt" );
 	}
 
 	bool GetItemInfo( ItemInfo& out info )

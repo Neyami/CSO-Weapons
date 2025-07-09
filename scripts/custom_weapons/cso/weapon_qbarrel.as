@@ -2,21 +2,21 @@ namespace cso_qbarrel
 {
 
 const Vector VECTOR_CONE_QBARREL( 0.07716, 0.04362, 0.00 );		// 10 degrees by 5 degrees
-const int CSOW_DEFAULT_GIVE		= 75;
-const int CSOW_MAX_AMMO		 	= 150;
+const int CSOW_DEFAULT_GIVE	= 75;
+const int CSOW_MAX_AMMO		= 150;
 const int CSOW_MAX_CLIP 		= 4;
 const int CSOW_WEIGHT 			= 20;
 const int CSOW_DAMAGE			= 10;
-const uint CSOW_PELLETCOUNT		= 7;
+const uint CSOW_PELLETCOUNT	= 7;
 const float CSOW_TIME_DELAY1	= 0.5;
 const float CSOW_TIME_DELAY2	= 1;
-const float CSOW_TIME_DRAW		= 1.1;
+const float CSOW_TIME_DRAW	= 1.1;
 const float CSOW_TIME_RELOAD	= 3.0;
 
 const string MODEL_VIEW			= "models/custom_weapons/cso/v_qbarrel.mdl";
 const string MODEL_PLAYER		= "models/custom_weapons/cso/p_qbarrel.mdl";
 const string MODEL_WORLD		= "models/custom_weapons/cso/w_qbarrel.mdl";
-const string MODEL_SHELL		= "models/shotgunshell.mdl";
+const string MODEL_SHELL			= "models/shotgunshell.mdl";
 
 enum csow_e
 {
@@ -253,14 +253,14 @@ class weapon_qbarrel : CBaseCSOWeapon
 
 void Register()
 {
-	g_CustomEntityFuncs.RegisterCustomEntity( "cso_qbarrel::weapon_qbarrel", "weapon_qbarrel" );
-	g_ItemRegistry.RegisterWeapon( "weapon_qbarrel", "custom_weapons/cso", "buckshot", "", "ammo_buckshot" );
-
 	if( cso::bUseDroppedItemEffect )
 	{
 		if( !g_CustomEntityFuncs.IsCustomEntity( "ef_gundrop" ) )
 			cso::RegisterGunDrop();
 	}
+
+	g_CustomEntityFuncs.RegisterCustomEntity( "cso_qbarrel::weapon_qbarrel", "weapon_qbarrel" );
+	g_ItemRegistry.RegisterWeapon( "weapon_qbarrel", "custom_weapons/cso", "qbarrelammo" ); //"buckshot", "", "ammo_buckshot"
 }
 
 } //namespace cso_qbarrel END
