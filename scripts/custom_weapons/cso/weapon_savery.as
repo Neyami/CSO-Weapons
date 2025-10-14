@@ -193,7 +193,7 @@ class weapon_savery : CBaseCSOWeapon
 		self.m_flNextPrimaryAttack = g_Engine.time + SAVERY_DELAY;
 		self.m_flNextSecondaryAttack = g_Engine.time + SAVERY_DELAY/2;
 		self.m_flTimeWeaponIdle = g_Engine.time + SAVERY_TIME_FIRE_TO_IDLE;
-		m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH;
+		m_pPlayer.pev.effects |= EF_MUZZLEFLASH; //Needed??
 	}	
 
     void SecondaryAttack()

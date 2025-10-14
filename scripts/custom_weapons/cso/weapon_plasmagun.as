@@ -193,7 +193,7 @@ class weapon_plasmagun : CBaseCSOWeapon
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = self.m_flNextTertiaryAttack = g_Engine.time + CSOW_TIME_DELAY;
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE;
 
-		m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH;
+		m_pPlayer.pev.effects |= EF_MUZZLEFLASH; //Needed??
 
 		Vector vecOrigin = m_pPlayer.GetGunPosition() + g_Engine.v_forward * 48 + g_Engine.v_right * 10 + g_Engine.v_up * -5;
 

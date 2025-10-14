@@ -197,7 +197,7 @@ class weapon_augex : CBaseCSOWeapon
 			m_pPlayer.m_iWeaponVolume = NORMAL_GUN_VOLUME;
 			m_pPlayer.m_iWeaponFlash = BRIGHT_GUN_FLASH;
 			m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
-			m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH; //Needed??
+			m_pPlayer.pev.effects |= EF_MUZZLEFLASH; //Needed??
 			self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT2) );
 			g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM, 0, 94 + Math.RandomLong(0, 15) );
 

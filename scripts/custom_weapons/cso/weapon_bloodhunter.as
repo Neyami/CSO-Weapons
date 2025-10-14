@@ -253,7 +253,7 @@ class weapon_bloodhunter : CBaseCSOWeapon
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + flCycleTime;
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE;
 
-		m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH;
+		m_pPlayer.pev.effects |= EF_MUZZLEFLASH; //Needed??
 
 		TraceResult tr;
 

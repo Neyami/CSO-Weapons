@@ -159,7 +159,7 @@ class weapon_p90 : CBaseCSOWeapon
 		m_pPlayer.m_iWeaponVolume = NORMAL_GUN_VOLUME;
 		m_pPlayer.m_iWeaponFlash = DIM_GUN_FLASH;
 		m_pPlayer.SetAnimation( PLAYER_ATTACK1 );
-		m_pPlayer.pev.effects = int(m_pPlayer.pev.effects) | EF_MUZZLEFLASH;
+		m_pPlayer.pev.effects |= EF_MUZZLEFLASH; //Needed??
 		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT3) );
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT], VOL_NORM, ATTN_NORM, 0, 84 + Math.RandomLong(0, 15) );
 
@@ -172,7 +172,7 @@ class weapon_p90 : CBaseCSOWeapon
 		int iPenetration = USE_PENETRATION ? 2 : 1;
 		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), iPenetration, BULLET_PLAYER_57MM, CSOW_TRACERFREQ, flDamage, 0.885, CSOF_ALWAYSDECAL, CSOW_OFFSETS_MUZZLE );
 
-		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x - g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell, TE_BOUNCE_SHELL, true, true );
+		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x - g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell, true, TE_BOUNCE_SHELL, true );
 
 		HandleRecoil( CSOW_RECOIL_STANDING_X, CSOW_RECOIL_STANDING_Y, CSOW_RECOIL_DUCKING_X, CSOW_RECOIL_DUCKING_Y );
 
