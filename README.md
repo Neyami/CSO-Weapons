@@ -90,6 +90,16 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
 
 # PISTOLS
+* Glock 18
+
+    * ENTITIES
+    * `weapon_glock18` - Weapon
+ 
+    * AMMO NAME
+    * `glock18ammo` (9mm)
+
+<BR>
+
 * Beretta 92G Elite II
 
     * ENTITIES
@@ -168,6 +178,16 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
  
     * AMMO NAME
     * `buckshot`
+
+<BR>
+
+* CROW-1
+
+    * ENTITIES
+    * `weapon_crow1` - Weapon
+ 
+    * AMMO NAME
+    * `crow1ammo` (9mm)
 
 <BR>
 
@@ -386,7 +406,6 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 <BR>
 
 
-
 * AK-47 Paladin
 
     * ENTITIES
@@ -423,6 +442,18 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
  
     * AMMO NAME
     * `holyarrows`
+
+
+<BR>
+
+
+* CROW-5
+
+    * ENTITIES
+    * `weapon_crow5` - Weapon
+ 
+    * AMMO NAME
+    * `crow5ammo` (556)
 
 
 <BR>
@@ -552,6 +583,18 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
  
     * AMMO NAME
     * `m2ammo`
+
+<BR>
+
+
+* CROW-7
+
+    * ENTITIES
+    * `weapon_crow7` - Weapon
+ 
+    * AMMO NAME
+    * `crow7ammo` (556)
+
 
 <BR>
 
