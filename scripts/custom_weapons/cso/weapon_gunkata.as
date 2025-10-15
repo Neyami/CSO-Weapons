@@ -335,7 +335,7 @@ class weapon_gunkata : CBaseCSOWeapon
 		self.m_flTimeWeaponIdle = g_Engine.time + flDelay + 0.5;
 		self.SendWeaponAnim( iAnimation );
 
-		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * vecShellOrigin.x - g_Engine.v_right * vecShellOrigin.y + g_Engine.v_up * vecShellOrigin.z, m_iShell, TE_BOUNCE_SHELL, (GetWeaponState(-1) == STATE_RIGHT ? true : false) );
+		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * vecShellOrigin.x - g_Engine.v_right * vecShellOrigin.y + g_Engine.v_up * vecShellOrigin.z, m_iShell, (GetWeaponState(-1) == STATE_RIGHT ? true : false) );
 	}
 
 	void SecondaryAttack()

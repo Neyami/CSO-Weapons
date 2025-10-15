@@ -97,7 +97,6 @@ class weapon_m95tiger : CBaseCSOWeapon
 	private float m_flEjectBrass;
 	private bool m_bSkillActive;
 	private int m_iBodyConfig;
-	int m_iKilledMobs;
 
 	void Spawn()
 	{
@@ -107,7 +106,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 		self.m_iDefaultSecAmmo = CSOW_MAX_AMMO2;
 		self.m_flCustomDmg = pev.dmg;
 
-		m_iKilledMobs = 0;
+		m_iEnemiesHit = 0;
 		m_bSkillActive = false;
 		m_iBodyConfig = 0;
 
@@ -282,8 +281,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 		Math.MakeVectors( m_pPlayer.pev.v_angle + m_pPlayer.pev.punchangle );
 
 		int iPenetration = USE_PENETRATION ? 20 : 1;
-		int iEnemiesHit = FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_M95TIGER, CSOW_TRACERFREQ, flDamage, 5, (CSOF_ALWAYSDECAL|CSOF_HITMARKER|CSOF_ARMORPEN), Vector(CSOW_MUZZLE_ORIGIN.x, CSOW_MUZZLE_ORIGIN.y, CSOW_MUZZLE_ORIGIN.z) );
-		m_iKilledMobs += iEnemiesHit;
+		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_M95TIGER, CSOW_TRACERFREQ, flDamage, 5, (CSOF_ALWAYSDECAL|CSOF_HITMARKER|CSOF_ARMORPEN), Vector(CSOW_MUZZLE_ORIGIN.x, CSOW_MUZZLE_ORIGIN.y, CSOW_MUZZLE_ORIGIN.z) );
 
 		self.SendWeaponAnim( ANIM_SHOOT, 0, GetBodygroup() );
 
@@ -337,7 +335,7 @@ class weapon_m95tiger : CBaseCSOWeapon
 		self.SendWeaponAnim( ANIM_SHOOT_TIGER, 0, GetBodygroup() );
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[SND_SHOOT_TIGER], VOL_NORM, ATTN_NORM, 0, 94 + Math.RandomLong(0, 15) );
 		g_PlayerFuncs.ScreenFade( m_pPlayer, Vector(117, 196, 70), 0.5, 0.2, 70, 0 );
-		m_iKilledMobs = 0;
+		m_iEnemiesHit = 0;
 		m_bSkillActive = false;
 		g_SoundSystem.StopSound( m_pPlayer.edict(), CHAN_STATIC, pCSOWSounds[SND_IDLE] );
 
@@ -422,10 +420,10 @@ class weapon_m95tiger : CBaseCSOWeapon
 		if( m_flEjectBrass > 0.0 and m_flEjectBrass < g_Engine.time )
 		{
 			m_flEjectBrass = 0.0;
-			EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x + g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell, TE_BOUNCE_SHELL, false, true );
+			EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN.x + g_Engine.v_right * CSOW_SHELL_ORIGIN.y + g_Engine.v_up * CSOW_SHELL_ORIGIN.z, m_iShell, false, TE_BOUNCE_SHELL, true );
 		}
 
-		if( !m_bSkillActive and m_iKilledMobs >= 10 )
+		if( !m_bSkillActive and m_iEnemiesHit >= 10 )
 		{
 			m_bSkillActive = true;
 			//Set tiger eyes here

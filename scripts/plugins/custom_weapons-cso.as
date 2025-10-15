@@ -11,7 +11,8 @@
 #include "../custom_weapons/cso/weapon_ripper"
 #include "../custom_weapons/cso/weapon_dualsword"
 
-//Pistols (7)
+//Pistols (9)
+#include "../custom_weapons/cso/weapon_glock18"
 #include "../custom_weapons/cso/weapon_elites"
 #include "../custom_weapons/cso/weapon_desperado"
 #include "../custom_weapons/cso/weapon_m950"
@@ -19,6 +20,7 @@
 #include "../custom_weapons/cso/weapon_bloodhunter"
 #include "../custom_weapons/cso/weapon_gunkata"
 #include "../custom_weapons/cso/weapon_m1887craft"
+#include "../custom_weapons/cso/weapon_crow1"
 
 //Shotguns (8)
 #include "../custom_weapons/cso/weapon_m3"
@@ -35,7 +37,7 @@
 #include "../custom_weapons/cso/weapon_thompson"
 #include "../custom_weapons/cso/weapon_crow3"
 
-//Assault Rifles (10)
+//Assault Rifles (11)
 #include "../custom_weapons/cso/weapon_ak47"
 #include "../custom_weapons/cso/weapon_aug"
 #include "../custom_weapons/cso/weapon_guitar"
@@ -46,6 +48,7 @@
 #include "../custom_weapons/cso/weapon_buffak"
 #include "../custom_weapons/cso/weapon_csobow"
 #include "../custom_weapons/cso/weapon_failnaught"
+#include "../custom_weapons/cso/weapon_crow5"
 
 //Sniper Rifles (7)
 #include "../custom_weapons/cso/weapon_awp"
@@ -56,10 +59,11 @@
 #include "../custom_weapons/cso/weapon_savery"
 #include "../custom_weapons/cso/weapon_m95tiger"
 
-//Machine Guns (3)
+//Machine Guns (4)
 #include "../custom_weapons/cso/weapon_aeolis"
 #include "../custom_weapons/cso/weapon_m134hero"
 #include "../custom_weapons/cso/weapon_m2"
+#include "../custom_weapons/cso/weapon_crow7"
 
 //Explosives (2)
 #include "../custom_weapons/cso/weapon_at4"
@@ -78,6 +82,8 @@ void MapInit()
 {
 	cso::ReadCSOPlayerModels();
 
+	g_Hooks.RegisterHook( Hooks::Player::PlayerSpawn, @cso::PlayerSpawn );
+
 	cso_balrog9::Register();
 	cso_dragonclaw::Register();
 	cso_janus9::Register();
@@ -87,6 +93,7 @@ void MapInit()
 	cso_ripper::Register();
 	cso_dualsword::Register();
 
+	cso_glock18::Register();
 	cso_elites::Register();
 	cso_desperado::Register();
 	cso_m950::Register();
@@ -94,6 +101,7 @@ void MapInit()
 	cso_bloodhunter::Register();
 	cso_gunkata::Register();
 	cso_m1887craft::Register();
+	cso_crow1::Register();
 
 	cso_m3::Register();
 	cso_usas12::Register();
@@ -118,6 +126,7 @@ void MapInit()
 	cso_buffak::Register();
 	cso_bow::Register();
 	cso_failnaught::Register();
+	cso_crow5::Register();
 
 	cso_awp::Register();
 	cso_m400::Register();
@@ -130,9 +139,35 @@ void MapInit()
 	cso_aeolis::Register();
 	cso_m134hero::Register();
 	cso_m2::Register();
+	cso_crow7::Register();
 
 	cso_at4::Register();
 	cso_at4ex::Register();
 
 	cso_salamander::Register();
 }
+
+namespace cso
+{
+
+HookReturnCode PlayerSpawn( CBasePlayer@ pPlayer )
+{
+	CustomKeyvalues@ pCustom = pPlayer.GetCustomKeyvalues();
+	pCustom.SetKeyvalue( cso::KVN_CSO_HAS_SHIELD, 0 );
+
+	return HOOK_CONTINUE;
+}
+
+void AddShield( CBasePlayer@ pPlayer )
+{
+	CustomKeyvalues@ pCustom = pPlayer.GetCustomKeyvalues();
+	pCustom.SetKeyvalue( cso::KVN_CSO_HAS_SHIELD, 1 );
+}
+
+void RemoveShield( CBasePlayer@ pPlayer )
+{
+	CustomKeyvalues@ pCustom = pPlayer.GetCustomKeyvalues();
+	pCustom.SetKeyvalue( cso::KVN_CSO_HAS_SHIELD, 0 );
+}
+
+} //namespace cso END

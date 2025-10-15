@@ -110,6 +110,12 @@ class weapon_desperado : CBaseCSOWeapon
 		g_Game.PrecacheModel( "sprites/custom_weapons/cso/muzzleflash59.spr" );
 		g_Game.PrecacheModel( "sprites/custom_weapons/cso/muzzleflash60.spr" );
 
+		if( cso::bUseDroppedItemEffect )
+			g_Game.PrecacheModel( cso::CSO_ITEMDISPLAY_MODEL );
+
+		for( uint i = 1; i < cso::pSmokeSprites.length(); ++i )
+			g_Game.PrecacheModel( cso::pSmokeSprites[i] );
+
 		for( i = 0; i < pCSOWSounds.length(); ++i )
 			g_SoundSystem.PrecacheSound( pCSOWSounds[i] );
 

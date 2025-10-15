@@ -77,7 +77,6 @@ class weapon_elites : CBaseCSOWeapon
 {
 	private float m_flAccuracy;
 	private float m_flLastFire;
-	private int m_iWeaponState;
 
 	void Spawn()
 	{
@@ -231,7 +230,7 @@ class weapon_elites : CBaseCSOWeapon
 			m_iWeaponState = STATE_LEFT;
 
 			FireBullets3( m_pPlayer.GetGunPosition() - g_Engine.v_right * 5, g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_9MM, CSOW_TRACERFREQ, flDamage, 0.75, CSOF_ALWAYSDECAL );
-			EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN_L.x + g_Engine.v_right * CSOW_SHELL_ORIGIN_L.y + g_Engine.v_up * CSOW_SHELL_ORIGIN_L.z, m_iShell, TE_BOUNCE_SHELL, false );
+			EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_SHELL_ORIGIN_L.x + g_Engine.v_right * CSOW_SHELL_ORIGIN_L.y + g_Engine.v_up * CSOW_SHELL_ORIGIN_L.z, m_iShell, false );
 		}
 
 		int iAnim;

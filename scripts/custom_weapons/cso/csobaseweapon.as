@@ -1,3 +1,5 @@
+#include "includes/csobaseweapon-crow"
+
 int g_iCSOWHands = 0;
 
 class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
@@ -31,6 +33,9 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 
 	string m_sEmptySound;
 
+	int m_iWeaponState;
+	int m_iEnemiesHit;
+
 	bool PlayEmptySound()
 	{
 		if( self.m_bPlayEmptySound )
@@ -62,6 +67,17 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		}
 	}
 
+	//v2 = (*(int (**)(void))(v1 + 560))();
+	//return sub_10534DF0( (int)"models/v_crow5.mdl", (int)"models/p_crow5.mdl", 6, (int)"carbine", v2 != 0, 0.75, 1.5 );
+	bool CSODeploy( const string &in szViewModel, const string &in szWeaponModel, int iAnim, const string &in szAnimExt, float flDrawToFire, float flDrawToIdle )
+	{
+		bool bResult = self.DefaultDeploy( self.GetV_Model(szViewModel), self.GetP_Model(szWeaponModel), iAnim, szAnimExt );
+		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + flDrawToFire;
+		self.m_flTimeWeaponIdle = g_Engine.time + flDrawToIdle;
+
+		return bResult;
+	}
+
 	bool PlayerHasCSOModel()
 	{
 		KeyValueBuffer@ pInfo = g_EngineFuncs.GetInfoKeyBuffer( m_pPlayer.edict() );
@@ -69,7 +85,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		return cso::arrsCSOPlayerModels.find( pInfo.GetValue("model") ) >= 0;
 	}
 
-	void EjectBrass( Vector vecOrigin, int iShell, int iBounce = TE_BOUNCE_SHELL, bool bRight = true, bool bUpBoost = false )
+	void EjectBrass( Vector vecOrigin, int iShell, bool bRight = true, int iBounce = TE_BOUNCE_SHELL, bool bUpBoost = false )
 	{
 		Vector vecVelocity;
 		float flUpBoost;
@@ -152,21 +168,25 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		}
 	}
 
-	void MuzzleflashCSO( const int iAttachment, const string &in sMuzzleflashData )
+	void MuzzleflashCSO( const int iAttachment, const string &in sMuzzleflashData, int iRenderamt = 128 )
 	{
+		//if( self.m_iClip % 2 == 0 ) //only flash every other shot ??
+			//return;
+
 		//"#I60 S0.09 R2.5 F0 P90 T0.15 A1 L0 O1 X0"
 		string sprite;		//I
 		float scale;		//S 0.01 - 1
 		float rotation;	//R random rotation, no idea what the numbers means
-		float fps;			//P
+		int fps;				//P
 		int isalpha;		//A
 
-		int unknown1;	//D 0 - 1
-		int unknown2;	//F 0 or 15
-		float unknown3;	//L 0 - 0.01
-		int unknown4;	//O 0 - 1
-		float unknown5;	//T 0.01 - 999
-		int unknown6;	//X 0
+		int unknownD;	//D 0 - 1
+		int unknownE;	//E 20
+		int unknownF;	//F 0 or 15
+		float unknownL;	//L 0 - 0.01
+		int unknownO;	//O 0 - 1
+		float unknownT;	//T 0.01 - 999
+		int unknownX;	//X 0
 
 		array<string> parsed = sMuzzleflashData.Split(" ");
 
@@ -184,27 +204,29 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 			else if( parsed[i].StartsWith("R") )
 				rotation = atof( sData );
 			else if( parsed[i].StartsWith("P") )
-				fps = atof( sData );
+				fps = atoi( sData );
 			else if( parsed[i].StartsWith("A") )
 				isalpha = atoi( sData );
 			else if( parsed[i].StartsWith("D") )
-				unknown1 = atoi( sData );
+				unknownD = atoi( sData );
+			else if( parsed[i].StartsWith("E") )
+				unknownE = atoi( sData );
 			else if( parsed[i].StartsWith("F") )
-				unknown2 = atoi( sData );
+				unknownF = atoi( sData );
 			else if( parsed[i].StartsWith("L") )
-				unknown3 = atof( sData );
+				unknownL = atof( sData );
 			else if( parsed[i].StartsWith("O") )
-				unknown4 = atoi( sData );
+				unknownO = atoi( sData );
 			else if( parsed[i].StartsWith("T") )
-				unknown5 = atof( sData );
+				unknownT = atof( sData );
 			else if( parsed[i].StartsWith("X") )
-				unknown6 = atoi( sData );
+				unknownX = atoi( sData );
 		}
 
-		AdvancedMuzzleflash( iAttachment, sprite, scale, rotation, fps, isalpha, unknown1, unknown2, unknown3, unknown4, unknown5, unknown6 );
+		AdvancedMuzzleflash( iAttachment, sprite, scale, rotation, fps, isalpha, unknownD, unknownE, unknownF, unknownL, unknownO, unknownT, unknownX, iRenderamt );
 	}
 
-	void AdvancedMuzzleflash( int iAttachment, string sprite, float scale, float rotation, float fps, int isalpha, int unknown1, int unknown2, float unknown3, int unknown4, float unknown5, int unknown6 )
+	void AdvancedMuzzleflash( int iAttachment, string sprite, float scale, float rotation, int fps, int isalpha, int unknownD, int unknownE, int unknownF, float unknownL, int unknownO, float unknownT, int unknownX, int iRenderamt )
 	{
 		//g_Game.AlertMessage( at_notice, "Muzzleflash %1, scale: %2, rotation: %3, fps: %4, isalpha: %5\n", sprite, scale, rotation, fps, isalpha );
 
@@ -215,17 +237,18 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 		//pMuzzleflash.pev.movetype = MOVETYPE_FOLLOW;
 		@pMuzzleflash.pev.owner = m_pPlayer.edict();
 		pMuzzleflash.SetScale( scale );
-		pMuzzleflash.SetTransparency( kRenderTransAdd, 255, 255, 255, 255, kRenderFxNone ); //int(flRenderamt)
+		pMuzzleflash.SetTransparency( kRenderTransAdd, 255, 255, 255, iRenderamt, kRenderFxNone );
 
 		if( rotation > 0.0 )
 		{
-			//g_Game.AlertMessage( at_notice, "ROTATION: %1\n", rotation );
-			//Sprite viewport types. When overriden stored in entvars_t::sequence with EF_SPRITE_CUSTOM_VP set in entvars_t::effects for engine use.
-			pMuzzleflash.pev.sequence = VP_TYPE::VP_PARALLEL_ORITENTATED; //next update ??
-			pMuzzleflash.pev.effects = EF_SPRITE_CUSTOM_VP; //next update ??
+			pMuzzleflash.pev.sequence = VP_TYPE::VP_PARALLEL_ORITENTATED;
+			pMuzzleflash.pev.effects = EF_SPRITE_CUSTOM_VP;
 
-			//pMuzzleflash.KeyValue( "vp_type", "VP_TYPE::VP_PARALLEL_ORITENTATED" ); //Parallel orientated: Always face the player, but use angles to rotate the sprite.  
-			pMuzzleflash.pev.angles = Vector( 0.0, 0.0, Math.RandomFloat(0.0, 359.0) ); //I have no idea how the number is supposed to change this, if R even is related to rotation.
+			//I have no idea how the number is supposed to change this, if R even is related to rotation.
+			if( rotation > 1 )
+				pMuzzleflash.pev.angles = Vector( 0.0, 0.0, Math.RandomFloat(0.0, 359.0) );
+			else
+				pMuzzleflash.pev.angles = Vector( 0.0, 0.0, Math.RandomFloat(-10.0, 10.0) ); //??
 		}
 
 		pMuzzleflash.AnimateAndDie( fps );
@@ -352,6 +375,10 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 				CBaseEntity@ cbeGunDrop = g_EntityFuncs.Create( "ef_gundrop", pev.origin, g_vecZero, false, self.edict() );
 				m_hDropEffect = EHandle( cbeGunDrop );
 				cso::ef_gundrop@ pGunDrop = cast<cso::ef_gundrop@>(CastToScriptClass(cbeGunDrop));
+
+				//just in case ef_gundrop hasn't been registered for some reason
+				if( pGunDrop is null ) return BaseClass.DropItem();
+
 				pGunDrop.m_hOwner = EHandle( self );
 				pGunDrop.pev.movetype = MOVETYPE_FOLLOW;
 				@pGunDrop.pev.aiment	= self.edict();
@@ -365,9 +392,12 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 
 	//From cstrike combat.cpp Vector CBaseEntity::FireBullets3(Vector vecSrc, Vector vecDirShooting, float flSpread, float flDistance, int iPenetration, int iBulletType, int iDamage, float flRangeModifier, entvars_t *pevAttacker, bool bPistol, int shared_rand)
 	//FireBullets3( vecSrc, vecAiming, 0, 4096, 2, BULLET_PLAYER_50AE, 54, 0.81, m_pPlayer.edict(), true, m_pPlayer.random_seed );
+	//CSO version:
+	//sub_199F730( a1, v10, (int)&v58, (int)&v56, (int)&v51, 1, (int)&v38, (int)&v39, (int)&v64, flDistance, iBulletType, 0, &dword_1DE9E24[v10], iPenetration??, 0);
+	//sub_199F730( a1, v10, (int)&v58, (int)&v56, (int)&v51, 1, (int)&v38, (int)&v39, (int)&v64, 8192.0, 12, 0, &dword_1DE9E24[v10], 2, 0);
 	//TODO make bullet decals on the otherside of a penetrated wall
 	//TODO make bullet decals and smoke when hitting a wall that is further than flCurrentDistance ??
-	int FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, int iPenetration, int iBulletType, int iTracerFreq, float flDamage, float flRangeModifier, int iFlags = 0, Vector vecMuzzleOrigin = g_vecZero )
+	Vector FireBullets3( Vector vecSrc, Vector vecDirShooting, float flSpread, int iPenetration, int iBulletType, int iTracerFreq, float flDamage, float flRangeModifier, int iFlags = 0, Vector vecMuzzleOrigin = g_vecZero )
 	{
 		float flDistance = 8192.0;
 
@@ -388,7 +418,6 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 			vecTrailOrigin = vecTrailOrigin + g_Engine.v_forward * vecMuzzleOrigin.x + g_Engine.v_right * vecMuzzleOrigin.y + g_Engine.v_up * vecMuzzleOrigin.z;
 
 		int iBulletDecal = BULLET_NONE;
-		int iEnemiesHit = 0;
 
 		switch( iBulletType )
 		{
@@ -556,8 +585,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 			if( cso::pBPTextures.find( sTexture ) != -1 )
 			{
 				g_Utility.Ricochet( tr.vecEndPos, 1.0 );
-				return 0;
-				//return tr.vecEndPos;
+				return tr.vecEndPos;
 			}
 
 			if( cTextureType == CHAR_TEX_METAL )
@@ -647,10 +675,13 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 
 				if( tr.pHit.vars.solid == SOLID_BSP /*and iPenetration != 0*/ ) //prevents the last hit from causing decals
 				{
-					if( (iFlags & CSOF_ALWAYSDECAL) != 0 )
-						g_WeaponFuncs.DecalGunshot( tr, iBulletDecal/*, false, pev, bHitMetal*/ );
-					else if( Math.RandomLong(0, 3) == 1 )
-						g_WeaponFuncs.DecalGunshot( tr, iBulletDecal/*, true, pev, bHitMetal*/ );
+					if( !cso::HasFlags(iFlags, CSOF_NEVERDECAL) )
+					{
+						if( cso::HasFlags(iFlags, CSOF_ALWAYSDECAL) )
+							g_WeaponFuncs.DecalGunshot( tr, iBulletDecal/*, false, pev, bHitMetal*/ );
+						else if( Math.RandomLong(0, 3) == 1 )
+							g_WeaponFuncs.DecalGunshot( tr, iBulletDecal/*, true, pev, bHitMetal*/ );
+					}
 
 					vecSrc = tr.vecEndPos + (vecDir * flPenetrationPower);
 					flDistance = (flDistance - flCurrentDistance) * 0.5;
@@ -692,7 +723,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 					else
 						DoTrailExplosion( iTrail, tr.vecEndPos );
 
-					//g_Game.AlertMessage( at_notice, "Hit SOLID_BSP: %1 with damage: %2\n", tr.pHit.vars.classname, flCurrentDamage );
+					//g_Game.AlertMessage( at_notice, "Hit SOLID_BSP: %1 with damage: %2, iFlags: %3, iBulletDecal: %4\n", tr.pHit.vars.classname, flCurrentDamage, iFlags, iBulletDecal );
 
 					flCurrentDamage *= flDamageModifier;
 				}
@@ -703,7 +734,6 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 						Vector vecOrigin = m_pPlayer.pev.origin;
 						get_position( 50.0, -0.05, 1.0, vecOrigin );
 
-						//CBaseEntity@ pHitConfirm = g_EntityFuncs.Create( "cso_buffhit", vecOrigin, g_vecZero, false, m_pPlayer.edict() );
 						HitMarker();
 					}
 
@@ -735,7 +765,7 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 					if( iTrail > TRAIL_NONE )
 						DoTrailExplosion( iTrail, tr.vecEndPos );
 
-					iEnemiesHit++;
+					m_iEnemiesHit++;
 					//g_Game.AlertMessage( at_notice, "Hit entity: %1 with damage: %2\n", tr.pHit.vars.classname, flCurrentDamage );
 
 					flCurrentDamage *= 0.75;
@@ -755,13 +785,15 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 				DoTrail( iTrail, vecTrailOrigin, tr.vecEndPos );
 		}
 
-		if( (iFlags & CSOF_ETHEREAL) != 0 )
-			DoTracerEthereal( vecTrailOrigin, vecDir );
-		else if( iTracerFreq != 0 and (tracerCount++ % iTracerFreq) == 0 )
-			DoTracer( vecTrailOrigin, tr.vecEndPos );
+		if( iTracerFreq != 0 and (tracerCount++ % iTracerFreq) == 0 )
+		{
+			if( cso::HasFlags(iFlags, CSOF_ETHEREAL) )
+				DoTracerSpecial( vecTrailOrigin, vecDir, iFlags );
+			else
+				DoTracer( vecTrailOrigin, tr.vecEndPos );
+		}
 
-		return iEnemiesHit;
-		//return Vector(x * flSpread, y * flSpread, 0);
+		return Vector( x * flSpread, y * flSpread, 0 );
 	}
 
 	void HitMarker()
@@ -898,8 +930,13 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 			m1.End();
 	}
 
-	void DoTracerEthereal( Vector vecStart, Vector vecDir )
+	void DoTracerSpecial( Vector vecStart, Vector vecDir, int iFlags )
 	{
+		int color = 0;
+
+		if( cso::HasFlags(iFlags, CSOF_ETHEREAL) )
+			color = 0;
+
 		Vector vecVelocity = vecDir * 6000.0;
 
 		NetworkMessage m1( MSG_PAS, NetworkMessages::SVC_TEMPENTITY, vecStart );
@@ -911,9 +948,84 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 			m1.WriteCoord( vecVelocity.y );
 			m1.WriteCoord( vecVelocity.z );
 			m1.WriteByte( 32 ); //life
-			m1.WriteByte( 0 ); //color
+			m1.WriteByte( color ); //color
 			m1.WriteByte( 12 ); //length
 		m1.End();
+	}
+
+	//from cs16
+	bool HasShield()
+	{
+		CustomKeyvalues@ pCustom = m_pPlayer.GetCustomKeyvalues();
+		return pCustom.GetKeyvalue( cso::KVN_CSO_HAS_SHIELD ).GetInteger() >= 1;
+		//return true;
+	}
+
+	bool ShieldSecondaryFire( int up_anim, int down_anim )
+	{
+		if( !HasShield() ) //m_pPlayer.HasShield()
+			return false;
+
+		if( (m_iWeaponState & WPNSTATE_SHIELD_DRAWN) != 0 )
+		{
+			m_iWeaponState &= ~WPNSTATE_SHIELD_DRAWN;
+			self.SendWeaponAnim( down_anim ); //, UseDecrement() != FALSE 
+
+			if( PlayerHasCSOModel() )
+				m_pPlayer.m_szAnimExtension = "shieldgun";
+
+			//m_fMaxSpeed = 250;
+			//m_pPlayer.m_bShieldDrawn = false;
+		}
+		else
+		{
+			m_iWeaponState |= WPNSTATE_SHIELD_DRAWN;
+			self.SendWeaponAnim( up_anim ); //, UseDecrement() != FALSE
+
+			if( PlayerHasCSOModel() )
+				m_pPlayer.m_szAnimExtension = "shielded";
+
+			//m_fMaxSpeed = 180;
+			//m_pPlayer.m_bShieldDrawn = true;
+		}
+
+		//m_pPlayer.UpdateShieldCrosshair((m_iWeaponState & WPNSTATE_SHIELD_DRAWN) == 0 );
+		//m_pPlayer.ResetMaxSpeed();
+
+		self.m_flNextSecondaryAttack = g_Engine.time + 0.4;
+		self.m_flNextPrimaryAttack = g_Engine.time + 0.4;
+		self.m_flTimeWeaponIdle = g_Engine.time + 0.6;
+
+		return true;
+	}
+
+	void SetPlayerShieldAnim()
+	{
+		if( HasShield() )
+		{
+			if( cso::HasFlags(m_iWeaponState, WPNSTATE_SHIELD_DRAWN) )
+			{
+				if( PlayerHasCSOModel() )
+					m_pPlayer.m_szAnimExtension = "shield";
+			}
+			else
+			{
+				if( PlayerHasCSOModel() )
+					m_pPlayer.m_szAnimExtension = "shieldgun";
+			}
+		}
+	}
+
+	void ResetPlayerShieldAnim()
+	{
+		if( HasShield() )
+		{
+			if( cso::HasFlags(m_iWeaponState, WPNSTATE_SHIELD_DRAWN) )
+			{
+				if( PlayerHasCSOModel() )
+					m_pPlayer.m_szAnimExtension = "shieldgun";
+			}
+		}
 	}
 
 	// AMXX Stuff that I cba converting :ayaya:
@@ -976,5 +1088,10 @@ class CBaseCSOWeapon : ScriptBasePlayerWeaponEntity
 			ShellVelocity[i] = pPlayer.pev.velocity[i] + vecRight[i] * fR + vecUp[i] * fU + vecForward[i] * 25;
 			ShellOrigin[i]   = pPlayer.pev.origin[i] + pPlayer.pev.view_ofs[i] + vecUp[i] * upScale + vecForward[i] * forwardScale + vecRight[i] * rightScale;
 		}
+	}
+
+	bool brandom()
+	{
+		return Math.RandomLong(0, 1) == 1;
 	}
 }

@@ -179,7 +179,7 @@ class weapon_m1887craft : CBaseCSOWeapon
 		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT5), 0, (m_bSwitchHands ? g_iCSOWHands : 0) );
 		g_SoundSystem.EmitSoundDyn( m_pPlayer.edict(), CHAN_WEAPON, pCSOWSounds[Math.RandomLong(SND_SHOOT1, SND_SHOOT2)], VOL_NORM, 0.52, 0, 94 + Math.RandomLong(0, 15) );
 
-		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_OFFSETS_SHELL.x + g_Engine.v_right * CSOW_OFFSETS_SHELL.y + g_Engine.v_up * CSOW_OFFSETS_SHELL.z, m_iShell, TE_BOUNCE_SHOTSHELL, false, true );
+		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_OFFSETS_SHELL.x + g_Engine.v_right * CSOW_OFFSETS_SHELL.y + g_Engine.v_up * CSOW_OFFSETS_SHELL.z, m_iShell, false, TE_BOUNCE_SHOTSHELL, true );
 		HandleAmmoReduction( 1 );
 
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + CSOW_TIME_DELAY;

@@ -8,7 +8,6 @@ const string CSOW_NAME								= "weapon_buffak";
 const int CSOW_DEFAULT_GIVE						= 50;
 const int CSOW_MAX_CLIP 							= 50;
 const int CSOW_MAX_AMMO							= 90;
-const int CSOW_TRACERFREQ							= 2;
 const int  CSOW_ZOOM									= 60;
 const float CSOW_DAMAGE1							= 24;
 const float CSOW_DAMAGE2							= 56;
@@ -31,9 +30,8 @@ const Vector2D CSOW_RECOIL_DUCKING_X		= Vector2D( 0, 0 );
 const Vector2D CSOW_RECOIL_DUCKING_Y		= Vector2D( 0, 0 );
 const Vector2D CSOW_RECOIL_ALT_X				= Vector2D( -4.0, -6.0 );
 const Vector2D CSOW_RECOIL_ALT_Y				= Vector2D( -2.0, 2.0 );
-const Vector CSOW_OFFSETS_SHELL				= Vector( 28.245131, -7.099761, -4.173389 ); //forward, right, up
-
-const Vector CSOW_OFFSETS_MUZZLE			= Vector( 30.082214, 6.318542, -3.830643 );
+const Vector CSOW_OFFSETS_MUZZLE			= Vector( 26.414122, 4.169659, -2.442089 ); //Vector( 30.082214, 6.318542, -3.830643 );
+const Vector CSOW_OFFSETS_SHELL				= Vector( 13.036917, -4.924881, -4.452251 ); //Vector( 28.245131, -7.099761, -4.173389 ); //forward, right, up
 
 const float CSOW_FRAMERATE_SHOOT			= 30.0;
 
@@ -219,9 +217,9 @@ class weapon_buffak : CBaseCSOWeapon
 					flDamage = self.m_flCustomDmg;
 
 				int iPenetration = USE_PENETRATION ? 2 : 0; 
-				FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), iPenetration, BULLET_PLAYER_762MM, CSOW_TRACERFREQ, flDamage, 0.98, CSOF_HITMARKER, CSOW_OFFSETS_MUZZLE );
+				FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), iPenetration, BULLET_PLAYER_762MM, 0, flDamage, 0.98, CSOF_HITMARKER, CSOW_OFFSETS_MUZZLE );
 
-				EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_OFFSETS_SHELL.x - g_Engine.v_right * CSOW_OFFSETS_SHELL.y + g_Engine.v_up * CSOW_OFFSETS_SHELL.z, m_iShell, TE_BOUNCE_SHELL, false );
+				EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_OFFSETS_SHELL.x - g_Engine.v_right * CSOW_OFFSETS_SHELL.y + g_Engine.v_up * CSOW_OFFSETS_SHELL.z, m_iShell, false );
 
 				HandleRecoil( CSOW_RECOIL_STANDING_X, CSOW_RECOIL_STANDING_Y, CSOW_RECOIL_DUCKING_X, CSOW_RECOIL_DUCKING_Y );
 
@@ -291,7 +289,7 @@ class weapon_buffak : CBaseCSOWeapon
 			flDamage = self.m_flCustomDmg;
 
 		int iPenetration = USE_PENETRATION ? 2 : 0;
-		FireBullets3( vecSrc, g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_762MM, CSOW_TRACERFREQ, flDamage, 0.98, CSOF_HITMARKER );
+		FireBullets3( vecSrc, g_Engine.v_forward, flSpread, iPenetration, BULLET_PLAYER_762MM, 0, flDamage, 0.98, CSOF_HITMARKER );
 
 		self.SendWeaponAnim( Math.RandomLong(ANIM_SHOOT1, ANIM_SHOOT3) );
 

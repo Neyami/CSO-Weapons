@@ -189,7 +189,7 @@ class weapon_skull11 : CBaseCSOWeapon
 		m_pPlayer.FireBullets( iPelletCount, m_pPlayer.GetGunPosition(), g_Engine.v_forward, (m_iWeaponMode == MODE_BUCKSHOT ? CSOW_VECTOR_SPREAD1 : CSOW_VECTOR_SPREAD2), 8192.0, BULLET_PLAYER_CUSTOMDAMAGE, CSOW_TRACERFREQ, 0 );
 		cso::CreateShotgunPelletDecals( m_pPlayer, m_pPlayer.GetGunPosition(), g_Engine.v_forward, (m_iWeaponMode == MODE_BUCKSHOT ? CSOW_VECTOR_SPREAD1 : CSOW_VECTOR_SPREAD2), iPelletCount, flDamage, (DMG_BULLET | DMG_LAUNCH | DMG_NEVERGIB | DMG_ANTIZOMBIE) );
 
-		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_OFFSETS_SHELL.x - g_Engine.v_right * CSOW_OFFSETS_SHELL.y + g_Engine.v_up * CSOW_OFFSETS_SHELL.z, m_iShell, TE_BOUNCE_SHOTSHELL, false, true );
+		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_OFFSETS_SHELL.x - g_Engine.v_right * CSOW_OFFSETS_SHELL.y + g_Engine.v_up * CSOW_OFFSETS_SHELL.z, m_iShell, false, TE_BOUNCE_SHOTSHELL, true );
 
 		self.m_flNextPrimaryAttack = self.m_flNextSecondaryAttack = g_Engine.time + (m_iWeaponMode == MODE_BUCKSHOT ? CSOW_TIME_DELAY1 : CSOW_TIME_DELAY2);
 		self.m_flTimeWeaponIdle = g_Engine.time + CSOW_TIME_FIRE_TO_IDLE;

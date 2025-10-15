@@ -5,6 +5,7 @@ namespace cso
 {
 
 const bool bUseDroppedItemEffect		= true;
+const string KVN_CSO_HAS_SHIELD	= "$i_cso_hasshield";
 
 array<string> arrsCSOPlayerModels;
 
@@ -37,21 +38,26 @@ const int RIPPER_WEIGHT					= 10;
 const int DUALSWORD_WEIGHT			= 10;
 
 //Pistols
+const int GLOCK18_SLOT					= 2;
+const int GLOCK18_POSITION				= 10;
 const int ELITES_SLOT						= 2;
-const int ELITES_POSITION				= 10;
+const int ELITES_POSITION				= 11;
 const int M950_SLOT							= 2;
-const int M950_POSITION					= 11;
+const int M950_POSITION					= 12;
 const int SKULL2_SLOT						= 2;
-const int SKULL2_POSITION				= 12;
+const int SKULL2_POSITION				= 13;
 const int BLOODHUNTER_SLOT			= 2;
-const int BLOODHUNTER_POSITION	= 13;
+const int BLOODHUNTER_POSITION	= 14;
 const int DESPERADO_SLOT				= 2;
-const int DESPERADO_POSITION			= 14;
+const int DESPERADO_POSITION			= 15;
 const int GUNKATA_SLOT					= 2;
-const int GUNKATA_POSITION				= 15;
+const int GUNKATA_POSITION				= 16;
 const int M1887CRAFT_SLOT				= 2;
-const int M1887CRAFT_POSITION		= 16;
+const int M1887CRAFT_POSITION		= 17;
+const int CROW1_SLOT						= 2;
+const int CROW1_POSITION				= 18;
 
+const int GLOCK18_WEIGHT				= 5;
 const int ELITES_WEIGHT					= 5;
 const int M950_WEIGHT						= 10;
 const int SKULL2_WEIGHT					= 10;
@@ -59,6 +65,7 @@ const int BLOODHUNTER_WEIGHT		= 10;
 const int DESPERADO_WEIGHT			= 10;
 const int GUNKATA_WEIGHT				= 10;
 const int M1887CRAFT_WEIGHT			= 10;
+const int CROW1_WEIGHT					= 10;
 
 //Shotguns
 const int M3_SLOT								= 3;
@@ -120,6 +127,8 @@ const int CSOBOW_SLOT					= 5;
 const int CSOBOW_POSITION				= 18;
 const int FAILNAUGHT_SLOT				= 5;
 const int FAILNAUGHT_POSITION		= 19;
+const int CROW5_SLOT						= 5;
+const int CROW5_POSITION				= 20;
 
 const int AK47_WEIGHT						= 25;
 const int AUG_WEIGHT						= 25;
@@ -131,6 +140,7 @@ const int AUGEX_WEIGHT					= 30;
 const int BUFFAK_WEIGHT					= 30;
 const int CSOBOW_WEIGHT				= 10;
 const int FAILNAUGHT_WEIGHT			= 10;
+const int CROW5_WEIGHT					= 25;
 
 //Sniper Rifles
 const int AWP_SLOT							= 6;
@@ -163,10 +173,13 @@ const int M134HERO_SLOT					= 7;
 const int M134HERO_POSITION			= 11;
 const int M2_SLOT								= 7;
 const int M2_POSITION						= 12;
+const int CROW7_SLOT						= 7;
+const int CROW7_POSITION				= 13;
 
 const int AEOLIS_WEIGHT					= 30;
 const int M134HERO_WEIGHT				= 40;
 const int M2_WEIGHT							= 25;
+const int CROW7_WEIGHT					= 25;
 
 //Special/Miscellaneous (Equipment)
 const int AT4_SLOT							= 8;
@@ -412,6 +425,12 @@ void get_position( edict_t@ pOwner, float flForward, float flRight, float flUp, 
 	g_EngineFuncs.AngleVectors( vecAngle, vecForward, vecRight, vecUp );
 
 	vecOut = vecOrigin + vecForward * flForward + vecRight * flRight + vecUp * flUp;
+}
+
+
+bool HasFlags( int iFlagVariable, int iFlags )
+{
+	return (iFlagVariable & iFlags) != 0;
 }
 
 } //namespace cso END

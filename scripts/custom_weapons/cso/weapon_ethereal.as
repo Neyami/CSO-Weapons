@@ -7,6 +7,7 @@ const string CSOW_NAME								= "weapon_ethereal";
 const int CSOW_DEFAULT_GIVE						= 30;
 const int CSOW_MAX_CLIP 							= 30;
 const int CSOW_MAX_CARRY 							= 90;
+const int CSOW_TRACERFREQ							= 1;
 const float CSOW_DAMAGE								= 25; //25, 54, 83
 const float CSOW_TIME_DELAY						= 0.1;
 const float CSOW_TIME_DRAW						= 1.3;
@@ -169,7 +170,7 @@ class weapon_ethereal : CBaseCSOWeapon
 			flDamage = self.m_flCustomDmg;
 
 		int iPenetration = USE_PENETRATION ? 2 : 0;
-		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), iPenetration, BULLET_PLAYER_556MM, 0, flDamage, 1.0, CSOF_ALWAYSDECAL|CSOF_ETHEREAL, CSOW_OFFSETS_MUZZLE );
+		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), iPenetration, BULLET_PLAYER_556MM, CSOW_TRACERFREQ, flDamage, 1.0, CSOF_ALWAYSDECAL|CSOF_ETHEREAL, CSOW_OFFSETS_MUZZLE );
 
 		//{ event 5001 0 "#I19 S0.1 R1.8 F0 P30 T0.01 A1 L0 O0" } 
 		MuzzleflashCSO( 1, "#I19 S0.1 R1.8 F0 P30 T0.01 A1 L0 O0" );

@@ -261,7 +261,7 @@ class weapon_m3 : CBaseCSOWeapon
 		if( m_flEjectBrass > 0.0 and m_flEjectBrass < g_Engine.time )
 		{
 			m_flEjectBrass = 0.0;
-			EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_OFFSETS_SHELL.x + g_Engine.v_right * CSOW_OFFSETS_SHELL.y + g_Engine.v_up * CSOW_OFFSETS_SHELL.z, m_iShell, TE_BOUNCE_SHOTSHELL, false, true );
+			EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * CSOW_OFFSETS_SHELL.x + g_Engine.v_right * CSOW_OFFSETS_SHELL.y + g_Engine.v_up * CSOW_OFFSETS_SHELL.z, m_iShell, false, TE_BOUNCE_SHOTSHELL, true );
 		}
 
 		BaseClass.ItemPostFrame();

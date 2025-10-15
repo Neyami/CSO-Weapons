@@ -212,7 +212,7 @@ class weapon_m2 : CBaseCSOWeapon
 		FireBullets3( m_pPlayer.GetGunPosition(), g_Engine.v_forward, GetWeaponSpread(), iPenetration, BULLET_PLAYER_50BMG, CSOW_TRACERFREQ, flDamage, 1.0, CSOF_ARMORPEN, m_bDeployed ? CSOW_OFFSETS_MUZZLE_B : CSOW_OFFSETS_MUZZLE_A );
 
 		Vector vecShellOffsets = m_bDeployed ? CSOW_OFFSETS_SHELL_B : CSOW_OFFSETS_SHELL_A;
-		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * vecShellOffsets.x - g_Engine.v_right * vecShellOffsets.y + g_Engine.v_up * vecShellOffsets.z, m_iShell, TE_BOUNCE_SHELL, true, !m_bDeployed );
+		EjectBrass( m_pPlayer.GetGunPosition() + g_Engine.v_forward * vecShellOffsets.x - g_Engine.v_right * vecShellOffsets.y + g_Engine.v_up * vecShellOffsets.z, m_iShell, true, TE_BOUNCE_SHELL, !m_bDeployed );
 
 		HandleRecoil( CSOW_RECOIL_STANDING_X, CSOW_RECOIL_STANDING_Y, CSOW_RECOIL_DUCKING_X, CSOW_RECOIL_DUCKING_Y );
 

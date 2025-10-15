@@ -85,7 +85,6 @@ enum t9states_e
 class weapon_thanatos9 : CBaseCSOWeapon
 {
 	private int g_SmokePuff_SprId;
-	private int m_iWeaponState;
 	private int m_iSwing;
 
 	private uint m_uiSmokeState;

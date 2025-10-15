@@ -81,8 +81,6 @@ enum csowstate_e
 
 class weapon_ripper : CBaseCSOWeapon
 {
-	private int m_iWeaponState;
-
 	void Spawn()
 	{
 		Precache();
@@ -107,6 +105,9 @@ class weapon_ripper : CBaseCSOWeapon
 
 		if( cso::bUseDroppedItemEffect )
 			g_Game.PrecacheModel( cso::CSO_ITEMDISPLAY_MODEL );
+
+		for( uint i = 1; i < cso::pSmokeSprites.length(); ++i )
+			g_Game.PrecacheModel( cso::pSmokeSprites[i] );
 
 		for( i = 0; i < pCSOWSounds.length(); ++i )
 			g_SoundSystem.PrecacheSound( pCSOWSounds[i] );

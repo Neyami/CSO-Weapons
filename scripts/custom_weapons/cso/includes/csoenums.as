@@ -89,13 +89,19 @@ enum cso_dmg
 
 enum cso_firebulletsflags
 {
-	CSOF_HITMARKER = 1,
-	CSOF_ALWAYSDECAL = 2,
-	CSOF_TRACER = 4,
-	CSOF_ARMORPEN = 8,
-	CSOF_ETHEREAL = 16
+	CSOF_NONE				= 0,
+	CSOF_HITMARKER		= 1 << 0,	//1
+	CSOF_ALWAYSDECAL	= 1 << 1,	//2
+	CSOF_NEVERDECAL	= 1 << 2,	//4
+	CSOF_ARMORPEN		= 1 << 3,	//8
+	CSOF_ETHEREAL		= 1 << 4	//16
 };
 
+//const int WPNSTATE_USP_SILENCED = 1 << 0;
+//const int WPNSTATE_M4A1_SILENCED = 1 << 2;
+//const int WPNSTATE_ELITE_LEFT = 1 << 3;
+//const int WPNSTATE_FAMAS_BURST_MODE = 1 << 4;
+const int WPNSTATE_SHIELD_DRAWN = 1 << 5;
 
 namespace cso
 {
