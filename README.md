@@ -280,6 +280,15 @@ Some weapons have 3 different hand models (Male, Female, Sven Co-op) that can be
 
 <BR>
 
+* CROW-11
+    * ENTITIES
+    * `weapon_crow11` - Weapon
+ 
+    * AMMO NAME
+    * `crow11ammo` (buckshot)
+
+<BR>
+
 
 # SUBMACHINE GUNS  
 * FN P90
