@@ -149,8 +149,8 @@ class weapon_glock18 : CBaseCSOWeapon
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud1.spr" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud4.spr" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud7.spr" );
-		//g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/muzzle.spr" );
-		//g_Game.PrecacheGeneric( "events/cso/muzzle_template.txt" );
+		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/muzzleflash2.spr" );
+		g_Game.PrecacheGeneric( "events/cso/muzzle_glock18.txt" );
 	}
 
 	bool GetItemInfo( ItemInfo& out info )

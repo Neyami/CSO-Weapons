@@ -84,6 +84,8 @@ const int MK3A1_SLOT						= 3;
 const int MK3A1_POSITION					= 16;
 const int BLOCKAS_SLOT					= 3;
 const int BLOCKAS_POSITION				= 17;
+const int CROW11_SLOT						= 3;
+const int CROW11_POSITION				= 18;
 
 const int M3_WEIGHT							= 20;
 const int USAS12_WEIGHT					= 20;
@@ -93,6 +95,7 @@ const int SKULL11_WEIGHT				= 20;
 const int VOLCANO_WEIGHT				= 20;
 const int MK3A1_WEIGHT					= 20;
 const int BLOCKAS_WEIGHT				= 20;
+const int CROW11_WEIGHT				= 20;
 
 //SMGs
 const int P90_SLOT							= 4;

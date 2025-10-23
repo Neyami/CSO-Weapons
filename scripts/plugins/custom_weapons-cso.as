@@ -22,7 +22,7 @@
 #include "../custom_weapons/cso/weapon_m1887craft"
 #include "../custom_weapons/cso/weapon_crow1"
 
-//Shotguns (8)
+//Shotguns (9)
 #include "../custom_weapons/cso/weapon_m3"
 #include "../custom_weapons/cso/weapon_usas12"
 #include "../custom_weapons/cso/weapon_m1887"
@@ -31,6 +31,7 @@
 #include "../custom_weapons/cso/weapon_volcano"
 #include "../custom_weapons/cso/weapon_mk3a1"
 #include "../custom_weapons/cso/weapon_blockas"
+#include "../custom_weapons/cso/weapon_crow11"
 
 //Submachine Guns (3)
 #include "../custom_weapons/cso/weapon_p90"
@@ -111,6 +112,7 @@ void MapInit()
 	cso_volcano::Register();
 	cso_mk3a1::Register();
 	cso_blockas::Register();
+	cso_crow11::Register();
 
 	cso_p90::Register();
 	cso_thompson::Register();

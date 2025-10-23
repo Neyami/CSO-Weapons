@@ -109,11 +109,10 @@ class weapon_crow1 : CBaseCSOWeapon, CSOCrowSeries
 			g_Game.PrecacheGeneric( "sound/" + arrsCSOWSounds[i] );
 
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/" + CSOW_NAME + ".txt" );
-		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud1.spr" );
-		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud4.spr" );
 		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud7.spr" );
-		//g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/muzzle.spr" );
-		//g_Game.PrecacheGeneric( "events/cso/muzzle_template.txt" );
+		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/640hud163.spr" );
+		g_Game.PrecacheGeneric( "sprites/custom_weapons/cso/muzzleflash2.spr" );
+		g_Game.PrecacheGeneric( "events/cso/muzzle_crow1.txt" );
 	}
 
 	bool GetItemInfo( ItemInfo& out info )
